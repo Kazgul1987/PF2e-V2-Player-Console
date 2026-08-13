@@ -152,3 +152,61 @@ Test main-window compendium, world Item and Actor Item → detached inventory, t
 ### M3-FINAL-06 – Read-only Regression
 1. Open as Observer and Limited and confirm quantity, uses, carry, invest, consume, delete, create, container, currency, identification, and transfer mutation controls are absent.
 2. Invoke controller actions/drop synthetically and confirm no mutation is possible.
+
+## Milestone 4 — Actions and Strikes
+
+### M4-STRIKE-01 – Basic Attack
+1. Open a character with an equipped weapon and compare its prepared strike label, image, total, traits, reload, and range to Core.
+2. Roll the first V2 strike button; verify the PF2e check dialog and chat card match Core.
+3. Repeat with Shift and with Ctrl/Cmd (as GM and player where possible) and verify dialog/roll-mode behavior.
+
+### M4-STRIKE-02 – MAP
+1. Roll MAP 0, MAP 1, and MAP 2 from V2.
+2. Repeat with an agile weapon and compare every displayed value, dialog, and card to Core.
+3. Verify the module never shows a locally derived -5/-10 value.
+
+### M4-STRIKE-03 – Damage
+Roll normal damage, then select each offered versatile/modular type and repeat. Compare formulas/cards to Core.
+
+### M4-STRIKE-04 – Critical Damage
+Use fatal and deadly weapons, roll Critical Damage, and compare runes, critical specialization, splash, persistent, and additional dice with Core.
+
+### M4-STRIKE-05 – Ammo
+1. Equip a ranged weapon with compatible and incompatible ammunition.
+2. Verify only Core-prepared compatible ammunition appears; select it and confirm Core reflects the selected ID.
+3. Attack and verify consumption. For magazine weapons verify the V2 display, then use Core for reload/unload (documented V2 gap).
+
+### M4-STRIKE-06 – Reload
+Test every reload auxiliary offered by the V2 sheet. For a weapon that opens Core's `WeaponReloader`, confirm V2 does not offer a misleading substitute and record the known parity gap.
+
+### M4-STRIKE-07 – Auxiliary Actions
+Execute every dynamically offered Draw, Sheathe, Grip, Release, Interact, modular, reload, or shield action and compare carry/hand state and action glyph to Core.
+
+### M4-STRIKE-08 – Unarmed
+Test Fist plus an ancestry/rule-element Jaws, Claw, Tail, or similar strike; verify attack/MAP/damage works without a normal inventory Weapon assumption.
+
+### M4-STRIKE-09 – Rule Toggle
+1. Use a character with boolean and selectable Rule Element toggles.
+2. Change each in V2; verify Actor and Core sheet state, then verify the prepared strike modifier changes.
+3. Repeat from an Observer sheet and confirm mutation is refused.
+
+### M4-ACTION-01 – Action Item
+For a usable Action Item, test Open, inline Summary, Send to Chat, and Use/Roll. Confirm a registered PF2e action executes; otherwise confirm the documented PF2e Item-card fallback.
+
+### M4-ACTION-02 – Reaction
+Verify reaction grouping, glyph, traits, Open, Summary, Chat, and Use against Core.
+
+### M4-ACTION-03 – Free Action
+Verify free-action grouping, glyph, traits, Open, Summary, Chat, and Use against Core.
+
+### M4-ACTION-04 – Exploration
+Verify other/active grouping, toggle active state, live refresh, Open, Summary, Chat, and Use against Core.
+
+### M4-ACTION-05 – Downtime
+Verify grouping, traits, Open, Summary, Chat, and Use against Core.
+
+### M4-DETACH-01 – Detached Strike
+1. Detach the V2 sheet.
+2. Test Attack, all MAP variants, Damage, Critical, linked Ammo, every Auxiliary Action, every Rule Toggle, Action Item open/chat/use, and roll dialogs.
+3. Change weapon equip state, conditions, ammo quantity, and action Items in the main window and verify live refresh.
+4. Check both browser-window consoles for DOM/window errors.

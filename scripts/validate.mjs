@@ -12,9 +12,8 @@ for (const key of ["url", "manifest", "download"]) {
 }
 const expectedRepository = "https://github.com/Kazgul1987/PF2e-V2-Player-Console";
 if (manifest.url !== expectedRepository) throw new Error("Manifest repository URL is inconsistent");
-if (manifest.manifest !== `${expectedRepository}/releases/latest/download/module.json`) throw new Error("Manifest update URL is inconsistent");
-const archive = `${manifest.id}-v${manifest.version}.zip`;
-if (manifest.download !== `${expectedRepository}/releases/download/v${manifest.version}/${archive}`) throw new Error("Manifest download URL is inconsistent with version/tag/archive convention");
+if (manifest.manifest !== "https://raw.githubusercontent.com/Kazgul1987/PF2e-V2-Player-Console/releases/latest/download/module.json") throw new Error("Manifest update URL is inconsistent");
+if (manifest.download !== `${expectedRepository}/releases/latest/download/${manifest.id}.zip`) throw new Error("Manifest download URL is inconsistent with the release workflow convention");
 if (manifest.compatibility.maximum !== "14") throw new Error("Manifest must target Foundry 14");
 if (!manifest.relationships.systems.some((system) => system.id === "pf2e" && system.type === "system")) {
     throw new Error("PF2e must be a required system relationship");
@@ -34,8 +33,8 @@ console.log("Manifest and module paths are valid.");
 const sourceRoot = fileURLToPath(new URL("../src", import.meta.url));
 const sourceFiles = [
     "module.js", "constants.js", "app/character-sheet/character-sheet-v2.js",
-    "controllers/roll-controller.js", "controllers/inventory-controller.js",
-    "pf2e/character-adapter.js", "pf2e/inventory-adapter.js",
+    "controllers/roll-controller.js", "controllers/inventory-controller.js", "controllers/action-controller.js",
+    "pf2e/character-adapter.js", "pf2e/inventory-adapter.js", "pf2e/actions-adapter.js",
 ];
 for (const relativePath of sourceFiles) {
     const absolutePath = resolve(sourceRoot, relativePath);

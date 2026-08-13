@@ -3,6 +3,8 @@ import { CharacterAdapter } from "../../pf2e/character-adapter.js";
 import { RollController } from "../../controllers/roll-controller.js";
 import { InventoryAdapter } from "../../pf2e/inventory-adapter.js";
 import { InventoryController } from "../../controllers/inventory-controller.js";
+import { ActionsAdapter } from "../../pf2e/actions-adapter.js";
+import { ActionController } from "../../controllers/action-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -39,6 +41,16 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             itemSummary: PF2eCharacterSheetV2.#inventoryAction,
             itemToChat: PF2eCharacterSheetV2.#inventoryAction,
             identification: PF2eCharacterSheetV2.#inventoryAction,
+            strikeAttack: PF2eCharacterSheetV2.#actionAction,
+            strikeDamage: PF2eCharacterSheetV2.#actionAction,
+            strikeCritical: PF2eCharacterSheetV2.#actionAction,
+            strikeAuxiliary: PF2eCharacterSheetV2.#actionAction,
+            toggleWeaponTrait: PF2eCharacterSheetV2.#actionAction,
+            openActionItem: PF2eCharacterSheetV2.#actionAction,
+            sendActionToChat: PF2eCharacterSheetV2.#actionAction,
+            useActionItem: PF2eCharacterSheetV2.#actionAction,
+            actionSummary: PF2eCharacterSheetV2.#actionAction,
+            toggleExploration: PF2eCharacterSheetV2.#actionAction,
         },
     };
 
@@ -94,6 +106,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         const partContext = await super._preparePartContext(partId, context, options);
         if (TABS.includes(partId)) partContext.tab = context.tabs[partId];
         if (partId === "inventory") partContext.inventory = InventoryAdapter.prepare(this.actor);
+        if (partId === "actions") partContext.actions = ActionsAdapter.prepare(this.actor);
         return partContext;
     }
 
@@ -158,13 +171,52 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
     }
 
+    static async #actionAction(event, target) {
+        const strike = target.closest("[data-strike-index]")?.dataset ?? {};
+        const id = target.closest("[data-item-id]")?.dataset.itemId ?? target.dataset.itemId;
+        const data = { ...strike, ...target.dataset };
+        switch (target.dataset.action) {
+            case "strikeAttack": return ActionController.attack(this.actor, data, event);
+            case "strikeDamage": return ActionController.damage(this.actor, data, event);
+            case "strikeCritical": return ActionController.damage(this.actor, data, event, true);
+            case "strikeAuxiliary": return ActionController.auxiliary(this.actor, data, target.parentElement?.querySelector("[data-auxiliary-selection]")?.value ?? null);
+            case "toggleWeaponTrait": return ActionController.weaponTrait(this.actor, data);
+            case "openActionItem": return ActionController.openItem(this.actor, id);
+            case "sendActionToChat": return ActionController.toChat(this.actor, id, event);
+            case "useActionItem": return ActionController.use(this.actor, id, event);
+            case "toggleExploration": return ActionController.toggleExploration(this.actor, id);
+            case "actionSummary": {
+                const summary = target.closest("[data-item-id]")?.querySelector(":scope > .item-summary");
+                if (!summary) return;
+                if (!summary.hidden) { summary.hidden = true; summary.replaceChildren(); return; }
+                summary.innerHTML = await ActionController.summary(this.actor, id);
+                summary.hidden = false;
+            }
+        }
+    }
+
     async _onRender(context, options) {
         await super._onRender(context, options);
         this.#dragListeners?.abort();
         this.#dragListeners = new AbortController();
+        const listenerOptions = { signal: this.#dragListeners.signal };
+        const actions = this.element.querySelector('[data-tab="actions"]');
+        actions?.addEventListener("change", (event) => {
+            const target = event.target;
+            if (!target?.matches?.("input, select")) return;
+            const row = target.closest("[data-domain][data-option]");
+            if (row && ["toggleRollOption", "toggleRollOptionSuboption"].includes(target.dataset.action)) {
+                const checkbox = row.querySelector('input[data-action="toggleRollOption"]');
+                const select = row.querySelector('select[data-action="toggleRollOptionSuboption"]');
+                void ActionController.toggleRollOption(this.actor, row.dataset, checkbox?.checked ?? false, select?.value ?? null);
+                return;
+            }
+            if (target.dataset.action === "selectStrikeAmmo") {
+                void ActionController.ammo(this.actor, target.closest("[data-strike-index]")?.dataset ?? {}, target.value);
+            }
+        }, listenerOptions);
         const inventory = this.element.querySelector('[data-tab="inventory"]');
         if (!inventory) return;
-        const listenerOptions = { signal: this.#dragListeners.signal };
         inventory.addEventListener("dragstart", (event) => {
             const target = event.target.closest("[draggable][data-item-id]");
             if (target) InventoryController.dragStart(this.actor, event, target);
