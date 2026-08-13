@@ -10,6 +10,8 @@ Reusable Handlebars partial paths are declared once in `src/constants.js` and pr
 
 The Actor Directory launcher follows the V14 `getActorContextOptions` contract and resolves its HTMLElement through `data-entry-id`; it does not rely on the pre-V14 `data-document-id` shape. The direct `game.modules.get("pf2e-v2-player-console").api.openCharacterSheet(actor)` API remains available independently of directory and sheet integrations.
 
+Release metadata deliberately uses stable, versionless GitHub release-asset URLs under `releases/latest/download/`. `scripts/prepare-release.mjs` changes the manifest version while reasserting those stable `manifest` and `download` URLs; `scripts/validate.mjs` derives and checks both paths from the canonical repository URL and module ID.
+
 ## Sheet base: `HandlebarsApplicationMixin(DocumentSheetV2)`
 
 Milestone 2 migrates from plain `ApplicationV2` to `HandlebarsApplicationMixin(DocumentSheetV2)`. Foundry V14's `DocumentSheetV2` is the appropriate long-lived base because it adds the Actor binding (`document`), document-sheet visibility/editability and lifecycle, standard form behavior, and compatibility with sheet registration while retaining Application V2 rendering, `PARTS`, `TABS`, actions, and `detachWindow()`. No technical blocker was found. This also provides the correct foundation for later embedded-Item and drag/drop work without implementing those Milestone 3 features now.
