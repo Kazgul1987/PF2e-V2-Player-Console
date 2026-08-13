@@ -17,7 +17,11 @@
       "Detach": "In Browserfenster auslagern",
       "Save": "Speichern",
       "SecretPerception": "Geheime Wahrnehmung",
-      "ToggleContainer": "Behälter öffnen oder schließen"
+      "ToggleContainer": "Behälter öffnen oder schließen",
+      "WornInSlot": "Im vorgesehenen Platz getragen",
+      "Identify": "Gegenstand identifizieren",
+      "Mystify": "Gegenstand mystifizieren",
+      "SendToChat": "An Chat senden"
     },
     "Labels": {
       "CharacterName": "Charaktername",
@@ -34,7 +38,14 @@
       "DetachUnavailable": "Diese Foundry-Distribution stellt keine ausgelagerten Anwendungsfenster bereit.",
       "NotEditable": "Du kannst diesen Charakter nicht bearbeiten.",
       "NameRequired": "Der Charaktername darf nicht leer sein.",
-      "StatisticUnavailable": "Der Wert {statistic} ist nicht verfügbar."
+      "StatisticUnavailable": "Der Wert {statistic} ist nicht verfügbar.",
+      "TradeRequiresCore": "Dieser Transfer benötigt den PF2e-Handelsablauf. Verwende den offiziellen PF2e-Bogen, um den Handel auszuhandeln."
+    },
+    "Transfer": {
+      "Title": "{item} übertragen",
+      "Prompt": "Wähle die Menge für die Übertragung an {actor}.",
+      "NewStack": "Neuen Stapel anlegen",
+      "Button": "Übertragen"
     }
   }
 }

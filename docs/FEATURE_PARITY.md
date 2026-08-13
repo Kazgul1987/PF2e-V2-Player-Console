@@ -29,15 +29,25 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Inventory list/grouping/images/names | ✓ | ✓ | implemented | `base.ts:prepareInventory`, `item-line.hbs` | `actor.inventory`, prepared Items | M3-INV-01 | Seven core physical-item sections and recursive containers |
 | Quantity | ✓ | ✓ | implemented | base increase/decrease handlers | `item.update` | M3-INV-03 | Core modifier increments; schema owns validation |
 | Uses/charges | ✓ | ✓ | implemented | consumable document `_preUpdate` | `item.update` | M3-INV-13 | Ammo and consumables with uses |
-| Carry/equipped/invested | ✓ | ✓ | implemented* | creature `changeCarryType`; character toggle | `actor.changeCarryType`, `toggleInvested` | M3-INV-04/05 | `*` attached/in-slot menu variants pending |
+| Carry/equipped/invested | ✓ | ✓ | implemented; runtime sign-off | creature `changeCarryType`; character toggle | `actor.changeCarryType`, `toggleInvested` | M3-FIX-05 | Core-conditioned held 1/2, worn, worn-in-slot, stowed, dropped, attached and implanted; attachment delegates to PF2e's picker |
 | Container nesting/assignment/expansion | ✓ | ✓ | implemented | sortable inventory; `toggle-container` | `stowOrUnstow`, Item update | M3-INV-06 | PF2e cycle guard and persisted collapsed state |
 | Item sheet open/edit/delete/create | ✓ | ✓ | implemented | base item handlers | Item sheet, delete dialog, embedded create | M3-INV-02/10 | Basic per-section creation; browser/search pending |
 | Actor internal sorting/drop | ✓ | ✓ | implemented* | base sortable handlers | `sortRelative`, `stowOrUnstow` | M3-INV-07 | `*` stack-on-drop parity pending |
-| Compendium/world/other Actor drop | ✓ | ✓ | implemented* | base `_onDropItem` | `fromDropData`, Inventory.add, transfer API | M3-INV-08 | `*` core internal size adjustment unavailable externally |
+| Compendium Item Drop | ✓ | ✓ | implemented; runtime sign-off | base `_handleDroppedItem` | `fromDropData`, `inventory.add` | M3-INV-08/09 | Core internal size adjustment is unavailable externally |
+| World Item Drop | ✓ | ✓ | implemented; runtime sign-off | base `_handleDroppedItem` | `fromDropData`, `inventory.add` | M3-INV-08/09 | PF2e owns target stacking |
+| Actor-to-Actor full stack | ✓ | ✓ | implemented; runtime sign-off | `moveItemBetweenActors` | `transferItemToActor` | M3-FIX-01 | Quantity selection defaults to the available stack |
+| Actor-to-Actor partial transfer | ✓ | ✓ | implemented; runtime sign-off | `ItemTransferDialog` | `transferItemToActor` | M3-FIX-01 | Module DialogV2 selects/clamps quantity; PF2e mutates source/target |
+| Transfer quantity dialog | ✓ | ✓ | implemented | internal `ItemTransferDialog` | `DialogV2` + transfer API | M3-FIX-01 | Core dialog is not exported, so module reproduces selection UI only |
+| Existing target stack/new stack | ✓ | ✓ | implemented; runtime sign-off | `findStackableItem` | `findStackableItem`, `transferItemToActor` | M3-FIX-02 | New-stack choice is enabled only when a compatible target stack exists |
+| Merchant purchase | ✓ | ✓ | implemented; runtime sign-off | `moveItemBetweenActors` purchase mode | `transferItemToActor(...,true)` | M3-FIX-03 | PF2e exchanges coins; non-empty backpacks are rejected as in core |
+| Creature trade/gift negotiation | ✓ | fallback | pending | private `#attemptTrade`, trade app | no stable external entry point | M3-FIX-03 | Non-GM unsafe cases are blocked and directed to the official sheet; never silently moved |
+| Credstick credit transfer | ✓ | — | pending | internal `transferCredits` | no stable external entry point | M3-FIX-03 | Item transfer remains available only where core treats it as an item |
+| Container target transfer | ✓ | ✓ | implemented; runtime sign-off | drop container lookup | transfer `containerId` | M3-FIX-01/02 | PF2e validates and stacks/creates in target container |
 | Detached drag/drop | — | ✓ | awaiting runtime | Foundry V14 DataTransfer | same drop APIs | M3-INV-09 | Browser/platform cross-window behavior must be signed off |
 | Bulk | ✓ | ✓ | implemented | `prepareInventory` | prepared Actor/Item bulk | M3-INV-01 | Display only; no local calculation |
-| Coins | ✓ | ✓ | implemented* | base currency handlers/dialog | currency/addCoins/removeCoins | M3-INV-12 | `*` denomination controls; core dialogs/sell-all pending |
+| Coins add/remove (PP/GP/SP/CP) | ✓ | ✓ | implemented | base currency handlers/dialog | currency/addCoins/removeCoins | M3-FIX-08 | PF2e performs mutations; core by-value/break-coins dialog, distribution and sell-all remain pending |
 | Consumables | ✓ | ✓ | implemented | creature `consume-item` | `consume()` | M3-INV-13 | PF2e owns effects, chat, charges, auto-destroy |
 | Shield state | ✓ | ✓ | inventory-complete | physical/shield documents | prepared HP/hardness/state | M3-INV-14 | Raise Shield deferred to Actions milestone |
-| Identification | ✓ | display only | pending GM action | base `toggle-identified` | prepared identification; internal popup | M3-INV-01 | Item sheet remains available; no privilege expansion |
-| Inline summary/chat/context/browser | ✓ | — | pending | item summary renderer/base handlers | `toMessage`; internal UI helpers | future | Concrete next step: detached-safe V2 summary and action menu |
+| Identification/mystify | ✓ | ✓* | partial | base `toggle-identified` | `setIdentificationStatus` | M3-FIX-04 | GM/editable only; direct identified/unidentified works, but core's internal status popup is not reproduced |
+| Inline item summary | ✓ | ✓* | partial | internal item-summary renderer | `TextEditor.enrichHTML`, prepared description | M3-FIX-06 | Sheet-scoped detached-safe disclosure; rich core summary actions remain pending |
+| Send item to chat | ✓ | ✓ | implemented; runtime sign-off | base `item-to-chat` | `item.toMessage(event)` | M3-FIX-07 | PF2e creates the chat card |
