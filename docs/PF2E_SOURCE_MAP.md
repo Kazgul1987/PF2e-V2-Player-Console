@@ -45,7 +45,11 @@ The complete `src/templates` inventory contains one external partial: `character
 
 ## Runtime foundation: Actor Directory integration
 
-PF2e V14's `ActorDirectoryPF2e._createContextMenus` creates the entry menu for `.directory-item[data-entry-id]` with hook name ``get${this.documentName}ContextOptions``—that is, `getActorContextOptions`. V14 `ContextMenuEntry` uses `label`, `visible`, and `onClick(event, HTMLElement)`. Both PF2e's own handlers and the module resolve `li.dataset.entryId` through `game.actors`; the module centralizes that operation and warns to the console when resolution fails. `CharacterAdapter.supports` keeps the entry restricted to PF2e Characters.
+PF2e V14's `ActorDirectoryPF2e._createContextMenus` (`reference/pf2e/src/module/apps/sidebar/actor-directory.ts`) creates the entry menu for `.directory-item[data-entry-id]` with hook name ``get${this.documentName}ContextOptions``—that is, `getActorContextOptions`. The hook receives the directory application and its mutable context-entry array. V14 `ContextMenuEntry` uses `label`, `visible`, and `onClick(event, HTMLElement)`. PF2e's real `visible` and `onClick` call sites resolve `li.dataset.entryId` through `game.actors`; the module does the same and warns to the console when resolution fails. `CharacterAdapter.supports` keeps the entry restricted to PF2e Characters.
+
+## Release tooling
+
+The canonical repository, update manifest, and archive use GitHub's versionless release-asset convention: `manifest.url`, `${manifest.url}/releases/latest/download/module.json`, and `${manifest.url}/releases/latest/download/${manifest.id}.zip`. `scripts/validate.mjs` enforces this relationship without a version or `raw.githubusercontent.com`; `scripts/prepare-release.mjs` updates `version` and preserves/reasserts both `latest/download` URLs.
 
 ## Runtime foundation: official PF2e sheet integration
 

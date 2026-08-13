@@ -7,6 +7,7 @@ if (!/^\d+\.\d+\.\d+$/.test(version ?? "")) {
 const path = new URL("../module.json", import.meta.url);
 const manifest = JSON.parse(await readFile(path, "utf8"));
 manifest.version = version;
-manifest.download = `${manifest.url}/releases/download/v${version}/${manifest.id}-v${version}.zip`;
+manifest.manifest = `${manifest.url}/releases/latest/download/module.json`;
+manifest.download = `${manifest.url}/releases/latest/download/${manifest.id}.zip`;
 await writeFile(path, `${JSON.stringify(manifest, null, 2)}\n`);
 console.log(`Prepared module.json for v${version}`);

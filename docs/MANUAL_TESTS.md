@@ -189,6 +189,33 @@ Test main-window compendium, world Item and Actor Item → detached inventory, t
 3. Open Actions and exercise strikes, Item summaries, roll dialogs, and permitted Actor updates.
 4. Confirm both window consoles contain no partial, DOM, or cross-window errors.
 
+### RUNTIME-07 – Validator
+1. Run `node scripts/validate.mjs`.
+2. Confirm the validator completes successfully.
+3. Confirm `manifest` and `download` are checked against the versionless `releases/latest/download/` convention.
+
+### RUNTIME-08 – Prepare Release
+1. Use a disposable copy of the repository.
+2. Run `node scripts/prepare-release.mjs 0.3.1`.
+3. Confirm `version` changes to `0.3.1`.
+4. Confirm `manifest` remains `${url}/releases/latest/download/module.json`.
+5. Confirm `download` remains `${url}/releases/latest/download/${id}.zip` with no version in its path or filename.
+
+### RUNTIME-09 – Actor Directory
+1. Start Foundry V14 and open the Actor Directory.
+2. Right-click a PF2e Character.
+3. Confirm **Open V2 Character Sheet** / **V2-Charakterbogen öffnen** appears.
+4. Click it and confirm the sheet opens.
+
+### RUNTIME-10 – Unsupported Actor
+1. Right-click an NPC (and, where available, Loot, Hazard, Familiar, and Vehicle Actors).
+2. Confirm no V2 Character Sheet entry appears.
+
+### RUNTIME-11 – Direct API
+1. Call `game.modules.get("pf2e-v2-player-console").api.openCharacterSheet(actor)` for a PF2e Character.
+2. Confirm the complete sheet renders without a missing-partial error.
+3. Detach it, then open Inventory and Actions and confirm they remain operational.
+
 ## Milestone 4 — Actions and Strikes
 
 ### M4-STRIKE-01 – Basic Attack
