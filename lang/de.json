@@ -21,7 +21,10 @@
       "WornInSlot": "Im vorgesehenen Platz getragen",
       "Identify": "Gegenstand identifizieren",
       "Mystify": "Gegenstand mystifizieren",
-      "SendToChat": "An Chat senden"
+      "SendToChat": "An Chat senden",
+      "RollOptions": "Wurfoptionen",
+      "NoStrikes": "Keine vorbereiteten Angriffe",
+      "Ammo": "Munition"
     },
     "Labels": {
       "CharacterName": "Charaktername",

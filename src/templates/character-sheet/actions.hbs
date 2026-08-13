@@ -1,4 +1,132 @@
-<main class="tab-panel tab {{tab.cssClass}} placeholder" data-group="primary" data-tab="actions">
+<main class="tab-panel tab {{tab.cssClass}} actions-tab" data-group="primary" data-tab="actions">
     <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.actions"}}</h2>
-    <p>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.NotImplemented"}}</p>
+
+    {{#if actions.toggles.length}}
+        <section class="action-section roll-option-toggles">
+            <h3>{{localize "PF2E_V2_PLAYER_CONSOLE.Actions.RollOptions"}}</h3>
+            {{#each actions.toggles as |toggle|}}
+                <label class="roll-option" data-domain="{{toggle.domain}}" data-option="{{toggle.option}}" data-item-id="{{toggle.itemId}}">
+                    <input type="checkbox" data-action="toggleRollOption" {{checked toggle.checked}} {{disabled (or toggle.alwaysActive (not toggle.enabled))}}>
+                    <span>{{localize toggle.label}}</span>
+                    {{#if toggle.suboptions}}
+                        <select data-action="toggleRollOptionSuboption">
+                            {{#each toggle.suboptions as |option|}}
+                                <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{localize option.label}}</option>
+                            {{/each}}
+                        </select>
+                    {{/if}}
+                </label>
+            {{/each}}
+        </section>
+    {{/if}}
+
+    <section class="action-section">
+        <h3>{{localize "PF2E.Actor.Attacks"}}</h3>
+        <ol class="strike-list">
+            {{#each actions.strikes as |strike|}}
+                {{#if strike.visible}}
+                    {{> strikeRow strike=strike}}
+                {{/if}}
+            {{else}}
+                <li class="empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Actions.NoStrikes"}}</li>
+            {{/each}}
+        </ol>
+    </section>
+
+    {{> actionSection title="PF2E.ActionsActionsHeader" items=actions.sections.action}}
+    {{> actionSection title="PF2E.ActionsReactionsHeader" items=actions.sections.reaction}}
+    {{> actionSection title="PF2E.ActionsFreeActionsHeader" items=actions.sections.free}}
+    {{> actionSection title="PF2E.Actor.Character.ActiveHeader" items=actions.sections.explorationActive exploration=true}}
+    {{> actionSection title="PF2E.TabActionsExplorationLabel" items=actions.sections.exploration exploration=true}}
+    {{> actionSection title="PF2E.TabActionsDowntimeLabel" items=actions.sections.downtime}}
 </main>
+
+{{#*inline "strikeRow"}}
+<li class="strike-row {{#if strike.ready}}ready{{/if}}" data-strike-index="{{strike.index}}" data-alt-usage-index="{{strike.altUsageIndex}}">
+    <div class="strike-heading">
+        <button type="button" class="strike-name" data-action="openActionItem" data-item-id="{{strike.itemId}}">
+            <img src="{{strike.img}}" alt=""><strong>{{strike.label}}</strong>
+        </button>
+        {{#if strike.ready}}
+            <div class="strike-buttons">
+                {{#each strike.variants as |variant|}}
+                    <button type="button" data-action="strikeAttack" data-variant-index="{{variant.index}}">{{variant.label}}</button>
+                {{/each}}
+                {{#if strike.dealsDamage}}
+                    <button type="button" data-action="strikeDamage">{{localize "PF2E.DamageLabel"}}</button>
+                    <button type="button" data-action="strikeCritical">{{localize "PF2E.CriticalDamageLabel"}}</button>
+                {{/if}}
+            </div>
+        {{else}}
+            <small>{{localize "PF2E.Actor.Character.HandsOccupied"}}</small>
+        {{/if}}
+    </div>
+    <div class="trait-list">
+        {{#each strike.traits as |trait|}}<span class="trait" title="{{localize trait.description}}">{{trait.label}}</span>{{/each}}
+        {{#if strike.reload}}<span class="trait">{{strike.reload}}</span>{{/if}}
+        {{#if strike.range}}<span class="trait">{{strike.range}}</span>{{/if}}
+    </div>
+    {{#if (or strike.versatileOptions strike.doubleBarrel)}}
+        <div class="weapon-toggles">
+            {{#if strike.doubleBarrel}}<button type="button" class="{{#if strike.doubleBarrel.selected}}active{{/if}}" data-action="toggleWeaponTrait" data-trait="double-barrel">{{localize "PF2E.TraitDoubleBarrel"}}</button>{{/if}}
+            {{#each strike.versatileOptions as |option|}}
+                <button type="button" class="{{#if option.selected}}active{{/if}}" data-action="toggleWeaponTrait" data-trait="versatile" data-selected="{{option.value}}" data-active="{{option.selected}}">{{localize option.label}}</button>
+            {{/each}}
+        </div>
+    {{/if}}
+    {{#if strike.ammunition}}
+        <div class="strike-ammo">
+            <strong>{{localize "PF2E_V2_PLAYER_CONSOLE.Actions.Ammo"}}</strong>
+            {{#if strike.ammunition.requiresReload}}
+                {{#each strike.ammunition.loaded as |ammo|}}<span><img src="{{ammo.img}}" alt="">{{ammo.name}} ({{ammo.quantity}})</span>{{/each}}
+                {{#if strike.ammunition.remaining}}<span>{{localize "PF2E.Actions.Interact.Reload.Title"}} {{strike.ammunition.reloadGlyph}}</span>{{/if}}
+            {{else}}
+                <select data-action="selectStrikeAmmo">
+                    <option value="">{{localize "PF2E.NoAmmoLabel"}}</option>
+                    {{#each strike.ammunition.compatible as |ammo|}}
+                        <option value="{{ammo.id}}" {{#if (eq ammo.id ../strike.ammunition.selectedId)}}selected{{/if}}>{{ammo.label}}</option>
+                    {{/each}}
+                </select>
+            {{/if}}
+        </div>
+    {{/if}}
+    {{#if strike.auxiliaryActions}}
+        <div class="auxiliary-actions">
+            {{#each strike.auxiliaryActions as |aux|}}
+                <span>
+                    {{#if aux.options}}<select data-auxiliary-selection>{{#each aux.options as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select>{{/if}}
+                    <button type="button" data-action="strikeAuxiliary" data-auxiliary-index="{{aux.index}}">{{aux.label}} <b>{{aux.glyph}}</b></button>
+                </span>
+            {{/each}}
+        </div>
+    {{/if}}
+    {{#if strike.altUsages}}
+        <div class="alternate-usages">
+            {{#each strike.altUsages as |usage|}}{{> strikeRow strike=usage}}{{/each}}
+        </div>
+    {{/if}}
+</li>
+{{/inline}}
+
+{{#*inline "actionSection"}}
+{{#if items.length}}
+<section class="action-section">
+    <h3>{{localize title}}</h3>
+    <ol class="action-list">
+        {{#each items as |item|}}
+            <li data-item-id="{{item.id}}">
+                <button type="button" class="action-name" data-action="actionSummary"><img src="{{item.img}}" alt=""><strong>{{item.name}}</strong></button>
+                <span class="trait-list">{{#each item.traits as |trait|}}<span class="trait">{{localize trait.label}}</span>{{/each}}</span>
+                <span class="action-controls">
+                    {{#if item.usable}}<button type="button" data-action="useActionItem">{{localize "PF2E.Action.Use"}} {{item.glyph}}</button>{{/if}}
+                    {{#if ../exploration}}<button type="button" class="{{#if item.active}}active{{/if}}" data-action="toggleExploration">{{localize "PF2E.Actor.Character.Active"}}</button>{{/if}}
+                    <button type="button" data-action="sendActionToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button>
+                    <button type="button" data-action="openActionItem" title="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-up-right-from-square"></i></button>
+                </span>
+                <div class="item-summary" hidden></div>
+            </li>
+        {{/each}}
+    </ol>
+</section>
+{{/if}}
+{{/inline}}

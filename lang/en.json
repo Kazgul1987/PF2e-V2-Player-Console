@@ -21,7 +21,10 @@
       "WornInSlot": "Worn in usage slot",
       "Identify": "Identify item",
       "Mystify": "Mystify item",
-      "SendToChat": "Send to chat"
+      "SendToChat": "Send to chat",
+      "RollOptions": "Roll options",
+      "NoStrikes": "No prepared strikes",
+      "Ammo": "Ammunition"
     },
     "Labels": {
       "CharacterName": "Character name",

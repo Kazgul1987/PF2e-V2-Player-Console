@@ -59,3 +59,35 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Identification/mystify | ✓ | ✓* | partial | base `toggle-identified` | `setIdentificationStatus` | M3-FIX-04 | GM/editable only; direct identified/unidentified works, but core's internal status popup is not reproduced |
 | Inline item summary | ✓ | ✓* | partial | internal item-summary renderer | `TextEditor.enrichHTML`, prepared description | M3-FIX-06 | Sheet-scoped detached-safe disclosure; rich core summary actions remain pending |
 | Send item to chat | ✓ | ✓ | implemented; runtime sign-off | base `item-to-chat` | `item.toMessage(event)` | M3-FIX-07 | PF2e creates the chat card |
+
+## Milestone 4 actions detail
+
+| Feature | PF2e Core | V2 Sheet | Status | Runtime API | Manual Test | Notes |
+|---|---:|---:|---|---|---|---|
+| Strike list / label / image | ✓ | ✓ | implemented; runtime sign-off | `actor.system.actions` | M4-STRIKE-01/08 | Includes prepared unarmed, natural and rule-granted entries |
+| Strike total / MAP 0 | ✓ | ✓ | implemented; runtime sign-off | `variants[0].label/roll` | M4-STRIKE-01/02 | No local modifier |
+| MAP 1 (-5/-4 etc.) | ✓ | ✓ | implemented; runtime sign-off | `variants[1]` | M4-STRIKE-02 | Agile result comes from PF2e |
+| MAP 2 (-10/-8 etc.) | ✓ | ✓ | implemented; runtime sign-off | `variants[2]` | M4-STRIKE-02 | Exact prepared label and function |
+| Attack roll | ✓ | ✓ | implemented; runtime sign-off | `variant.roll({event})` | M4-STRIKE-01/02 | PF2e Check dialog/card/options/targets |
+| Damage roll | ✓ | ✓ | implemented; runtime sign-off | `strike.damage({event})` | M4-STRIKE-03 | No formula construction |
+| Critical damage | ✓ | ✓ | implemented; runtime sign-off | `strike.critical({event})` | M4-STRIKE-04 | Fatal/deadly/runes remain Core-owned |
+| Alternate usages (thrown/melee) | ✓ | ✓ | implemented; runtime sign-off | `strike.altUsages` runtime methods | M4-STRIKE-07/08 | Nested prepared usages, index resolved as Core does |
+| Versatile damage | ✓ | ✓ | implemented; runtime sign-off | prepared options + trait toggle runtime | M4-STRIKE-03 | Modular choice is also presented through prepared auxiliaries |
+| Weapon traits / reload / range | ✓ | ✓ | implemented display | prepared strike/Item data | M4-STRIKE-01 | PF2e labels/tooltips |
+| Ammo display | ✓ | ✓ | implemented; runtime sign-off | prepared `ammunition` | M4-STRIKE-05 | Compatible and magazine data are not inferred |
+| Linked ammo selection | ✓ | ✓ | implemented; runtime sign-off | `weapon.update(selectedAmmoId)` | M4-STRIKE-05 | Same Document update as Core |
+| Magazine ammo selection/unload | ✓ | display only | partial | no stable complete external workflow | M4-STRIKE-05 | Core source logic and subitem UI are internal |
+| Reload popup | ✓ | — | safe gap | internal `WeaponReloader` | M4-STRIKE-06 | Auxiliary reload works if supplied; no deep import |
+| Auxiliary actions | ✓ | ✓ | implemented; runtime sign-off | `auxiliaryActions[].execute` | M4-STRIKE-07 | Options are runtime-driven |
+| Weapon usage / hands | ✓ | ✓ | implemented; runtime sign-off | ready/hands/alt usage/auxiliaries | M4-STRIKE-07 | No direct carry mutation |
+| Action item list | ✓ | ✓ | implemented; runtime sign-off | Actor action/feat Items | M4-ACTION-01 | Suppressed and canonical blast handling match Core |
+| Reaction list | ✓ | ✓ | implemented; runtime sign-off | `actionCost.type` | M4-ACTION-02 | Core classification |
+| Free-action list | ✓ | ✓ | implemented; runtime sign-off | `actionCost.type` | M4-ACTION-03 | Core classification |
+| Exploration list / active | ✓ | ✓ | implemented; runtime sign-off | traits + `system.exploration` | M4-ACTION-04 | Open/summary/chat/use/toggle active |
+| Downtime list | ✓ | ✓ | implemented; runtime sign-off | downtime trait | M4-ACTION-05 | Open/summary/chat/use |
+| Rule-element toggles | ✓ | ✓ | implemented; runtime sign-off | synthetics + `toggleRollOption` | M4-STRIKE-09 | Boolean/suboption, dynamic module toggles |
+| Send action to chat | ✓ | ✓ | implemented; runtime sign-off | `item.toMessage(event)` | M4-ACTION-01 | PF2e chat card |
+| Open action item | ✓ | ✓ | implemented; runtime sign-off | `item.sheet.render(true)` | M4-ACTION-01 | Detached browser check required |
+| Action use/roll | ✓ | ✓* | partial | registered `game.pf2e.actions`; Item chat fallback | M4-ACTION-01 | Internal `createUseActionMessage` cannot be imported |
+| Elemental Blast | ✓ | — | pending / safe omission | no public runtime class | future M4 follow-up | Core constructs internal `ElementalBlast`; canonical item is not duplicated |
+| Detached strike roll | — | ✓ | statically scoped; runtime sign-off | Application action + runtime strike | M4-DETACH-01 | No global sheet DOM selector |

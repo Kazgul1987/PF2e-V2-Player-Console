@@ -158,3 +158,39 @@ Thus enum acceptance and UI affordances remain separate: recognizing `installed`
 ### Transfer dialogs and detached windows
 
 Core's `ItemTransferDialog` is an internal `DialogV2` subclass and not reusable by an external module. The module therefore owns only the quantity/mode/new-stack selection UI and calls stable Document APIs for mutation. It passes `DialogV2.wait` an HTML **string**, rather than creating content through global `document.createElement`. Its callback starts from the callback-provided button, calls `button.closest("form")`, and constructs `FormDataExtended` from that local form. Quantity, new-stack, Purchase, Gift/Move, and Cancel therefore do not query the main-window DOM. Actual detached-window correctness and native cross-window `DataTransfer` still require M3-FINAL-05 in Foundry V14.
+
+## Milestone 4 Actions and Strikes source map
+
+### Prepared runtime contract and integration boundary
+
+The character Document prepares strikes in `reference/pf2e/src/module/actor/character/document.ts` (`prepareStrike`, attack variants, and damage functions). The supported runtime boundary used by this module is the already-prepared `actor.system.actions` array. Each entry supplies `item`, `slug`, `label`, `ready`, `visible`, `handsAvailable`, `variants[].label/roll`, `damage`, `critical`, `traits`, `weaponTraits`, `ammunition`, `auxiliaryActions`, and `altUsages`. The module retains Core's action index because Core itself resolves `data-action-index` with `actor.system.actions.at(index)` in `actor/sheet/base.ts:getAttackActionFromDOM`; an alternate-usage index is resolved against that entry's prepared `altUsages`. It never reconstructs a strike from inventory and never calculates modifiers, MAP, damage, range, or traits.
+
+| Feature | Core template | Core handler | Runtime API | External-module-safe? | Internal helper / special notes |
+|---|---|---|---|---:|---|
+| Strike preparation | `static/templates/actors/character/tabs/actions.hbs`, `partials/strike.hbs` | `actor/character/document.ts:prepareStrike` | prepared `actor.system.actions` | yes | `prepareStrike` is private; consume prepared objects only |
+| Strike attack | `character/partials/strike.hbs` | `actor/sheet/base.ts` strike listener | `strike.variants[index].roll({event})` | yes | PF2e receives the native event and owns dialog, targets, options, ammo consumption, and chat |
+| MAP | `character/partials/strike.hbs` iterates `variants` | same strike listener | prepared `variants[].label` and `.roll` | yes | No local -5/-10 or agile branch; all three labels/functions are PF2e outputs |
+| Strike damage | same | base strike damage listener | `strike.damage({event})` | yes | `DamageContext` and `createDamageRollFunctions` remain Core-owned |
+| Critical damage | same | base strike critical listener | `strike.critical({event})` | yes | Fatal, deadly, runes, specialization, splash, persistent and additional dice remain Core-owned |
+| Alternate / versatile damage | same toggle block | character `toggle-weapon-trait` | `weapon.system.traits.toggles.update({trait:"versatile",selected})`, then prepared damage | yes | Validation helper is internal; only options already prepared by PF2e are rendered |
+| Strike traits | strike summary | preparation in character Document | prepared `traits`, `weaponTraits`, reload/range Item data | yes | Labels/descriptions originate in PF2e configuration/preparation |
+| Ammo display/link | strike ammo block | character change handler | prepared `ammunition.compatible/selected`; `weapon.update({"system.selectedAmmoId":...})` | yes | Compatibility comes exclusively from PF2e preparation |
+| Magazine ammo/reload | strike ammo block | `select-ammo`, `unload`, `reload` | prepared loaded/remaining display | partial | Mutation/reload uses internal `WeaponReloader` plus source-only ordering logic; V2 displays it but does not deep-import the application |
+| Reload | strike ammo block | character `reload` | auxiliary `execute` when PF2e supplies one | partial | Core's dedicated `WeaponReloader` is not exposed through `game.pf2e`; no replacement reload rules are invented |
+| Auxiliary actions | strike partial | character auxiliary listener | `strike.auxiliaryActions[index].execute({selection})` | yes | Runtime creates Draw, Grip, Release, modular, shield and other choices dynamically |
+| Weapon usage/hands | strike partial ready/alt usage blocks | `getAttackActionFromDOM` | prepared `ready`, `handsAvailable`, `altUsages` and auxiliary execution | yes | Covers thrown/melee/natural strikes without requiring a Weapon class check |
+| Rule Element toggles | `actors/partials/toggles.hbs` | base toggle change listener | `actor.synthetics.toggles`; `actor.toggleRollOption(domain,option,itemId,checked,suboption)` | yes | Grouping in base `getData`; module filters the prepared `placement === "actions"` entries only |
+| Action item grouping | `character/tabs/actions.hbs`, `actors/partials/action.hbs` | `character/sheet.ts:#prepareAbilities` | prepared Item fields, `actionCost`, traits, `actor.system.exploration` | yes | The private `createAbilityViewData` is mirrored only as presentation; no classification by name |
+| Action item use/roll | action partial | base `use-action` | `game.pf2e.actions[item.slug]({event,actors:[actor]})` when registered; safe `item.toMessage(event)` fallback | partial | Core's `createUseActionMessage` is internal; fallback creates the PF2e Item chat card rather than inventing a roll |
+| Action item open | action partial | base `edit-item` | `item.sheet.render(true)` | yes | Works from the clicked Application, without a global DOM query |
+| Action item chat | action partial | base `item-to-chat` | `item.toMessage(event)` | yes | PF2e owns the card and visibility |
+| Exploration actions | actions tab exploration panel | `toggle-exploration`, `clear-exploration` | `actor.update({"system.exploration": ids})` | yes | Active/other grouping follows trait and prepared ID list; party assignment UI is not reproduced |
+| Downtime actions | actions tab downtime panel | common item handlers | prepared `downtime` trait and Item runtime APIs | yes | Display/open/chat/use supported |
+| Reaction/free action | encounter sections | common item handlers | prepared `actionCost.type` | yes | Grouping matches Core's `reaction`/`free` keys |
+| Elemental Blast | `character/tabs/actions.hbs`, `partials/elemental-blast.hbs` | `character/sheet.ts:#activateElementalBlastListeners` | none exposed | no | `ElementalBlast` is a source-internal class constructed by the Core sheet; safely omitted and documented, while the canonical kineticist item is not duplicated as an ordinary action |
+
+### Event, permission, and detached semantics
+
+Attack/damage methods receive the original Application-V2 click event exactly as Core does. PF2e therefore interprets Shift/Ctrl/Meta, `showCheckDialogs`, roll mode, targeting, and callbacks in its own Check/Damage code; the generic statistic controller is not involved. Rolls are not pre-emptively owner-gated: the prepared PF2e method remains responsible for whether a user may roll. Document mutations (ammo link, auxiliary action, trait selection, exploration, and roll-option toggles) separately require `actor.canUserModify(game.user,"update")`.
+
+All lookups start from the action target's closest row or from the Application's own `this.element`. No selector reaches into global `document`, so strike, action summary, ammo select, and toggle handlers remain structurally safe after `detachWindow()`. Actor/item lifecycle hooks already re-render this sheet for equipment, ammunition, rule, condition, and embedded Item changes. Combat-only synthetic changes that do not emit an Actor/Item update still require Foundry runtime verification.
