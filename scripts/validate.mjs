@@ -7,7 +7,7 @@ if (!manifest.relationships.systems.some((system) => system.id === "pf2e" && sys
     throw new Error("PF2e must be a required system relationship");
 }
 for (const path of [...manifest.esmodules, ...manifest.styles]) await access(new URL(`../${path}`, import.meta.url));
-for (const template of ["header", "navigation", "character", "placeholder"]) {
+for (const template of ["header", "navigation", "character", "actions", "inventory", "spellcasting", "crafting", "proficiencies", "feats", "effects", "biography", "pfs"]) {
     await access(new URL(`../src/templates/character-sheet/${template}.hbs`, import.meta.url));
 }
 console.log("Manifest and module paths are valid.");

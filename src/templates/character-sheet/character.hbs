@@ -1,7 +1,5 @@
-{{#if isCharacterPart}}
-<main class="tab-panel">
-    <section class="stat-card"><h2>Perception</h2><strong>{{actor.perception.modifier}}</strong></section>
-    <section><h2>Saves</h2><div class="stat-grid">{{#each actor.saves}}<article class="stat-card"><span>{{label}}</span><strong>{{modifier}}</strong></article>{{/each}}</div></section>
-    <section><h2>Skills</h2><div class="stat-grid skills">{{#each actor.skills}}<article class="stat-card"><span>{{label}}</span><strong>{{modifier}}</strong></article>{{/each}}</div></section>
+<main class="tab-panel tab {{tab.cssClass}}" data-group="primary" data-tab="character">
+    <button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="perception"><h2>Perception</h2><strong>{{actor.perception.modifier}}</strong></button>
+    <section><h2>Saves</h2><div class="stat-grid">{{#each actor.saves}}<button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span>{{label}}</span><strong>{{modifier}}</strong></button>{{/each}}</div></section>
+    <section><h2>Skills</h2><div class="stat-grid skills">{{#each actor.skills}}<button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span>{{label}}</span><strong>{{modifier}}</strong></button>{{/each}}</div></section>
 </main>
-{{/if}}

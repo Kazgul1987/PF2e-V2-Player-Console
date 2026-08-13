@@ -1,6 +1,6 @@
 # PF2e V2 Player Console
 
-An experimental, additional Pathfinder 2e character sheet built on Foundry VTT 14's `ApplicationV2`. The official PF2e sheet remains the default; this module is currently the Milestone 1 read-only vertical slice.
+An experimental, additional Pathfinder 2e character sheet built on Foundry VTT 14's `ApplicationV2`. The official PF2e sheet remains the default; this module is currently the Milestone 2 checks-and-editing vertical slice.
 
 ## Compatibility
 
@@ -18,15 +18,10 @@ The analysed reference is submodule commit `73c870286aeba87c25ccc0258028afedfc88
 
 No compilation is required. Foundry loads `src/module.js` as an ES module.
 
-## Milestone 1 manual test
+## Milestone 2 manual test
 
-1. Open a player character from the Actors directory using **Open V2 Character Sheet**.
-2. Confirm name, portrait, level, HP, AC, Perception, saves, and skills match the core sheet.
-3. Change HP or another displayed value in the core sheet and confirm the V2 sheet refreshes.
-4. Switch all placeholder tabs and confirm their active state survives an actor update.
-5. Use **Detach to Browser Window** in the window controls. Foundry 14 distributions exposing `ApplicationV2#detachWindow` detach the app; otherwise the module reports an explicit compatibility warning and leaves the app open.
-6. Repeat tab navigation and the live-update test in the detached window.
+See [the manual test plan](docs/MANUAL_TESTS.md) for roll, modifier-key, permission, editing, live-sync, lifecycle, and detached-window scenarios. **Detach to Browser Window** uses the official Foundry V14 `ApplicationV2.detachWindow()` API.
 
 ## Scope and known limitations
 
-Milestone 1 is intentionally read-only. Rolls, editing, inventory, strikes, spells, feats, effects, crafting, biography, and PFS interactions remain future vertical slices. The detach entry point is capability-detected because the Foundry 14 type declarations bundled by the referenced PF2e checkout do not declare `detachWindow`; this avoids assuming that every browser/distribution supplies it. See [the parity matrix](docs/FEATURE_PARITY.md) and [source map](docs/PF2E_SOURCE_MAP.md).
+Milestone 2 implements PF2e Statistic rolls for Perception, saves, and visible skills plus permission-aware character-name editing. Inventory, strikes, spells, feats, effects, crafting, biography, and PFS interactions remain future vertical slices. Detached windows are a first-class supported workflow. See [the parity matrix](docs/FEATURE_PARITY.md), [source map](docs/PF2E_SOURCE_MAP.md), and [architecture decisions](docs/ARCHITECTURE.md).

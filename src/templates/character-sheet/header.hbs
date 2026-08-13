@@ -1,6 +1,11 @@
 <header class="pc-header">
     <img src="{{actor.img}}" alt="{{actor.name}}" />
-    <div><h1>{{actor.name}}</h1><span>Level {{actor.level}}</span></div>
+    <div>
+        {{#if editable}}
+            <form><h1><input type="text" name="name" value="{{actor.name}}" aria-label="Character name" /></h1><button type="button" data-action="updateActor">Save name</button></form>
+        {{else}}<h1>{{actor.name}}</h1>{{/if}}
+        <span>Level {{actor.level}}</span>
+    </div>
     <dl class="headline-stats">
         <div><dt>HP</dt><dd>{{actor.hp.value}} / {{actor.hp.max}}</dd></div>
         <div><dt>AC</dt><dd>{{actor.ac}}</dd></div>

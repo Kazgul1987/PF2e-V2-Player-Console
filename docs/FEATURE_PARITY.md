@@ -1,46 +1,26 @@
 # Feature parity matrix
 
-Baseline: PF2e 8.4.0 at `73c870286aeba87c25ccc0258028afedfc888d05`. “Core” was inventoried from the character sheet class, its inherited creature/base sheets, and the ten tab templates listed in the source map. “Planned” means deliberately outside Milestone 1.
+Baseline: PF2e 8.4.0 at `73c870286aeba87c25ccc0258028afedfc888d05`.
 
-| Feature | Core | V2 | Status | Core reference |
-|---|---:|---:|---|---|
-| Additional sheet beside core sheet | — | ✓ | done | Actor directory integration |
-| Application V2 + Handlebars PARTS | — | ✓ | done | Foundry V14 application declarations |
-| Name, portrait, level | ✓ | ✓ | done | header partial / character Actor |
-| HP and AC display | ✓ | ✓ | done | sidebar/header / prepared Actor statistics |
-| Perception display | ✓ | ✓ | done | character tab / `actor.perception` |
-| Saves display | ✓ | ✓ | done | character tab / `actor.saves` |
-| Skills display | ✓ | ✓ | done | character/proficiencies / `actor.skills` |
-| Live Actor and embedded Item refresh | ✓ | ✓ | done | Foundry document hooks |
-| Tab shell and state | ✓ | ✓ | done | `sheet.hbs` primary navigation |
-| Detached-window entry point | — | partial | runtime-capability guarded | Foundry Application V2 runtime |
-| Limited-observer presentation | ✓ | — | planned | `limited.hbs` |
-| Edit name/portrait/HP/resources | ✓ | — | planned M2 | character sheet form handlers |
-| Perception, save, and skill rolls | ✓ | — | planned M2 | creature/base roll listeners |
-| Roll dialogs, options, modifiers, event keys | ✓ | — | planned M2 | sheet helpers/check APIs |
-| Encounter, exploration, downtime actions | ✓ | — | planned M4 | `tabs/actions.hbs` |
-| Strikes, MAP, damage, critical damage | ✓ | — | planned M4 | strike partial / prepared strikes |
-| Auxiliary actions, ammo, reload, toggles | ✓ | — | planned M4 | strike partial / sheet listeners |
-| Inventory list and item sheets | ✓ | — | planned M3 | `tabs/inventory.hbs` |
-| Inventory create/delete/edit/sort/D&D | ✓ | — | planned M3 | base/character item handlers |
-| Containers, carry state, bulk, quantity, uses | ✓ | — | planned M3 | actor inventory / inventory templates |
-| Equipment, investment, shields, coins | ✓ | — | planned M3 | inventory runtime/templates |
-| Consumables and identification | ✓ | — | planned M3 | physical/consumable item APIs |
-| Feat groups and slots | ✓ | — | planned M5 | character feats / feat-slot partial |
-| Feat editing, sorting, D&D, browser | ✓ | — | planned M5 | feats handlers/browser |
-| Spellcasting entries and collections | ✓ | — | planned M6 | spellcasting tab/runtime |
-| Prepared/spontaneous/innate/focus/ritual | ✓ | — | planned M6 | spell collections/entries |
-| Slots, cast, attack, DC, heightening | ✓ | — | planned M6 | spellcasting listeners/runtime |
-| Activations, staff charges, spell D&D | ✓ | — | planned M6 | spellcasting activations |
-| Craft formulas and crafting abilities | ✓ | — | planned M8 | character crafting directory |
-| Daily crafting, quantities, craft action | ✓ | — | planned M8 | crafting handlers/runtime |
-| Proficiency viewing/editing | ✓ | — | planned M7 | `tabs/proficiencies.hbs` |
-| Effects and conditions management | ✓ | — | planned M7 | `tabs/effects.hbs` |
-| Biography editing | ✓ | — | planned M7 | `tabs/biography.hbs` |
-| PFS fields and reputation | ✓ | — | planned M7 | `tabs/pfs.hbs` |
-| Context menus and tooltips | ✓ | — | planned per slice | sheet/base listeners |
-| Full permissions and ownership behavior | ✓ | — | planned | base/limited sheets |
+| Feature | PF2e Core | V2 | Status | Core Reference | Runtime API | Manual Test |
+|---|---:|---:|---|---|---|---|
+| Companion sheet | — | ✓ | done | Actor directory integration | module API | M2-05 |
+| Application V2 PARTS | — | ✓ | done | Foundry V14 Application V2 | `PARTS` | static |
+| Native primary tabs | ✓ | ✓ | done | character `sheet.hbs` | `TABS`, `_prepareTabs`, `changeTab` | all tabs |
+| One PART per primary tab | ✓ | ✓ | shell done | character tab templates | Handlebars PARTS | all tabs |
+| Detached window | — | ✓ | done | Foundry V14 Application V2 | `detachWindow()` | M2-01–06 |
+| Name, portrait, level | ✓ | ✓ | done | header partial | Actor properties | M2-05 |
+| Edit name | ✓ | ✓ | done | header partial / V1 form | `canUserModify`, `Actor.update({name})` | M2-05/06 |
+| HP and AC display | ✓ | ✓ | display only | sidebar / prepared statistics | Actor runtime data | M2-05 |
+| Perception check | ✓ | ✓ | done | creature sheet handler | `actor.getStatistic("perception").roll(params)` | M2-01/04 |
+| Fortitude/Reflex/Will checks | ✓ | ✓ | done | base sheet `roll-check` | `actor.getStatistic(slug).roll(params)` | M2-02/04 |
+| Standard skill checks | ✓ | ✓ | done | base sheet `roll-check` | `actor.getStatistic(slug).roll(params)` | M2-03/04 |
+| Lore/custom skill checks | ✓ | ✓* | runtime-discovered | Actor prepared skills | `actor.skills` + `getStatistic(slug)` | M2-03 |
+| Dialog/message modifier keys | ✓ | ✓ | mirrored helper | `sheet/helpers.ts` | user settings + Statistic roll params | M2-04 |
+| Live Actor/item refresh | ✓ | ✓ | done | Foundry document hooks | `updateActor`, `createItem`, `updateItem`, `deleteItem` | M2-05/07 |
+| Permission-aware edit UI | ✓ | ✓ | name slice | Foundry Document | `actor.canUserModify(game.user,"update")` | M2-06 |
+| HP, hero points, XP editing | ✓ | — | later edit slices | sidebar/header handlers | PF2e resource/form APIs | — |
+| Inventory and strikes | ✓ | — | planned M3+ | inventory/actions tabs | — | — |
+| Feats/spells/crafting/effects/PFS | ✓ | — | planned later | respective tabs | — | — |
 
-## Manual definition of done for every future interaction
-
-Test once in the normal Application V2 window and once after detaching: invoke the control, exercise any PF2e dialog, verify the resulting Document/ChatMessage against the core sheet, then change the same data from the core sheet and confirm synchronization.
+`*` Lore/custom skills are supported when PF2e exposes them through `actor.skills`; fixture coverage in a running world is still required.
