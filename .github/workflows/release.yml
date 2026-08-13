@@ -7,6 +7,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
 jobs:
   package:
     name: Package Foundry module
@@ -18,20 +22,184 @@ jobs:
         with:
           ref: ${{ github.event.release.tag_name }}
           submodules: false
+          fetch-depth: 1
 
-      - name: Validate module
+      - name: Validate module.json
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/validate.mjs
 
-      - name: Build module ZIP
+          node <<'NODE'
+          const fs = require("fs");
+
+          const manifest = JSON.parse(
+            fs.readFileSync("module.json", "utf8")
+          );
+
+          const repository =
+            "https://github.com/Kazgul1987/PF2e-V2-Player-Console";
+
+          const expectedManifest =
+            `${repository}/releases/latest/download/module.json`;
+
+          const expectedDownload =
+            `${repository}/releases/latest/download/${manifest.id}.zip`;
+
+          if (manifest.id !== "pf2e-v2-player-console") {
+            throw new Error(
+              `Unexpected module id: ${manifest.id}`
+            );
+          }
+
+          if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) {
+            throw new Error(
+              `Invalid module version: ${manifest.version}`
+            );
+          }
+
+          if (manifest.url !== repository) {
+            throw new Error(
+              `Unexpected repository URL: ${manifest.url}`
+            );
+          }
+
+          if (manifest.manifest !== expectedManifest) {
+            throw new Error(
+              `Unexpected manifest URL.\n` +
+              `Expected: ${expectedManifest}\n` +
+              `Actual:   ${manifest.manifest}`
+            );
+          }
+
+          if (manifest.download !== expectedDownload) {
+            throw new Error(
+              `Unexpected download URL.\n` +
+              `Expected: ${expectedDownload}\n` +
+              `Actual:   ${manifest.download}`
+            );
+          }
+
+          if (manifest.compatibility?.maximum !== "14") {
+            throw new Error(
+              "Module must target Foundry VTT 14."
+            );
+          }
+
+          const pf2eRelationship =
+            manifest.relationships?.systems?.find(
+              (system) =>
+                system.id === "pf2e" &&
+                system.type === "system"
+            );
+
+          if (!pf2eRelationship) {
+            throw new Error(
+              "PF2e must be declared as a required system relationship."
+            );
+          }
+
+          console.log(
+            `Validated ${manifest.id} v${manifest.version}`
+          );
+          NODE
+
+      - name: Validate release tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAG="${{ github.event.release.tag_name }}"
+
+          VERSION="$(
+            node -e "
+              const fs = require('fs');
+              const m = JSON.parse(
+                fs.readFileSync('module.json', 'utf8')
+              );
+              process.stdout.write(m.version);
+            "
+          )"
+
+          EXPECTED_TAG="v${VERSION}"
+
+          if [[ "$TAG" != "$EXPECTED_TAG" ]]; then
+            echo "::error::Release tag '${TAG}' does not match module.json version '${VERSION}'. Expected '${EXPECTED_TAG}'."
+            exit 1
+          fi
+
+          echo "Release tag ${TAG} matches module version ${VERSION}."
+
+      - name: Validate module files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          node <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+
+          const manifest = JSON.parse(
+            fs.readFileSync("module.json", "utf8")
+          );
+
+          const runtimeFiles = [
+            ...(manifest.esmodules ?? []),
+            ...(manifest.styles ?? []),
+            ...(manifest.languages ?? []).map(
+              (language) => language.path
+            )
+          ];
+
+          for (const file of runtimeFiles) {
+            if (!fs.existsSync(file)) {
+              throw new Error(
+                `Required runtime file does not exist: ${file}`
+              );
+            }
+          }
+
+          for (const language of manifest.languages ?? []) {
+            JSON.parse(
+              fs.readFileSync(language.path, "utf8")
+            );
+          }
+
+          console.log(
+            "Manifest runtime paths and localization JSON are valid."
+          );
+          NODE
+
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          while IFS= read -r -d '' FILE; do
+            echo "Checking ${FILE}"
+            node --check "$FILE"
+          done < <(
+            find src \
+              -type f \
+              \( -name '*.js' -o -name '*.mjs' \) \
+              -print0
+          )
+
+      - name: Build Foundry module ZIP
         id: package
         shell: bash
         run: |
           set -euo pipefail
 
-          MODULE_ID="$(node -e "const fs=require('fs'); console.log(JSON.parse(fs.readFileSync('module.json','utf8')).id)")"
+          MODULE_ID="$(
+            node -e "
+              const fs = require('fs');
+              const m = JSON.parse(
+                fs.readFileSync('module.json', 'utf8')
+              );
+              process.stdout.write(m.id);
+            "
+          )"
+
           ARCHIVE="${MODULE_ID}.zip"
 
           rm -rf dist
@@ -65,6 +233,7 @@ jobs:
 
           (
             cd dist/package
+
             zip -r "../${ARCHIVE}" . \
               -x "*.DS_Store" \
               -x "__MACOSX/*"
@@ -81,12 +250,19 @@ jobs:
 
           ARCHIVE="dist/${{ steps.package.outputs.archive }}"
 
+          echo "Testing archive..."
           unzip -t "$ARCHIVE"
 
-          echo "ZIP contents:"
+          echo
+          echo "Archive contents:"
           unzip -Z1 "$ARCHIVE"
 
-          if unzip -Z1 "$ARCHIVE" | grep -Eq '^(reference/|\.git/|\.github/|docs/|scripts/)'; then
+          echo
+          echo "Checking forbidden development files..."
+
+          if unzip -Z1 "$ARCHIVE" | grep -Eq \
+            '^(reference/|\.git/|\.github/|docs/|scripts/|dist/)'
+          then
             echo "::error::Release archive contains development or reference files."
             exit 1
           fi
@@ -95,6 +271,23 @@ jobs:
             echo "::error::module.json is missing from ZIP root."
             exit 1
           fi
+
+          echo
+          echo "Checking module.json inside archive..."
+
+          unzip -p "$ARCHIVE" module.json \
+            > dist/module-from-archive.json
+
+          cmp \
+            --silent \
+            module.json \
+            dist/module-from-archive.json \
+            || {
+              echo "::error::module.json inside ZIP differs from repository module.json."
+              exit 1
+            }
+
+          echo "Archive verification successful."
 
       - name: Upload assets to GitHub Release
         env:
@@ -108,3 +301,28 @@ jobs:
             "dist/module.json#Foundry VTT manifest" \
             "dist/${{ steps.package.outputs.archive }}#Foundry VTT module package" \
             --clobber
+
+      - name: Show published asset URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MODULE_ID="$(
+            node -e "
+              const fs = require('fs');
+              const m = JSON.parse(
+                fs.readFileSync('module.json', 'utf8')
+              );
+              process.stdout.write(m.id);
+            "
+          )"
+
+          REPOSITORY="https://github.com/${{ github.repository }}"
+
+          echo
+          echo "Foundry manifest:"
+          echo "${REPOSITORY}/releases/latest/download/module.json"
+
+          echo
+          echo "Foundry download:"
+          echo "${REPOSITORY}/releases/latest/download/${MODULE_ID}.zip"
