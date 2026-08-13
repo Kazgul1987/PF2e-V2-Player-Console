@@ -1,5 +1,5 @@
 <nav class="sheet-tabs" aria-label="Character sections">
     {{#each tabs}}
-        <button type="button" class="{{#if active}}active{{/if}}" data-action="tab" data-tab="{{id}}" aria-pressed="{{active}}">{{label}}</button>
+        <button type="button" class="{{cssClass}}" data-action="tab" data-group="primary" data-tab="{{id}}" aria-pressed="{{active}}">{{label}}</button>
     {{/each}}
 </nav>
