@@ -1,0 +1,7 @@
+{{#if isCharacterPart}}
+<main class="tab-panel">
+    <section class="stat-card"><h2>Perception</h2><strong>{{actor.perception.modifier}}</strong></section>
+    <section><h2>Saves</h2><div class="stat-grid">{{#each actor.saves}}<article class="stat-card"><span>{{label}}</span><strong>{{modifier}}</strong></article>{{/each}}</div></section>
+    <section><h2>Skills</h2><div class="stat-grid skills">{{#each actor.skills}}<article class="stat-card"><span>{{label}}</span><strong>{{modifier}}</strong></article>{{/each}}</div></section>
+</main>
+{{/if}}
