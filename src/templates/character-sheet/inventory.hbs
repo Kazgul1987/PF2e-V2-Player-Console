@@ -1,4 +1,22 @@
-<main class="tab-panel tab {{tab.cssClass}} placeholder" data-group="primary" data-tab="inventory">
-    <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.inventory"}}</h2>
-    <p>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.NotImplemented"}}</p>
+<main class="tab-panel tab {{tab.cssClass}} inventory" data-group="primary" data-tab="inventory" data-drop-container="">
+    <header class="inventory-overview">
+        <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.inventory"}}</h2>
+        <span>{{localize "PF2E.Item.Physical.Bulk.Label"}}: <strong>{{inventory.bulk}}</strong></span>
+        {{#if inventory.invested}}<span>{{localize "PF2E.InvestedLabel"}}: <strong>{{inventory.invested.value}} / {{inventory.invested.max}}</strong></span>{{/if}}
+    </header>
+    <section class="coins" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Labels.Coins'}}">
+        <h3>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.Coins"}}</h3>
+        {{#each inventory.coins}}
+        <div data-denomination="{{denomination}}"><strong>{{label}}</strong> {{value}}{{#if @root.editable}} <input type="number" min="0" value="1" aria-label="{{label}}"/><button type="button" data-action="coins" data-mode="add">+</button><button type="button" data-action="coins" data-mode="remove">−</button>{{/if}}</div>
+        {{/each}}
+    </section>
+    {{#each inventory.sections}}
+    <section class="inventory-section">
+        <header><h3>{{label}}</h3>{{#if @root.editable}}<button type="button" data-action="createItem" data-item-type="{{createType}}" title="{{localize 'PF2E.CreateItemTitle'}}"><i class="fa-solid fa-plus"></i></button>{{/if}}</header>
+        <div class="inventory-columns"><span>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.Item"}}</span><span>{{localize "PF2E.QuantityLabel"}}</span><span>{{localize "PF2E.Item.Physical.Bulk.Label"}}</span><span>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.State"}}</span><span></span></div>
+        <ul class="inventory-items" data-drop-container="">
+            {{#each items}}{{> "modules/pf2e-v2-player-console/src/templates/character-sheet/inventory-item.hbs" item=this editable=@root.editable}}{{/each}}
+        </ul>
+    </section>
+    {{/each}}
 </main>

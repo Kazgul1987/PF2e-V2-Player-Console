@@ -1,6 +1,8 @@
 import { LOG_PREFIX, MODULE_ID, TABS } from "../../constants.js";
 import { CharacterAdapter } from "../../pf2e/character-adapter.js";
 import { RollController } from "../../controllers/roll-controller.js";
+import { InventoryAdapter } from "../../pf2e/inventory-adapter.js";
+import { InventoryController } from "../../controllers/inventory-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -24,6 +26,16 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         actions: {
             detach: PF2eCharacterSheetV2.#detach,
             rollStatistic: PF2eCharacterSheetV2.#rollStatistic,
+            openItem: PF2eCharacterSheetV2.#inventoryAction,
+            deleteItem: PF2eCharacterSheetV2.#inventoryAction,
+            createItem: PF2eCharacterSheetV2.#inventoryAction,
+            quantity: PF2eCharacterSheetV2.#inventoryAction,
+            uses: PF2eCharacterSheetV2.#inventoryAction,
+            carry: PF2eCharacterSheetV2.#inventoryAction,
+            invest: PF2eCharacterSheetV2.#inventoryAction,
+            toggleContainer: PF2eCharacterSheetV2.#inventoryAction,
+            consume: PF2eCharacterSheetV2.#inventoryAction,
+            coins: PF2eCharacterSheetV2.#inventoryAction,
         },
     };
 
@@ -78,6 +90,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     async _preparePartContext(partId, context, options) {
         const partContext = await super._preparePartContext(partId, context, options);
         if (TABS.includes(partId)) partContext.tab = context.tabs[partId];
+        if (partId === "inventory") partContext.inventory = InventoryAdapter.prepare(this.actor);
         return partContext;
     }
 
@@ -112,6 +125,40 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         });
     }
 
+    static async #inventoryAction(event, target) {
+        const id = target.closest("[data-item-id]")?.dataset.itemId;
+        switch (target.dataset.action) {
+            case "openItem": return InventoryController.open(this.actor, id);
+            case "deleteItem": return InventoryController.remove(this.actor, id, event);
+            case "createItem": return InventoryController.create(this.actor, target.dataset.itemType);
+            case "quantity": return InventoryController.quantity(this.actor, id, Number(target.dataset.delta), event);
+            case "uses": return InventoryController.uses(this.actor, id, Number(target.dataset.delta));
+            case "carry": return InventoryController.carry(this.actor, id, target.dataset.carryType, target.dataset.handsHeld);
+            case "invest": return InventoryController.invest(this.actor, id);
+            case "toggleContainer": return InventoryController.container(this.actor, id);
+            case "consume": return InventoryController.consume(this.actor, id);
+            case "coins": {
+                const row = target.closest("[data-denomination]");
+                return InventoryController.coins(this.actor, row?.dataset.denomination, row?.querySelector("input")?.value, target.dataset.mode);
+            }
+        }
+    }
+
+    async _onRender(context, options) {
+        await super._onRender(context, options);
+        this.#dragListeners?.abort();
+        this.#dragListeners = new AbortController();
+        const inventory = this.element.querySelector('[data-tab="inventory"]');
+        if (!inventory) return;
+        const listenerOptions = { signal: this.#dragListeners.signal };
+        inventory.addEventListener("dragstart", (event) => {
+            const target = event.target.closest("[draggable][data-item-id]");
+            if (target) InventoryController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        inventory.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        inventory.addEventListener("drop", (event) => void InventoryController.drop(this.actor, event, event.target), listenerOptions);
+    }
+
     static async #submitActor(_event, _form, formData) {
         if (!this.isEditable || !this.document.canUserModify(game.user, "update")) {
             console.warn(`${LOG_PREFIX} User may not update Actor`, { actor: this.actor.uuid, user: game.user.id });
@@ -139,4 +186,5 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     #hooks = [];
+    #dragListeners = null;
 }

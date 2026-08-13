@@ -67,3 +67,38 @@ With attached and detached sheets open, update the Actor from core, then create,
 ## Required milestone sign-off
 
 All cases above are mandatory in a running world. Particular regression focus: open → detach → switch tab → edit/Enter → skill/save/perception/secret roll → operate dialog → external Actor/Item update. Static checks cannot prove browser-window focus, Foundry permission thresholds, localization loading, PF2e chat visibility, or sheet registration compatibility.
+
+## Milestone 3 inventory
+
+### M3-INV-01 – Inventory render
+Open a character with every physical type; compare sections, image/name, quantity, prepared bulk, carry state, identification visibility, containers and shield data with core.
+### M3-INV-02 – Item open
+Open an item by name/edit control attached and detached; confirm the normal PF2e Item sheet opens.
+### M3-INV-03 – Quantity
+Use ±, Shift± and Ctrl/Cmd±; inspect embedded data, core display and V2 live refresh.
+### M3-INV-04 – Equipped
+Exercise held (one/two hands), worn and dropped on applicable item types; compare derived values and core. Record attached/in-slot cases as pending.
+### M3-INV-05 – Invested
+Toggle eligible identified items below/at the Actor limit and confirm PF2e validation and both sheets agree.
+### M3-INV-06 – Container
+Open/close containers, drag items in/out and attempt self/descendant cycles. Confirm `containerId`, carry type and core display.
+### M3-INV-07 – Internal D&D
+Reorder root and nested items and move across containers/sections; reload and verify stable Document sort.
+### M3-INV-08 – Compendium D&D
+Drop physical Items from compendium, world Items and another Actor. Confirm copy vs move, stacking, permissions and core sync.
+### M3-INV-09 – Detached D&D
+Detach, then test main-window compendium/world/Actor → detached, detached internal → container/root, and detached sorting. Record browser/OS, console errors and whether native `DataTransfer` crosses the window. If blocked by browser security, use a same-window source as the documented fallback.
+### M3-INV-10 – Delete
+Delete normally and confirm; repeat with Ctrl/Shift bypass. Verify embedded deletion and core/V2 live sync, including container contents.
+### M3-INV-11 – Observer
+Verify visibility but no mutation controls; synthetically dispatch each mutating action/drop and confirm controller permission guards reject it.
+### M3-INV-12 – Coins
+Add/remove every denomination, attempt over-removal and compare `actor.inventory.currency` and core. Core sell-all/distribution dialogs are pending.
+### M3-INV-13 – Consumable
+Change charges and consume single/multi-use and auto-destroy examples; compare chat, quantity, uses and core.
+### M3-INV-14 – Shield
+Compare HP, maximum HP, hardness, broken/destroyed and held/worn states. Confirm Raise Shield is not presented in Inventory.
+
+## M3 runtime limitations and sign-off
+
+Node validation cannot run Foundry Document models or native cross-window drag/drop. All M3-INV cases therefore remain required in a Foundry V14/PF2e 8.4 world. Special parity gaps to confirm are attached/in-slot carry controls, stack-target drop, compendium size adjustment, inline summary/chat/context actions, identification popup, equipment browser, and full core currency dialogs.

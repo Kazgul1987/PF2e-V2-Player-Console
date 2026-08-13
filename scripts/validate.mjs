@@ -1,4 +1,6 @@
 import { access, readFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const manifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
 if (manifest.id !== "pf2e-v2-player-console") throw new Error("Unexpected module id");
@@ -13,7 +15,22 @@ for (const language of manifest.languages) {
     const translations = JSON.parse(await readFile(new URL(`../${language.path}`, import.meta.url), "utf8"));
     if (!translations.PF2E_V2_PLAYER_CONSOLE?.Tabs?.character) throw new Error(`Missing localization namespace in ${language.path}`);
 }
-for (const template of ["header", "navigation", "character", "actions", "inventory", "spellcasting", "crafting", "proficiencies", "feats", "effects", "biography", "pfs"]) {
+for (const template of ["header", "navigation", "character", "actions", "inventory", "spellcasting", "crafting", "proficiencies", "feats", "effects", "biography", "pfs", "inventory-item"]) {
     await access(new URL(`../src/templates/character-sheet/${template}.hbs`, import.meta.url));
 }
 console.log("Manifest and module paths are valid.");
+
+const sourceRoot = fileURLToPath(new URL("../src", import.meta.url));
+const sourceFiles = [
+    "module.js", "constants.js", "app/character-sheet/character-sheet-v2.js",
+    "controllers/roll-controller.js", "controllers/inventory-controller.js",
+    "pf2e/character-adapter.js", "pf2e/inventory-adapter.js",
+];
+for (const relativePath of sourceFiles) {
+    const absolutePath = resolve(sourceRoot, relativePath);
+    const source = await readFile(absolutePath, "utf8");
+    for (const match of source.matchAll(/from\s+["'](\.[^"']+)["']/g)) {
+        await access(resolve(dirname(absolutePath), match[1]));
+    }
+}
+console.log("JavaScript relative imports are valid.");

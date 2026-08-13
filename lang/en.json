@@ -16,14 +16,18 @@
       "OpenSheet": "Open V2 Character Sheet",
       "Detach": "Detach to Browser Window",
       "Save": "Save",
-      "SecretPerception": "Secret Perception"
+      "SecretPerception": "Secret Perception",
+      "ToggleContainer": "Open or close container"
     },
     "Labels": {
       "CharacterName": "Character name",
       "CharacterSections": "Character sections",
       "NotImplemented": "Not implemented in the current milestone.",
       "RequestedStatistic": "Requested",
-      "SheetTitle": "{name} — V2 Character Sheet"
+      "SheetTitle": "{name} — V2 Character Sheet",
+      "Coins": "Coins",
+      "Item": "Item",
+      "State": "Carry state"
     },
     "Errors": {
       "CharacterOnly": "PF2e V2 Player Console can only open PF2e characters.",

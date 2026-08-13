@@ -2,20 +2,44 @@
   "id": "pf2e-v2-player-console",
   "title": "PF2e V2 Player Console",
   "description": "An Application V2 character sheet for Pathfinder Second Edition.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "compatibility": {
     "minimum": "14.361",
     "verified": "14.365",
     "maximum": "14"
   },
-  "authors": [{ "name": "PF2e V2 Player Console Contributors" }],
-  "esmodules": ["src/module.js"],
-  "styles": ["src/styles/character-sheet.css"],
+  "authors": [
+    {
+      "name": "PF2e V2 Player Console Contributors"
+    }
+  ],
+  "esmodules": [
+    "src/module.js"
+  ],
+  "styles": [
+    "src/styles/character-sheet.css"
+  ],
   "languages": [
-    { "lang": "en", "name": "English", "path": "lang/en.json" },
-    { "lang": "de", "name": "Deutsch", "path": "lang/de.json" }
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
   ],
   "relationships": {
-    "systems": [{ "id": "pf2e", "type": "system", "compatibility": { "minimum": "8.4.0" } }]
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "8.4.0"
+        }
+      }
+    ]
   }
 }
