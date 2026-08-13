@@ -9,17 +9,21 @@ permissions:
 
 jobs:
   package:
+    name: Package Foundry module
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout release tag
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.release.tag_name }}
           submodules: false
 
       - name: Validate module
-        run: node scripts/validate.mjs
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate.mjs
 
       - name: Build module ZIP
         id: package
@@ -34,20 +38,40 @@ jobs:
           mkdir -p dist/package
 
           cp module.json dist/package/
-          cp README.md dist/package/
 
-          if [[ -d src ]]; then cp -R src dist/package/; fi
-          if [[ -d lang ]]; then cp -R lang dist/package/; fi
-          if [[ -d styles ]]; then cp -R styles dist/package/; fi
-          if [[ -d templates ]]; then cp -R templates dist/package/; fi
-          if [[ -f LICENSE ]]; then cp LICENSE dist/package/; fi
+          if [[ -f README.md ]]; then
+            cp README.md dist/package/
+          fi
+
+          if [[ -f LICENSE ]]; then
+            cp LICENSE dist/package/
+          fi
+
+          if [[ -d src ]]; then
+            cp -R src dist/package/
+          fi
+
+          if [[ -d lang ]]; then
+            cp -R lang dist/package/
+          fi
+
+          if [[ -d styles ]]; then
+            cp -R styles dist/package/
+          fi
+
+          if [[ -d templates ]]; then
+            cp -R templates dist/package/
+          fi
 
           (
             cd dist/package
-            zip -r "../${ARCHIVE}" . -x "*.DS_Store" -x "__MACOSX/*"
+            zip -r "../${ARCHIVE}" . \
+              -x "*.DS_Store" \
+              -x "__MACOSX/*"
           )
 
           cp module.json dist/module.json
+
           echo "archive=${ARCHIVE}" >> "$GITHUB_OUTPUT"
 
       - name: Verify ZIP contents
@@ -56,10 +80,19 @@ jobs:
           set -euo pipefail
 
           ARCHIVE="dist/${{ steps.package.outputs.archive }}"
+
           unzip -t "$ARCHIVE"
 
+          echo "ZIP contents:"
+          unzip -Z1 "$ARCHIVE"
+
           if unzip -Z1 "$ARCHIVE" | grep -Eq '^(reference/|\.git/|\.github/|docs/|scripts/)'; then
-            echo "::error::Release archive contains development/reference files."
+            echo "::error::Release archive contains development or reference files."
+            exit 1
+          fi
+
+          if ! unzip -Z1 "$ARCHIVE" | grep -qx 'module.json'; then
+            echo "::error::module.json is missing from ZIP root."
             exit 1
           fi
 
