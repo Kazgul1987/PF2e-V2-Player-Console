@@ -1,15 +1,29 @@
 # Architecture decisions
 
-## Application base: `ApplicationV2`
+## Product and boundary
 
-Milestone 2 retains `HandlebarsApplicationMixin(ApplicationV2)` as the single application base. `DocumentSheetV2` provides document binding, a standard document property, permissions/form defaults, and sheet-configuration integration, and would be preferable for a registered replacement sheet. This console is intentionally a simultaneous companion to the official PF2e sheet: its constructor/API, directory launcher, instance map, and detached-window lifecycle all model that use case directly.
+PF2e V2 Player Console is a full alternative PF2e character sheet whose long-term target is feature parity with the official character sheet. Keeping the core sheet available during development is only a comparison and fallback mechanism, not a product-scope limitation. The V2 sheet is intended to become a selectable registered Actor sheet. All normal character-sheet capabilities are in scope over later milestones, while detached/pop-out operation on a second monitor is a first-class requirement.
 
-Editing is deliberately narrow and explicit. The application asks the Actor document (`canUserModify`) before rendering or executing an update, uses an Application V2 action scoped to its local form, and updates the document through `Actor.update`. This avoids pretending to inherit PF2e's V1 `ActorSheetPF2e` form behavior. `DocumentSheetV2` has the same Application V2 PARTS and detached-window capability, so it offers no lifecycle advantage for the companion use case. If the project later becomes a registered alternative Actor sheet, migration should occur at that boundary; maintaining both bases is explicitly rejected.
+PF2e remains responsible for rules preparation, statistics, checks, modifiers, degrees of success, chat output, and document validation. This module owns the V2 presentation, PARTS/tabs, interaction orchestration, narrowly reviewed document updates, localization, and detached UX. It does not import PF2e build aliases or reproduce rules calculations.
 
-## Tabs
+## Sheet base: `HandlebarsApplicationMixin(DocumentSheetV2)`
 
-The sheet uses Foundry V14's native `ApplicationV2.TABS`, `_prepareTabs("primary")`, `tabGroups`, `data-action="tab"`, and `data-group="primary"` contract. There is no module-owned click handler or active-tab state. Each PF2e primary tab has its own Handlebars PART, even while later-milestone tabs render placeholders, enabling targeted partial renders later.
+Milestone 2 migrates from plain `ApplicationV2` to `HandlebarsApplicationMixin(DocumentSheetV2)`. Foundry V14's `DocumentSheetV2` is the appropriate long-lived base because it adds the Actor binding (`document`), document-sheet visibility/editability and lifecycle, standard form behavior, and compatibility with sheet registration while retaining Application V2 rendering, `PARTS`, `TABS`, actions, and `detachWindow()`. No technical blocker was found. This also provides the correct foundation for later embedded-Item and drag/drop work without implementing those Milestone 3 features now.
 
-## Detached windows
+The standard DocumentSheet constructor receives `{ document: actor }`; `document` is the source of truth and the `actor` getter is only a readable alias. The current directory launcher and instance map remain available. Future alternative-sheet registration uses Foundry's `foundry.documents.collections.Actors.registerSheet` contract; registration is deliberately not enabled until the current slice is suitable as a default/selectable full sheet.
 
-`ApplicationV2.detachWindow()` is an official Foundry V14 API and detached use is first-class. The header action calls it. The small `typeof` guard is only defensive fault reporting; no compatibility or architecture decision depends on the method being optional. Event handlers use their supplied targets and document APIs rather than the global DOM.
+## Permissions and forms
+
+`DocumentSheetV2.isEditable` governs editable markup and follows its configured document permission threshold. Submission is protected again with both `isEditable` and `document.canUserModify(game.user, "update")`; therefore hiding inputs is not the security boundary. Owner users can update, while Observer/Limited behavior follows Foundry visibility/edit-permission semantics and remains read-only in this slice.
+
+The application window content is a real top-level `form`. `DEFAULT_OPTIONS.form` binds the documented Application V2 handler signature `(event, form, FormDataExtended)`, with `submitOnChange: false` and `closeOnSubmit: false`. Enter and the submit button therefore use Application V2 submission and cannot trigger browser navigation. The handler accepts only the reviewed `name` field, trims and validates it, rechecks permission, then calls `document.update({ name })`. HP, hero points, and XP remain display-only until their PF2e semantics are reviewed; there is no generic field-name update path.
+
+## Rolls
+
+All roll actions remain template-to-controller calls. `RollController` resolves `actor.getStatistic(slug)` and calls `Statistic.roll(params)`; it never constructs a formula. Its check-event params mirror PF2e's current internal `eventToRollParams`: `showCheckDialogs` determines the default, Shift inverts it, and Ctrl/Meta requests `gm` for a GM or `blind` otherwise. Secret Perception adds `extraRollOptions: ["secret"]`, matching the creature sheet special case.
+
+## Tabs, PARTS, rendering, and detached windows
+
+Stable technical tab IDs use native V2 `TABS`, `_prepareTabs`, `tabGroups`, and `data-action="tab"`; visible labels come from the module localization namespace. Every primary tab has its own Handlebars PART. Later tabs stay explicit placeholders—no Inventory or other Milestone 3 behavior is introduced.
+
+`DocumentSheetV2` inherits Application V2 rendering and `detachWindow()`. All handlers operate on event/form arguments and Documents, never a global `document.querySelector`, so the same form, tabs, rolls, and updates work in the detached document. Actor and embedded-Item hooks remain registered and UUID-filtered because automatic coverage of every embedded update is not assumed; they are removed on close.
