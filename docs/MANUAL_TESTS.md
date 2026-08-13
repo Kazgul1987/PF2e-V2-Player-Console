@@ -153,6 +153,42 @@ Test main-window compendium, world Item and Actor Item → detached inventory, t
 1. Open as Observer and Limited and confirm quantity, uses, carry, invest, consume, delete, create, container, currency, identification, and transfer mutation controls are absent.
 2. Invoke controller actions/drop synthetically and confirm no mutation is possible.
 
+## Runtime stabilization
+
+### RUNTIME-01 – Direct API Open
+1. Open the F12 console.
+2. Call `game.modules.get("pf2e-v2-player-console").api.openCharacterSheet(actor)` for a PF2e Character.
+3. Confirm the entire sheet renders.
+4. Confirm the console contains no missing-Handlebars-partial error.
+
+### RUNTIME-02 – Inventory Partial
+1. Open a Character with several Inventory Items, including a container with contents.
+2. Open the Inventory tab.
+3. Confirm every `inventory-item.hbs` row, including nested rows, appears.
+4. Check the console for template or partial errors.
+
+### RUNTIME-03 – Actor Directory
+1. Open the Actor Directory.
+2. Right-click a PF2e Character.
+3. Confirm **Open V2 Character Sheet** / **V2-Charakterbogen öffnen** appears.
+4. Click it.
+5. Confirm the V2 sheet opens.
+
+### RUNTIME-04 – Unsupported Actor
+1. Right-click an NPC (and, where available, Loot, Hazard, Familiar, and Vehicle Actors).
+2. Confirm the V2 Character Sheet entry does not appear.
+
+### RUNTIME-05 – PF2e Sheet Header Button
+1. Open the normal PF2e Character Sheet.
+2. Confirm its localized **Open V2 Character Sheet** header button is present.
+3. Click it and confirm the V2 sheet opens.
+
+### RUNTIME-06 – Detached
+1. Open and detach the V2 sheet.
+2. Open Inventory and expand nested Items and summaries; exercise the transfer dialog.
+3. Open Actions and exercise strikes, Item summaries, roll dialogs, and permitted Actor updates.
+4. Confirm both window consoles contain no partial, DOM, or cross-window errors.
+
 ## Milestone 4 — Actions and Strikes
 
 ### M4-STRIKE-01 – Basic Attack

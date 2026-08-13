@@ -37,6 +37,20 @@ Foundry V14 exposes `DocumentSheetV2` from `foundry.applications.api`; its decla
 
 Stable core labels reused by templates include `PF2E.PerceptionHeader`, `PF2E.SavesHeader`, `PF2E.SkillsLabel`, `PF2E.LevelLabel`, and `PF2E.Check.Specific.Perception.Secret`, verified in PF2e's `static/lang/en.json` and core templates. Module-specific actions, placeholders, tabs, and errors use `PF2E_V2_PLAYER_CONSOLE.*` from `lang/en.json` and `lang/de.json`; no PF2e keys are guessed.
 
+## Runtime foundation: Handlebars partials
+
+The complete `src/templates` inventory contains one external partial: `character-sheet/inventory-item.hbs`, referenced recursively by `inventory.hbs`. The `strikeRow` and `actionSection` blocks in `actions.hbs` are template-local `#*inline` partials and therefore require no global registration. `character.hbs` has no partial reference.
+
+`HANDLEBARS_PARTIALS` in `src/constants.js` is the single registration list. Foundry V14 declares `foundry.applications.handlebars.loadTemplates(paths: string[] | Record<string, string>)` in `types/foundry/client/applications/handlebars.d.mts`; an array registers each template under its full path, matching the quoted partial name in `inventory.hbs`. Module init starts one cached preload promise, and `openCharacterSheet` waits for it before rendering. A rejected load is logged with its paths and is not retried or duplicated during the same runtime.
+
+## Runtime foundation: Actor Directory integration
+
+PF2e V14's `ActorDirectoryPF2e._createContextMenus` creates the entry menu for `.directory-item[data-entry-id]` with hook name ``get${this.documentName}ContextOptions``—that is, `getActorContextOptions`. V14 `ContextMenuEntry` uses `label`, `visible`, and `onClick(event, HTMLElement)`. Both PF2e's own handlers and the module resolve `li.dataset.entryId` through `game.actors`; the module centralizes that operation and warns to the console when resolution fails. `CharacterAdapter.supports` keeps the entry restricted to PF2e Characters.
+
+## Runtime foundation: official PF2e sheet integration
+
+PF2e 8.4's Character sheet still derives from Foundry's legacy `ActorSheet`, whose documented `_getHeaderButtons` pipeline fires `getApplicationHeaderButtons`. The module uses that public hook, filters by `CharacterAdapter.supports(application.actor)`, and adds the localized V2 launcher control. It does not inject DOM or call private PF2e sheet methods. This compatibility control can be removed when PF2e migrates its official sheet and publishes an equivalent V2 control hook; the Directory and direct API launchers remain independent.
+
 ## Milestone 3 inventory map
 
 ### Actor-to-Actor transfer path (re-audited before the M3 fixup)
