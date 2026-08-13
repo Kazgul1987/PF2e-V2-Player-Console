@@ -1,44 +1,38 @@
-# PF2e source map
+# PF2e and Foundry V14 source map
 
-## Baseline and boundaries
+## Baseline and boundary
 
-The read-only reference is PF2e commit `73c870286aeba87c25ccc0258028afedfc888d05` (8.4.0, Foundry V14). Core sheets are V1 reference implementations: `CharacterSheetPF2e` (`reference/pf2e/src/module/actor/character/sheet.ts`) inherits `CreatureSheetPF2e` (`.../creature/sheet.ts`) and `ActorSheetPF2e` (`.../sheet/base.ts`). No source alias or private class is imported by this module.
+The read-only PF2e reference is commit `73c870286aeba87c25ccc0258028afedfc888d05` (8.4.0 / Foundry V14). No `@actor`, `@system`, `@module`, or `@util` source alias is imported. Runtime Documents and Statistics are the integration boundary.
 
-The current primary tabs come from `reference/pf2e/static/templates/actors/character/sheet.hbs`: Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, Effects, Biography, and PFS. Each corresponding template under `tabs/` maps to one V2 PART.
+## Generic Statistic roll
 
-## Check runtime path
+- **Core UI/action:** `reference/pf2e/static/templates/actors/character/` statistic elements use `data-action="roll-check"` and `data-statistic`.
+- **Core handler:** `reference/pf2e/src/module/actor/sheet/base.ts` (`roll-check`, around lines 688–694).
+- **Core event source:** `reference/pf2e/src/module/sheet/helpers.ts` (`eventToRollParams`, around lines 140–149).
+- **Runtime API:** `actor.getStatistic(slug)?.roll(params)`.
+- **Semantics:** `!game.user.settings.showCheckDialogs` is `skipDefault`; Shift flips it. Ctrl or Meta sets `messageMode` to `gm` for a GM and `blind` otherwise. The helper is internal, so the controller mirrors this small public-parameter mapping rather than importing it.
 
-### Perception
+Saves and skills use the same path. Rows and slugs come from prepared Actor data, and PF2e owns modifiers, options, dialog, check evaluation, and chat cards.
 
-- **Core UI:** character sheet character/sidebar templates.
-- **Core handler:** `reference/pf2e/src/module/actor/creature/sheet.ts`, `perception-check` handler.
-- **Core API:** `actor.perception.roll({ ...eventToRollParams(...), extraRollOptions })`.
-- **External-safe path:** `actor.getStatistic("perception").roll(params)`.
-- **Notes:** Statistic owns modifiers, roll options, dialog, degree of success, and chat output; the module never constructs a d20 roll.
+## Perception
 
-### Saves (Fortitude, Reflex, Will)
+- **Core UI:** `reference/pf2e/static/templates/actors/character/partials/sidebar.hbs` includes normal and `data-secret` perception controls (around lines 215–235).
+- **Core handler:** `reference/pf2e/src/module/actor/creature/sheet.ts` (`perception-check`, around lines 152–155).
+- **Special case:** a truthy `anchor.dataset.secret` adds `extraRollOptions: ["secret"]`.
+- **Runtime API:** the module resolves `getStatistic("perception")` and calls `roll`; its secret button supplies the same extra option.
 
-- **Core UI:** character statistic elements carrying `data-statistic`.
-- **Core handler:** `reference/pf2e/src/module/actor/sheet/base.ts`, `roll-check`.
-- **Core API:** `actor.getStatistic(statisticSlug).roll(eventToRollParams(...))`.
-- **External-safe path:** identical Actor/Statistic runtime surface; slugs are taken from prepared Actor saves.
+## Actor name edit and V14 form path
 
-### Skills, including Lore/custom statistics
+The core name control is `reference/pf2e/static/templates/actors/character/partials/header.hbs` and ultimately updates the Actor Document. Foundry's exact V2 form contract is declared in `reference/pf2e/types/foundry/client/applications/_types.d.mts`: `ApplicationFormSubmission(event, form, FormDataExtended)`. `application.d.mts` defines `_onSubmitForm`; `document-sheet.d.mts` defines document-sheet submit processing. A real top-level form is configured through `DEFAULT_OPTIONS.form`; the narrow handler validates `formData.object.name` and calls `document.update({ name })`.
 
-- **Core UI:** character/proficiencies templates with `data-statistic`.
-- **Core handler:** `reference/pf2e/src/module/actor/sheet/base.ts`, `roll-check`.
-- **Core API:** `actor.getStatistic(statisticSlug).roll(params)`.
-- **External-safe path:** skill rows originate from `actor.skills`; their slug is resolved again through `getStatistic`, so no standard-skill-only roll table is duplicated.
-- **Notes:** runtime testing remains required for Actors whose Lore statistics are not present in `actor.skills`.
+## Permissions
 
-### Event parameters
+`reference/pf2e/types/foundry/client/applications/api/document-sheet.d.mts` defines `document`, `isVisible`, `isEditable`, and configured view/edit thresholds. Editable markup uses `isEditable`; the update handler also requires `document.canUserModify(game.user, "update")`. This yields Foundry document-sheet visibility for Limited/Observer users and owner-only editing in this slice.
 
-`eventToRollParams` in `reference/pf2e/src/module/sheet/helpers.ts` is a build-time internal, not a safe module import. The controller mirrors only its current public semantics: `game.user.settings.showCheckDialogs` establishes the default; Shift inverts dialog skipping; Ctrl/Command selects `gm` for GMs and `blind` for other users. These parameters are passed to `Statistic.roll`.
+## Sheet base and registration
 
-## Editing and synchronization
+Foundry V14 exposes `DocumentSheetV2` from `foundry.applications.api`; its declaration shows that it extends `ApplicationV2`. `HandlebarsApplicationMixin(DocumentSheetV2)` therefore retains PARTS, TABS, actions, rendering, and inherited `detachWindow()` while adding document binding/forms/permissions/lifecycle. The Actor-sheet registration contract is `foundry.documents.collections.Actors.registerSheet`, demonstrated by PF2e at `reference/pf2e/src/scripts/register-sheets.ts` (around lines 45–70) and typed in `world-collection.d.mts`. The module is architecturally registration-ready but does not replace/register as default during this incomplete milestone.
 
-The core name input is `reference/pf2e/static/templates/actors/character/partials/header.hbs` and relies on normal sheet form document update. The V2 slice uses the public Foundry equivalents `actor.canUserModify(game.user, "update")` and `actor.update({ name })`, validates a non-empty trimmed string, and renders read-only markup otherwise. Foundry hooks refresh only when Actor UUIDs match or `item.actor?.uuid` matches the displayed Actor. All four `updateActor`, `createItem`, `updateItem`, and `deleteItem` registrations are removed on close.
+## Localization
 
-## Foundry V14 decisions
-
-Foundry's Application V2 declarations define `TABS`, `_prepareTabs`, `_getTabsConfig`, `changeTab`, and `_onClickTab`; the module uses that native contract. `ApplicationV2.detachWindow()` is an official V14 API and a first-class requirement, with a guard retained solely for defensive diagnostics. See `docs/ARCHITECTURE.md` for the final ApplicationV2-versus-DocumentSheetV2 decision.
+Stable core labels reused by templates include `PF2E.PerceptionHeader`, `PF2E.SavesHeader`, `PF2E.SkillsLabel`, `PF2E.LevelLabel`, and `PF2E.Check.Specific.Perception.Secret`, verified in PF2e's `static/lang/en.json` and core templates. Module-specific actions, placeholders, tabs, and errors use `PF2E_V2_PLAYER_CONSOLE.*` from `lang/en.json` and `lang/de.json`; no PF2e keys are guessed.

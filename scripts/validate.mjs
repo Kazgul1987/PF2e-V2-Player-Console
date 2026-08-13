@@ -6,7 +6,13 @@ if (manifest.compatibility.maximum !== "14") throw new Error("Manifest must targ
 if (!manifest.relationships.systems.some((system) => system.id === "pf2e" && system.type === "system")) {
     throw new Error("PF2e must be a required system relationship");
 }
-for (const path of [...manifest.esmodules, ...manifest.styles]) await access(new URL(`../${path}`, import.meta.url));
+for (const path of [...manifest.esmodules, ...manifest.styles, ...manifest.languages.map((language) => language.path)]) {
+    await access(new URL(`../${path}`, import.meta.url));
+}
+for (const language of manifest.languages) {
+    const translations = JSON.parse(await readFile(new URL(`../${language.path}`, import.meta.url), "utf8"));
+    if (!translations.PF2E_V2_PLAYER_CONSOLE?.Tabs?.character) throw new Error(`Missing localization namespace in ${language.path}`);
+}
 for (const template of ["header", "navigation", "character", "actions", "inventory", "spellcasting", "crafting", "proficiencies", "feats", "effects", "biography", "pfs"]) {
     await access(new URL(`../src/templates/character-sheet/${template}.hbs`, import.meta.url));
 }

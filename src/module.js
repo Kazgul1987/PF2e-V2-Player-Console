@@ -6,12 +6,12 @@ const applications = new Map();
 
 export function openCharacterSheet(actor) {
     if (!CharacterAdapter.supports(actor)) {
-        ui.notifications.warn("PF2e V2 Player Console can only open PF2e characters.");
+        ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Errors.CharacterOnly"));
         return null;
     }
 
     const current = applications.get(actor.uuid);
-    const application = current?.rendered ? current : new PF2eCharacterSheetV2(actor);
+    const application = current?.rendered ? current : new PF2eCharacterSheetV2({ document: actor });
     applications.set(actor.uuid, application);
     void application.render(true);
     return application;
@@ -24,7 +24,7 @@ Hooks.once("init", () => {
 
 Hooks.on("getActorDirectoryEntryContext", (_html, entries) => {
     entries.push({
-        name: "Open V2 Character Sheet",
+        name: "PF2E_V2_PLAYER_CONSOLE.Actions.OpenSheet",
         icon: '<i class="fa-solid fa-window-restore"></i>',
         condition: (entry) => CharacterAdapter.supports(game.actors.get(entry.dataset.documentId)),
         callback: (entry) => openCharacterSheet(game.actors.get(entry.dataset.documentId)),

@@ -1,0 +1,36 @@
+{
+  "PF2E_V2_PLAYER_CONSOLE": {
+    "Tabs": {
+      "character": "Character",
+      "actions": "Actions",
+      "inventory": "Inventory",
+      "spellcasting": "Spellcasting",
+      "crafting": "Crafting",
+      "proficiencies": "Proficiencies",
+      "feats": "Feats",
+      "effects": "Effects",
+      "biography": "Biography",
+      "pfs": "PFS"
+    },
+    "Actions": {
+      "OpenSheet": "Open V2 Character Sheet",
+      "Detach": "Detach to Browser Window",
+      "Save": "Save",
+      "SecretPerception": "Secret Perception"
+    },
+    "Labels": {
+      "CharacterName": "Character name",
+      "CharacterSections": "Character sections",
+      "NotImplemented": "Not implemented in the current milestone.",
+      "RequestedStatistic": "Requested",
+      "SheetTitle": "{name} — V2 Character Sheet"
+    },
+    "Errors": {
+      "CharacterOnly": "PF2e V2 Player Console can only open PF2e characters.",
+      "DetachUnavailable": "This Foundry distribution does not expose detached Application windows.",
+      "NotEditable": "You cannot edit this character.",
+      "NameRequired": "Character name cannot be empty.",
+      "StatisticUnavailable": "The {statistic} statistic is unavailable."
+    }
+  }
+}

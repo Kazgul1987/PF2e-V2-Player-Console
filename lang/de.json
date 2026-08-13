@@ -1,0 +1,36 @@
+{
+  "PF2E_V2_PLAYER_CONSOLE": {
+    "Tabs": {
+      "character": "Charakter",
+      "actions": "Aktionen",
+      "inventory": "Inventar",
+      "spellcasting": "Zauberwirken",
+      "crafting": "Herstellung",
+      "proficiencies": "Kompetenzgrade",
+      "feats": "Talente",
+      "effects": "Effekte",
+      "biography": "Biografie",
+      "pfs": "PFS"
+    },
+    "Actions": {
+      "OpenSheet": "V2-Charakterbogen öffnen",
+      "Detach": "In Browserfenster auslagern",
+      "Save": "Speichern",
+      "SecretPerception": "Geheime Wahrnehmung"
+    },
+    "Labels": {
+      "CharacterName": "Charaktername",
+      "CharacterSections": "Charakterbereiche",
+      "NotImplemented": "Im aktuellen Meilenstein nicht implementiert.",
+      "RequestedStatistic": "Angeforderter",
+      "SheetTitle": "{name} — V2-Charakterbogen"
+    },
+    "Errors": {
+      "CharacterOnly": "PF2e V2 Player Console kann nur PF2e-Charaktere öffnen.",
+      "DetachUnavailable": "Diese Foundry-Distribution stellt keine ausgelagerten Anwendungsfenster bereit.",
+      "NotEditable": "Du kannst diesen Charakter nicht bearbeiten.",
+      "NameRequired": "Der Charaktername darf nicht leer sein.",
+      "StatisticUnavailable": "Der Wert {statistic} ist nicht verfügbar."
+    }
+  }
+}

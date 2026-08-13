@@ -2,9 +2,10 @@
     <img src="{{actor.img}}" alt="{{actor.name}}" />
     <div>
         {{#if editable}}
-            <form><h1><input type="text" name="name" value="{{actor.name}}" aria-label="Character name" /></h1><button type="button" data-action="updateActor">Save name</button></form>
+            <h1><input type="text" name="name" value="{{actor.name}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Labels.CharacterName'}}" /></h1>
+            <button type="submit">{{localize "PF2E_V2_PLAYER_CONSOLE.Actions.Save"}}</button>
         {{else}}<h1>{{actor.name}}</h1>{{/if}}
-        <span>Level {{actor.level}}</span>
+        <span>{{localize "PF2E.LevelLabel"}} {{actor.level}}</span>
     </div>
     <dl class="headline-stats">
         <div><dt>HP</dt><dd>{{actor.hp.value}} / {{actor.hp.max}}</dd></div>
