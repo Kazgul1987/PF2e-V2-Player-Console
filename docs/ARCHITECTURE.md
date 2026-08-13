@@ -27,3 +27,9 @@ All roll actions remain template-to-controller calls. `RollController` resolves 
 Stable technical tab IDs use native V2 `TABS`, `_prepareTabs`, `tabGroups`, and `data-action="tab"`; visible labels come from the module localization namespace. Every primary tab has its own Handlebars PART. Later tabs stay explicit placeholders—no Inventory or other Milestone 3 behavior is introduced.
 
 `DocumentSheetV2` inherits Application V2 rendering and `detachWindow()`. All handlers operate on event/form arguments and Documents, never a global `document.querySelector`, so the same form, tabs, rolls, and updates work in the detached document. Actor and embedded-Item hooks remain registered and UUID-filtered because automatic coverage of every embedded update is not assumed; they are removed on close.
+
+## M3 final transfer compatibility boundary
+
+PF2e Core's creature trade negotiation uses the source-private `TradeDialog` application and `TradeDialog.canTrade(...)`; it has no stable external runtime entry point. **Creature-to-creature trade negotiation is currently intentionally more restrictive than PF2e Core because the Core trade application is not exposed as a stable external runtime API.** The controller blocks the unsafe non-GM fallback and directs the user to the official sheet.
+
+The same compatibility rule applies to credits: PF2e deliberately keeps `transferCredits` out of its callable API. The module recognizes Core credsticks exactly as treasure items with `system.category === "credstick"` and safely blocks them before `transferItemToActor`. Its own `DialogV2` receives rendered HTML as a string and reads submission data from the clicked button's nearest form, so opening it from a detached sheet does not require the main-window global `document`.
