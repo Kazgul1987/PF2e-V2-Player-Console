@@ -39,6 +39,7 @@
       "NotEditable": "Du kannst diesen Charakter nicht bearbeiten.",
       "NameRequired": "Der Charaktername darf nicht leer sein.",
       "StatisticUnavailable": "Der Wert {statistic} ist nicht verfügbar.",
+      "CredstickTransferUnsupported": "Credstick-Creditübertragungen sind in diesem Bogen nicht verfügbar. Verwende den offiziellen PF2e-Bogen, damit der Credstick nicht wie ein normaler Gegenstand verschoben wird.",
       "TradeRequiresCore": "Dieser Transfer benötigt den PF2e-Handelsablauf. Verwende den offiziellen PF2e-Bogen, um den Handel auszuhandeln."
     },
     "Transfer": {

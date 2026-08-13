@@ -29,7 +29,12 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Inventory list/grouping/images/names | ✓ | ✓ | implemented | `base.ts:prepareInventory`, `item-line.hbs` | `actor.inventory`, prepared Items | M3-INV-01 | Seven core physical-item sections and recursive containers |
 | Quantity | ✓ | ✓ | implemented | base increase/decrease handlers | `item.update` | M3-INV-03 | Core modifier increments; schema owns validation |
 | Uses/charges | ✓ | ✓ | implemented | consumable document `_preUpdate` | `item.update` | M3-INV-13 | Ammo and consumables with uses |
-| Carry/equipped/invested | ✓ | ✓ | implemented; runtime sign-off | creature `changeCarryType`; character toggle | `actor.changeCarryType`, `toggleInvested` | M3-FIX-05 | Core-conditioned held 1/2, worn, worn-in-slot, stowed, dropped, attached and implanted; attachment delegates to PF2e's picker |
+| Carry: held/worn/stowed/dropped | ✓ | ✓ | implemented; runtime sign-off | `carry-type.hbs` | `actor.changeCarryType` | M3-FINAL-04 | Options follow core conditions; stowed requires a stowing container |
+| Carry: attached | ✓ | ✓ | implemented; runtime sign-off | `carry-type.hbs` | `actor.changeCarryType` | M3-FINAL-04 | Offered only for `item.isAttachable`; PF2e opens ItemAttacher |
+| Carry: implanted | ✓ | ✓ | implemented; runtime sign-off | `carry-type.hbs` | `actor.changeCarryType` | M3-FINAL-04 | Offered only when `system.usage.type === "implanted"` |
+| Carry: installed | derived | display/internal | parity by omission; runtime sign-off | physical usage; `carry-type.hbs` | prepared item state | M3-FINAL-04 | Valid core carry value, but core presents no manual installed action; module likewise does not |
+| Carry: in-slot | ✓ | ✓ | implemented; runtime sign-off | `carry-type.hbs` | `actor.changeCarryType(...,{inSlot:true})` | M3-FINAL-04 | Offered only for worn usage with a slot |
+| Invested | ✓ | ✓ | implemented; runtime sign-off | character toggle | `toggleInvested` | M3-FIX-05 | PF2e validates eligibility and limits |
 | Container nesting/assignment/expansion | ✓ | ✓ | implemented | sortable inventory; `toggle-container` | `stowOrUnstow`, Item update | M3-INV-06 | PF2e cycle guard and persisted collapsed state |
 | Item sheet open/edit/delete/create | ✓ | ✓ | implemented | base item handlers | Item sheet, delete dialog, embedded create | M3-INV-02/10 | Basic per-section creation; browser/search pending |
 | Actor internal sorting/drop | ✓ | ✓ | implemented* | base sortable handlers | `sortRelative`, `stowOrUnstow` | M3-INV-07 | `*` stack-on-drop parity pending |
@@ -37,11 +42,14 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | World Item Drop | ✓ | ✓ | implemented; runtime sign-off | base `_handleDroppedItem` | `fromDropData`, `inventory.add` | M3-INV-08/09 | PF2e owns target stacking |
 | Actor-to-Actor full stack | ✓ | ✓ | implemented; runtime sign-off | `moveItemBetweenActors` | `transferItemToActor` | M3-FIX-01 | Quantity selection defaults to the available stack |
 | Actor-to-Actor partial transfer | ✓ | ✓ | implemented; runtime sign-off | `ItemTransferDialog` | `transferItemToActor` | M3-FIX-01 | Module DialogV2 selects/clamps quantity; PF2e mutates source/target |
-| Transfer quantity dialog | ✓ | ✓ | implemented | internal `ItemTransferDialog` | `DialogV2` + transfer API | M3-FIX-01 | Core dialog is not exported, so module reproduces selection UI only |
+| Transfer quantity dialog | ✓ | ✓ | implemented; detached runtime sign-off | internal `ItemTransferDialog` | `DialogV2` + transfer API | M3-FINAL-05 | String content and button-local form lookup avoid a main-window `document` dependency |
 | Existing target stack/new stack | ✓ | ✓ | implemented; runtime sign-off | `findStackableItem` | `findStackableItem`, `transferItemToActor` | M3-FIX-02 | New-stack choice is enabled only when a compatible target stack exists |
-| Merchant purchase | ✓ | ✓ | implemented; runtime sign-off | `moveItemBetweenActors` purchase mode | `transferItemToActor(...,true)` | M3-FIX-03 | PF2e exchanges coins; non-empty backpacks are rejected as in core |
-| Creature trade/gift negotiation | ✓ | fallback | pending | private `#attemptTrade`, trade app | no stable external entry point | M3-FIX-03 | Non-GM unsafe cases are blocked and directed to the official sheet; never silently moved |
-| Credstick credit transfer | ✓ | — | pending | internal `transferCredits` | no stable external entry point | M3-FIX-03 | Item transfer remains available only where core treats it as an item |
+| Merchant purchase | ✓ | ✓ | implemented; runtime sign-off | `moveItemBetweenActors` purchase mode | `transferItemToActor(...,true)` | M3-FINAL-02/03 | PF2e owns price/coins; non-empty backpacks are rejected |
+| Merchant gift/move | ✓ | ✓ | implemented; runtime sign-off | `ItemTransferDialog` owner branch | `transferItemToActor(...,false)` | M3-FINAL-03 | Offered and controller-accepted only when `item.isOwner` |
+| Ammo default purchase quantity | ✓ | ✓ | implemented; runtime sign-off | `ItemTransferDialog.wait` | `item.isOfType("ammo")` | M3-FINAL-02 | Defaults to `min(10,item.quantity)`; other purchases default to 1 |
+| Creature trade negotiation | ✓ | fallback | intentionally restrictive; pending | private `#attemptTrade`, `TradeDialog` | no stable external entry point | M3-FIX-03 | Unsafe non-GM cases are blocked and directed to core; not full parity |
+| Credstick credit transfer | ✓ | safely blocked | pending | internal `transferCredits` | deliberately non-public | M3-FINAL-01 | Exact core category detection runs before ordinary item transfer; localized warning |
+| Detached transfer dialog | ✓ | ✓ | implemented; runtime sign-off | core `DialogV2` subclass | `DialogV2.wait` | M3-FINAL-05 | HTML string plus callback-local form lookup; browser validation remains required |
 | Container target transfer | ✓ | ✓ | implemented; runtime sign-off | drop container lookup | transfer `containerId` | M3-FIX-01/02 | PF2e validates and stacks/creates in target container |
 | Detached drag/drop | — | ✓ | awaiting runtime | Foundry V14 DataTransfer | same drop APIs | M3-INV-09 | Browser/platform cross-window behavior must be signed off |
 | Bulk | ✓ | ✓ | implemented | `prepareInventory` | prepared Actor/Item bulk | M3-INV-01 | Display only; no local calculation |

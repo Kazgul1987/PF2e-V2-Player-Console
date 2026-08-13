@@ -121,3 +121,34 @@ Send identified and unidentified items in normal and detached sheets; compare PF
 Add/remove PP, GP, SP and CP, including over-removal; compare currency and notifications with core. Record by-value/break-coins, distribute/withdraw and sell functions as pending.
 ### M3-FIX-09 – Detached Actor Transfer
 Test main-window compendium, world Item and Actor Item → detached inventory, then detached internal root/container sorting and root↔container/container↔container moves. Record browser/OS limitations; if native DataTransfer cannot cross windows, use the same-window official flow rather than a global DOM workaround.
+
+## Milestone 3 final fixup
+
+### M3-FINAL-01 – Credstick
+1. Give Actor A a credstick and drag it to Actor B.
+2. Confirm that **no ordinary Item transfer** occurs.
+3. Confirm the localized unsupported-credit notification appears and both Item inventories and credit balances remain unchanged.
+
+### M3-FINAL-02 – Ammo Merchant Purchase
+1. Put an ammo stack larger than 10 on a merchant and drag it to a character.
+2. Confirm the dialog defaults to `min(10, item.quantity)` (10 for this fixture), while a non-ammo purchase defaults to 1.
+3. Purchase and compare quantity, stacking, prices, and both Actors' coins with the PF2e Core sheet.
+
+### M3-FINAL-03 – Merchant Gift
+1. Open a merchant Item owned by the current user and drop it on a character.
+2. Confirm both Purchase and Gift/Move are present; exercise each separately and verify PF2e receives purchase and non-purchase behavior respectively.
+3. Repeat without ownership and confirm Gift/Move is absent and cannot be forced through a synthetic dialog result.
+
+### M3-FINAL-04 – Installed
+1. Use an appropriate Item whose prepared usage is `installed-in-*` and compare it with Core.
+2. Confirm the V2 sheet displays its prepared installed state but offers no manual Installed carry action, matching Core's carry menu.
+3. Recheck Attached (only `isAttachable`), Implanted (only implanted usage), and In-slot (only slotted worn usage).
+
+### M3-FINAL-05 – Detached Transfer Dialog
+1. Detach the V2 sheet, drag an Actor Item onto it, and open the transfer dialog.
+2. Select quantity and target-stack behavior; for an owned merchant Item exercise Purchase and Gift/Move.
+3. Complete and cancel transfers and confirm there is no DOM/window error or main-window focus dependency.
+
+### M3-FINAL-06 – Read-only Regression
+1. Open as Observer and Limited and confirm quantity, uses, carry, invest, consume, delete, create, container, currency, identification, and transfer mutation controls are absent.
+2. Invoke controller actions/drop synthetically and confirm no mutation is possible.

@@ -39,6 +39,7 @@
       "NotEditable": "You cannot edit this character.",
       "NameRequired": "Character name cannot be empty.",
       "StatisticUnavailable": "The {statistic} statistic is unavailable.",
+      "CredstickTransferUnsupported": "Credstick credit transfers are not available in this sheet. Use the official PF2e sheet so the credstick is not moved as an ordinary item.",
       "TradeRequiresCore": "This transfer requires the PF2e trade workflow. Use the official PF2e sheet to negotiate the trade."
     },
     "Transfer": {

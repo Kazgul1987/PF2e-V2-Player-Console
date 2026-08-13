@@ -119,3 +119,42 @@ an unpriced/unconfirmed ordinary move.
 ### Drag/drop and detached boundary
 
 `TextEditor.getDragEventData(event)` and `Item.implementation.fromDropData(data)` are Foundry V14 runtime entry points; no JSON shape is inferred. `item.toDragData()` produces the outgoing payload. Listeners are scoped to `this.element` and renewed with an `AbortController`, so there is no main-window `document` lookup. Cross-browser-window transfer of native `DataTransfer` is browser/platform dependent and cannot be established statically. Main-window → detached compendium/world/Actor drops and detached internal sorting/container moves require M3-INV-09. There is no alternate PF2e public cross-window transport API in the reference; the safe fallback is opening the source and destination in the same browser window, not shared global DOM state.
+
+## M3 final audit: credits, merchant modes, carry values, and DialogV2
+
+### Credstick
+
+- **Core detection:** `ItemTransferDialog.wait` in `src/module/actor/sheet/popups/item-transfer-dialog.ts` detects `item.isOfType("treasure") && item.system.category === "credstick"`. `TreasurePF2e.isMoney` and physical stacking use the same category semantics; the transfer path does not detect a credstick from an invented flag.
+- **Core mode:** detection forces dialog mode `credits`; the quantity is the Item price's credit value. In `moveItemBetweenActors`, transferring all credits from a non-basic credstick (`system.slug !== "credstick"`) is converted back to an Item move, while other credit selections call `transferCredits`.
+- **Core mutation and rules:** `src/module/item/physical/helpers.ts:transferCredits` clamps to the available price credits, uses `targetActor.inventory.addCurrency({credits})`, and reduces `system.price.value`. Its loot permission rule requests the internal `ItemTransfer` GM-socket workflow when both ends are owner/loot-accessible but not both owned. The socket enactment repeats loot-access sanity checks.
+- **External accessibility:** the helper's own comment says it is separated specifically to avoid making it callable API during the first versions. It is a source export through the internal `@item/physical/helpers.ts` alias, not a stable runtime property on `game.pf2e`, ActorInventory, or the Item Document. `ItemTransfer` and `ItemTransferDialog` are likewise bundled source classes, not supported module APIs.
+- **Module behavior:** the module checks the exact Core treasure/category condition before trade, dialog, or `transferItemToActor`, shows a localized warning, and returns. Credit transfer is therefore pending/safely blocked: a credstick can never accidentally take the ordinary physical transfer path.
+
+### Merchant purchase and gift/move
+
+`moveItemBetweenActors` selects `purchase` exactly when the source is a loot Actor with `isMerchant`; it rejects a non-empty backpack. Core's `ItemTransferDialog` always offers Purchase and additionally offers its Gift button (action `move`) only when `item.isOwner`. The module mirrors those conditions and rechecks ownership in the controller before permitting `purchase:false`. Purchase and move both delegate to `sourceActor.transferItemToActor`; only the boolean differs, so PF2e alone calculates price, removes/adds coins, checks permissions/GM-socket loot access, changes quantities, and creates or stacks the target.
+
+Core uses the concrete `item.isOfType("ammo")` condition—not a trait or broad consumable heuristic—to default purchase quantity to `Math.min(10, item.quantity)`; other purchases default to 1. Both dialogs expose `newStack` only when `recipient.inventory.findStackableItem(item._source,{containerId})` found a stack, then pass the selection to `transferItemToActor`.
+
+**Creature-to-creature trade negotiation is currently intentionally more restrictive than PF2e Core because the Core trade application is not exposed as a stable external runtime API.** Core's source-private `#attemptTrade` combines GM/lootability, active recipient-owner user selection, `TradeDialog.canTrade`, optional reach enforcement, and a trade request. The module cannot safely reconstruct or call that application and retains its conservative official-sheet fallback.
+
+### Carry types
+
+PF2e's internal `ITEM_CARRY_TYPES` tuple in `src/module/item/base/data/values.ts` is `attached`, `dropped`, `held`, `implanted`, `installed`, `stowed`, and `worn`. No equivalent stable `CONFIG.PF2E` tuple is exposed, so the module keeps one documented compatibility constant in `src/constants.js`; the controller uses that single source.
+
+| Value | Core/manual behavior | Module behavior |
+|---|---|---|
+| `held` | Manual one- and two-hand actions | Same actions and `handsHeld` |
+| `worn` | Manual generic worn action | Same |
+| `stowed` | Manual only when a stowing container exists | Same; PF2e selects the container |
+| `dropped` | Manual | Same |
+| `attached` | Manual only for `item.isAttachable`; `changeCarryType` opens `ItemAttacher` | Same condition and runtime delegation |
+| `implanted` | Manual only when `system.usage.type === "implanted"` | Same condition |
+| `installed` | Parsed from `installed-in-*` usage; equipment upgrades and parent-item equip state use it, but Core `carry-type.hbs` presents **no manual installed choice** | Accepted internally/displayed from prepared Item state, but deliberately no manual button |
+| `inSlot` | Not a carry-type enum value; boolean argument used only for worn usage with `where` | Same conditional worn action and boolean argument |
+
+Thus enum acceptance and UI affordances remain separate: recognizing `installed` does not invent a user action that Core omits.
+
+### Transfer dialogs and detached windows
+
+Core's `ItemTransferDialog` is an internal `DialogV2` subclass and not reusable by an external module. The module therefore owns only the quantity/mode/new-stack selection UI and calls stable Document APIs for mutation. It passes `DialogV2.wait` an HTML **string**, rather than creating content through global `document.createElement`. Its callback starts from the callback-provided button, calls `button.closest("form")`, and constructs `FormDataExtended` from that local form. Quantity, new-stack, Purchase, Gift/Move, and Cancel therefore do not query the main-window DOM. Actual detached-window correctness and native cross-window `DataTransfer` still require M3-FINAL-05 in Foundry V14.
