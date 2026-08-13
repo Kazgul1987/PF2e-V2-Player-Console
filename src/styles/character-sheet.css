@@ -19,3 +19,26 @@
 .stat-card strong { font-size: 1.2rem; }
 .placeholder { text-align: center; }
 @media (max-width: 50rem) { .pf2e-v2-character-sheet { min-width: 24rem; } .pc-header { grid-template-columns: 4rem 1fr; } .pc-header img { height: 4rem; width: 4rem; } .headline-stats { grid-column: 1 / -1; } }
+.inventory-overview, .inventory-section > header { align-items: center; display: flex; gap: 1rem; justify-content: space-between; }
+.inventory-overview h2, .inventory-section h3 { margin-right: auto; }
+.coins { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+.coins h3 { flex-basis: 100%; margin-bottom: 0; }
+.coins div { align-items: center; display: flex; gap: .25rem; }
+.coins input { width: 3.5rem; }
+.inventory-columns, .inventory-row { align-items: center; display: grid; gap: .5rem; grid-template-columns: minmax(14rem, 3fr) 6rem 4rem minmax(8rem, 1.5fr) auto; }
+.inventory-columns { border-bottom: 1px solid var(--color-border-light-primary); font-size: .8rem; font-weight: bold; padding: .25rem .5rem; }
+.inventory-items { list-style: none; margin: 0; padding: 0; min-height: .75rem; }
+.inventory-item { border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); padding: .25rem .5rem; }
+.inventory-item[draggable="true"] { cursor: grab; }
+.inventory-row .item-name { align-items: center; background: none; border: 0; color: inherit; display: flex; gap: .5rem; min-width: 0; text-align: left; }
+.inventory-row .item-name img { height: 2rem; object-fit: cover; width: 2rem; }
+.inventory-row .item-name span { overflow: hidden; text-overflow: ellipsis; }
+.inventory-row .item-name small { opacity: .7; }
+.stepper, .item-controls, .carry-actions { align-items: center; display: flex; gap: .2rem; }
+.item-controls button, .stepper button, .carry-actions button, .item-detail button { min-height: 1.6rem; min-width: 1.6rem; padding: .1rem .3rem; }
+.item-controls .active { color: var(--color-warm-2); }
+.item-state { font-size: .85rem; }
+.carry-actions { margin-top: .15rem; }
+.item-detail { font-size: .8rem; margin-left: 2.5rem; opacity: .85; }
+.inventory-items.nested { border-left: 2px solid var(--color-border-light-primary); margin-left: 1.25rem; }
+@media (max-width: 50rem) { .inventory-columns { display: none; } .inventory-row { grid-template-columns: minmax(10rem, 2fr) 5rem 3rem; } .item-state, .item-controls { grid-column: auto / span 1; } }

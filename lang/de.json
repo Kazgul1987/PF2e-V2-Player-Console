@@ -16,14 +16,18 @@
       "OpenSheet": "V2-Charakterbogen öffnen",
       "Detach": "In Browserfenster auslagern",
       "Save": "Speichern",
-      "SecretPerception": "Geheime Wahrnehmung"
+      "SecretPerception": "Geheime Wahrnehmung",
+      "ToggleContainer": "Behälter öffnen oder schließen"
     },
     "Labels": {
       "CharacterName": "Charaktername",
       "CharacterSections": "Charakterbereiche",
       "NotImplemented": "Im aktuellen Meilenstein nicht implementiert.",
       "RequestedStatistic": "Angeforderter",
-      "SheetTitle": "{name} — V2-Charakterbogen"
+      "SheetTitle": "{name} — V2-Charakterbogen",
+      "Coins": "Münzen",
+      "Item": "Gegenstand",
+      "State": "Tragezustand"
     },
     "Errors": {
       "CharacterOnly": "PF2e V2 Player Console kann nur PF2e-Charaktere öffnen.",
