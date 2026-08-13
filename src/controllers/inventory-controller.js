@@ -1,6 +1,6 @@
 import { LOG_PREFIX } from "../constants.js";
 
-const CARRY_TYPES = new Set(["held", "worn", "stowed", "dropped"]);
+const CARRY_TYPES = new Set(["held", "worn", "stowed", "dropped", "attached", "implanted"]);
 
 export class InventoryController {
     static #editable(actor) {
@@ -34,10 +34,10 @@ export class InventoryController {
         if (!uses || !Number.isFinite(uses.max)) return;
         return item.update({ "system.uses.value": Math.clamp(uses.value + delta, 0, uses.max) });
     }
-    static async carry(actor, id, carryType, handsHeld = 0) {
+    static async carry(actor, id, carryType, handsHeld = 0, inSlot = false) {
         if (!this.#editable(actor) || !CARRY_TYPES.has(carryType)) return;
         const item = this.item(actor, id); if (!item) return;
-        return actor.changeCarryType(item, { carryType, handsHeld: carryType === "held" ? Number(handsHeld) : 0 });
+        return actor.changeCarryType(item, { carryType, handsHeld: carryType === "held" ? Number(handsHeld) : 0, inSlot: Boolean(inSlot) });
     }
     static async invest(actor, id) {
         if (!this.#editable(actor)) return;
@@ -52,6 +52,19 @@ export class InventoryController {
         if (!this.#editable(actor)) return;
         const item = this.item(actor, id);
         if (item?.isOfType?.("consumable")) return item.consume();
+    }
+    static async toChat(actor, id, event) {
+        return this.item(actor, id)?.toMessage?.(event);
+    }
+    static async summary(actor, id) {
+        const item = this.item(actor, id);
+        if (!item) return "";
+        const description = item.description ?? item.system?.description?.value ?? "";
+        return TextEditor.enrichHTML(String(description), { async: true, relativeTo: item, secrets: item.isOwner });
+    }
+    static async identify(actor, id, status) {
+        if (!this.#editable(actor) || !game.user.isGM || !["identified", "unidentified"].includes(status)) return;
+        return this.item(actor, id)?.setIdentificationStatus?.(status);
     }
     static async coins(actor, denomination, amount, mode) {
         if (!this.#editable(actor) || !["pp", "gp", "sp", "cp"].includes(denomination)) return;
@@ -79,8 +92,48 @@ export class InventoryController {
             }
             return;
         }
-        if (item.actor) return item.actor.transferItemToActor(actor, item, item.quantity, container?.id);
+        if (item.actor) return this.#transfer(item, actor, container?.id);
         const source = item.clone().toObject();
         return actor.inventory.add([source], { container: container?.isOfType?.("backpack") ? container : undefined, stack: true });
+    }
+
+    static async #transfer(item, recipient, containerId) {
+        const source = item.actor;
+        const purchase = source.isOfType?.("loot") && source.isMerchant;
+        if (!game.user.isGM && !recipient.isLootableBy?.(game.user) && source.isOfType?.("character", "npc")) {
+            ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Errors.TradeRequiresCore"));
+            return;
+        }
+        if (purchase && item.isOfType?.("backpack") && item.contents?.size) {
+            return ui.notifications.error(game.i18n.localize("PF2E.ErrorMessage.CantPurchaseContainerWithItems"));
+        }
+        const stackable = Boolean(recipient.inventory.findStackableItem?.(item._source, { containerId }));
+        const result = await this.#transferDialog(item, recipient, { purchase, stackable });
+        if (!result) return;
+        return source.transferItemToActor(recipient, item, result.quantity, containerId, result.newStack, result.purchase);
+    }
+
+    static async #transferDialog(item, recipient, { purchase, stackable }) {
+        const max = Math.max(1, Number(item.quantity) || 1);
+        if (max === 1 && !purchase) return { quantity: 1, newStack: false, purchase: false };
+        const content = document.createElement("div");
+        content.className = "standard-form";
+        content.innerHTML = `<p>${foundry.utils.escapeHTML(game.i18n.format("PF2E_V2_PLAYER_CONSOLE.Transfer.Prompt", { actor: recipient.name }))}</p>
+            <div class="form-group"><label>${game.i18n.localize("PF2E.QuantityLabel")}</label><input name="quantity" type="number" min="1" max="${max}" value="${purchase ? 1 : max}"></div>
+            <label class="checkbox"><input name="newStack" type="checkbox" ${stackable ? "" : "disabled"}> ${game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Transfer.NewStack")}</label>`;
+        const callback = (_event, button) => {
+            const form = button.closest("form");
+            const data = new foundry.applications.ux.FormDataExtended(form).object;
+            return { quantity: Math.clamp(Math.floor(Number(data.quantity) || 1), 1, max), newStack: Boolean(data.newStack), purchase: button.dataset.action === "purchase" };
+        };
+        const action = purchase ? "purchase" : "transfer";
+        return foundry.applications.api.DialogV2.wait({
+            window: { title: game.i18n.format("PF2E_V2_PLAYER_CONSOLE.Transfer.Title", { item: item.name }) },
+            content,
+            buttons: [
+                { action: "cancel", label: "COMMON.Cancel" },
+                { action, label: purchase ? "PF2E.ItemTransferDialog.Button.purchase" : "PF2E_V2_PLAYER_CONSOLE.Transfer.Button", default: true, callback },
+            ],
+        });
     }
 }

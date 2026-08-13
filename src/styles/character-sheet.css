@@ -40,5 +40,9 @@
 .item-state { font-size: .85rem; }
 .carry-actions { margin-top: .15rem; }
 .item-detail { font-size: .8rem; margin-left: 2.5rem; opacity: .85; }
+.item-summary { border-top: 1px solid var(--color-border-light-primary); padding: .5rem 2.5rem; }
+.item-summary[hidden] { display: none; }
+.carry-actions { flex-wrap: wrap; }
+.carry-actions button { font-size: .7rem; line-height: 1.2; }
 .inventory-items.nested { border-left: 2px solid var(--color-border-light-primary); margin-left: 1.25rem; }
 @media (max-width: 50rem) { .inventory-columns { display: none; } .inventory-row { grid-template-columns: minmax(10rem, 2fr) 5rem 3rem; } .item-state, .item-controls { grid-column: auto / span 1; } }

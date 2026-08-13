@@ -4,6 +4,17 @@ import { fileURLToPath } from "node:url";
 
 const manifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
 if (manifest.id !== "pf2e-v2-player-console") throw new Error("Unexpected module id");
+if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) throw new Error("Manifest version must use x.y.z release format");
+for (const key of ["url", "manifest", "download"]) {
+    if (!manifest[key]) throw new Error(`Manifest is missing ${key}`);
+    const url = new URL(manifest[key]);
+    if (url.protocol !== "https:") throw new Error(`Manifest ${key} must be an HTTPS URL`);
+}
+const expectedRepository = "https://github.com/Kazgul1987/PF2e-V2-Player-Console";
+if (manifest.url !== expectedRepository) throw new Error("Manifest repository URL is inconsistent");
+if (manifest.manifest !== `${expectedRepository}/releases/latest/download/module.json`) throw new Error("Manifest update URL is inconsistent");
+const archive = `${manifest.id}-v${manifest.version}.zip`;
+if (manifest.download !== `${expectedRepository}/releases/download/v${manifest.version}/${archive}`) throw new Error("Manifest download URL is inconsistent with version/tag/archive convention");
 if (manifest.compatibility.maximum !== "14") throw new Error("Manifest must target Foundry 14");
 if (!manifest.relationships.systems.some((system) => system.id === "pf2e" && system.type === "system")) {
     throw new Error("PF2e must be a required system relationship");

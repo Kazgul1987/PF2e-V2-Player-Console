@@ -17,7 +17,11 @@
       "Detach": "Detach to Browser Window",
       "Save": "Save",
       "SecretPerception": "Secret Perception",
-      "ToggleContainer": "Open or close container"
+      "ToggleContainer": "Open or close container",
+      "WornInSlot": "Worn in usage slot",
+      "Identify": "Identify item",
+      "Mystify": "Mystify item",
+      "SendToChat": "Send to chat"
     },
     "Labels": {
       "CharacterName": "Character name",
@@ -34,7 +38,14 @@
       "DetachUnavailable": "This Foundry distribution does not expose detached Application windows.",
       "NotEditable": "You cannot edit this character.",
       "NameRequired": "Character name cannot be empty.",
-      "StatisticUnavailable": "The {statistic} statistic is unavailable."
+      "StatisticUnavailable": "The {statistic} statistic is unavailable.",
+      "TradeRequiresCore": "This transfer requires the PF2e trade workflow. Use the official PF2e sheet to negotiate the trade."
+    },
+    "Transfer": {
+      "Title": "Transfer {item}",
+      "Prompt": "Choose the quantity to transfer to {actor}.",
+      "NewStack": "Create a new stack",
+      "Button": "Transfer"
     }
   }
 }

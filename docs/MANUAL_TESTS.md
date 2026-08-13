@@ -77,7 +77,7 @@ Open an item by name/edit control attached and detached; confirm the normal PF2e
 ### M3-INV-03 – Quantity
 Use ±, Shift± and Ctrl/Cmd±; inspect embedded data, core display and V2 live refresh.
 ### M3-INV-04 – Equipped
-Exercise held (one/two hands), worn and dropped on applicable item types; compare derived values and core. Record attached/in-slot cases as pending.
+Exercise held (one/two hands), worn, worn-in-slot, stowed, dropped, attached, and implanted on applicable item types; compare derived values and core.
 ### M3-INV-05 – Invested
 Toggle eligible identified items below/at the Actor limit and confirm PF2e validation and both sheets agree.
 ### M3-INV-06 – Container
@@ -101,4 +101,23 @@ Compare HP, maximum HP, hardness, broken/destroyed and held/worn states. Confirm
 
 ## M3 runtime limitations and sign-off
 
-Node validation cannot run Foundry Document models or native cross-window drag/drop. All M3-INV cases therefore remain required in a Foundry V14/PF2e 8.4 world. Special parity gaps to confirm are attached/in-slot carry controls, stack-target drop, compendium size adjustment, inline summary/chat/context actions, identification popup, equipment browser, and full core currency dialogs.
+Node validation cannot run Foundry Document models or native cross-window drag/drop. All M3-INV cases therefore remain required in a Foundry V14/PF2e 8.4 world. Remaining known gaps are creature trade negotiation, credstick transfer, compendium size adjustment, the full core summary/identification popups, equipment browser, and full core currency/distribution/sell dialogs.
+
+### M3-FIX-01 – Partial Actor Transfer
+Give Actor A quantity 10, drop it on Actor B, select 3, and verify A=7 and B=3 against core. Repeat full-stack and with a target container.
+### M3-FIX-02 – Existing Stack
+Give both actors the same stackable item, transfer a partial quantity, and verify PF2e reuses the target stack. Repeat with **Create a new stack** and verify separate creation.
+### M3-FIX-03 – Merchant and trade boundaries
+Test Merchant→Character purchase, insufficient funds, Loot→Character, Character→Merchant, and Character→Character as player and GM. Compare prices and coin exchange with core. Verify a non-GM creature trade is blocked with the official-sheet fallback rather than silently moved.
+### M3-FIX-04 – Observer controls and controller guards
+Open as Observer/Limited. Verify no invest, consume, collapse, quantity/uses, carry, delete/create, drag, coin, or identification controls are visible. Synthetically invoke every mutating controller/drop and verify rejection.
+### M3-FIX-05 – Carry types
+On applicable fixtures test held 1/2, worn, worn-in-slot, stowed, dropped, attached, and implanted. Confirm unavailable choices are omitted and attachment opens PF2e's picker.
+### M3-FIX-06 – Summary
+Toggle descriptions open/closed in normal and detached sheets. Verify enriched links and visibility/secret handling and that only the local row changes.
+### M3-FIX-07 – Send to Chat
+Send identified and unidentified items in normal and detached sheets; compare PF2e chat cards and permissions with core.
+### M3-FIX-08 – Currency
+Add/remove PP, GP, SP and CP, including over-removal; compare currency and notifications with core. Record by-value/break-coins, distribute/withdraw and sell functions as pending.
+### M3-FIX-09 – Detached Actor Transfer
+Test main-window compendium, world Item and Actor Item → detached inventory, then detached internal root/container sorting and root↔container/container↔container moves. Record browser/OS limitations; if native DataTransfer cannot cross windows, use the same-window official flow rather than a global DOM workaround.

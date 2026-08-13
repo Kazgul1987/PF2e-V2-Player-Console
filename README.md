@@ -11,6 +11,11 @@ The official sheet remains available during development for comparison and fallb
 
 The analysed reference is the read-only submodule commit `73c870286aeba87c25ccc0258028afedfc888d05`. It is not packaged by this module and must never be edited.
 
+## Manual installation
+
+In Foundry's **Install Module** dialog, use the stable manifest URL:
+`https://github.com/Kazgul1987/PF2e-V2-Player-Console/releases/latest/download/module.json`.
+
 ## Development installation
 
 1. Clone with `git submodule update --init`.
@@ -20,6 +25,20 @@ The analysed reference is the read-only submodule commit `73c870286aeba87c25ccc0
 
 No compilation is required; Foundry loads `src/module.js` as an ES module. See the [manual tests](docs/MANUAL_TESTS.md), [feature parity matrix](docs/FEATURE_PARITY.md), [source map](docs/PF2E_SOURCE_MAP.md), and [architecture](docs/ARCHITECTURE.md).
 
-## Milestone 2 scope
+## Releases
 
-Implemented: native V2 tabs/PARTS, document binding and permission-aware name form, PF2e Statistic rolls for Perception (including secret), saves, and exposed skills, English/German localization, Actor/embedded-Item refresh hooks, and `detachWindow()` support. Inventory, drag/drop, strikes/damage, actions, spellcasting, feats, crafting, and effects management remain later milestones; their PARTS intentionally stay placeholders.
+`module.json` is the version source. Run `node scripts/prepare-release.mjs X.Y.Z`,
+validate, and create tag `vX.Y.Z`. The GitHub release must contain `module.json`
+and `pf2e-v2-player-console-vX.Y.Z.zip`. The ZIP contains `module.json`, `src/`,
+`lang/`, and required module files at its root (not inside an extra repository
+directory). `manifest` deliberately points at the stable `latest` release asset;
+`download` is rewritten to the version-specific tag/archive by the script.
+
+For the current `0.3.0`, the tag is `v0.3.0` and archive is
+`pf2e-v2-player-console-v0.3.0.zip`.
+
+## Current milestone scope
+
+Milestone 3 adds the inventory vertical slice. Actions, strikes/damage,
+spellcasting, feats, crafting, and effects management remain later milestones;
+their PARTS intentionally stay placeholders.

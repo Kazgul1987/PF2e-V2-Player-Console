@@ -36,6 +36,9 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             toggleContainer: PF2eCharacterSheetV2.#inventoryAction,
             consume: PF2eCharacterSheetV2.#inventoryAction,
             coins: PF2eCharacterSheetV2.#inventoryAction,
+            itemSummary: PF2eCharacterSheetV2.#inventoryAction,
+            itemToChat: PF2eCharacterSheetV2.#inventoryAction,
+            identification: PF2eCharacterSheetV2.#inventoryAction,
         },
     };
 
@@ -133,10 +136,21 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             case "createItem": return InventoryController.create(this.actor, target.dataset.itemType);
             case "quantity": return InventoryController.quantity(this.actor, id, Number(target.dataset.delta), event);
             case "uses": return InventoryController.uses(this.actor, id, Number(target.dataset.delta));
-            case "carry": return InventoryController.carry(this.actor, id, target.dataset.carryType, target.dataset.handsHeld);
+            case "carry": return InventoryController.carry(this.actor, id, target.dataset.carryType, target.dataset.handsHeld, Object.hasOwn(target.dataset, "inSlot"));
             case "invest": return InventoryController.invest(this.actor, id);
             case "toggleContainer": return InventoryController.container(this.actor, id);
             case "consume": return InventoryController.consume(this.actor, id);
+            case "itemToChat": return InventoryController.toChat(this.actor, id, event);
+            case "identification": return InventoryController.identify(this.actor, id, target.dataset.status);
+            case "itemSummary": {
+                const row = target.closest("[data-item-id]");
+                const summary = row?.querySelector(":scope > .item-summary");
+                if (!summary) return;
+                if (!summary.hidden) { summary.hidden = true; summary.replaceChildren(); return; }
+                summary.innerHTML = await InventoryController.summary(this.actor, id);
+                summary.hidden = false;
+                return;
+            }
             case "coins": {
                 const row = target.closest("[data-denomination]");
                 return InventoryController.coins(this.actor, row?.dataset.denomination, row?.querySelector("input")?.value, target.dataset.mode);

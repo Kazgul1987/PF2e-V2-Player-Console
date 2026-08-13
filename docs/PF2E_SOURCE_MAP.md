@@ -39,6 +39,24 @@ Stable core labels reused by templates include `PF2E.PerceptionHeader`, `PF2E.Sa
 
 ## Milestone 3 inventory map
 
+### Actor-to-Actor transfer path (re-audited before the M3 fixup)
+
+The V14 core path is `_onDropItem` → `moveItemBetweenActors` in
+`src/module/actor/sheet/base.ts`.  The sheet first calls its private
+`#attemptTrade`; that helper is **internal-only** and cannot be invoked by a
+module.  Ordinary/merchant moves then use the likewise non-exported
+`ItemTransferDialog` (`actor/sheet/popups/item-transfer-dialog.ts`) to select
+`quantity`, `newStack`, and `move`/`purchase`/`credits`, and finally call the
+runtime method `sourceActor.transferItemToActor(target, item, quantity,
+containerId, newStack, isPurchase)`.  That public Document method clamps the
+quantity, checks both permissions (or requests the GM socket transfer for
+lootable actors), exchanges merchant coins, updates/deletes the source, and
+creates or stacks the target through PF2e's grouped update.  Consequently the
+module may reproduce only the selection UI and must leave every transfer rule
+to `transferItemToActor`. Creature-to-creature trade negotiation and credstick
+credit transfer depend on private/source-only helpers and remain explicit
+limitations rather than being silently bypassed.
+
 The inventory client uses runtime Documents only; source-only helpers (`sizeItemForActor`, `isContainerCycle`, `UpdateCurrencyDialog`, `IdentifyItemPopup`, and PF2e sheet classes) are **not imported**. PF2e therefore remains responsible for validation, derived data, stacking, bulk, investment, consumption, and transfers.
 
 | Feature | Core template | Core handler | Runtime / Document API | External-module-safe? | PF2e-specific behavior |
@@ -56,14 +74,47 @@ The inventory client uses runtime Documents only; source-only helpers (`sizeItem
 | Container open/close | `item-line.hbs` | base `toggle-container` | `item.update({"system.collapsed": ...})` | yes | Core persists `system.collapsed`; V2 follows rather than inventing state |
 | Sorting | inventory lists | base `#onDropInventoryItem`; creature `_onSortItem` | `item.sortRelative`; `actor.updateEmbeddedDocuments` | yes | V2 uses Document sorting after container assignment; stack merge parity pending |
 | Actor/internal drop | inventory lists | base `_onDropItem`; sortable | `Item.implementation.fromDropData`, `stowOrUnstow`, `sortRelative` | yes | Same-Actor drops move; source data comes from Foundry parser |
-| Item/other-Actor drop | inventory lists | base `_onDropItem`, `moveItemBetweenActors` | `sourceActor.transferItemToActor(target,item,quantity,containerId)` | yes | PF2e decides permission/socket and move semantics |
+| Item/other-Actor drop | inventory lists | base `_onDropItem`, `moveItemBetweenActors` | `sourceActor.transferItemToActor(target,item,quantity,containerId,newStack,isPurchase)` | yes | Module DialogV2 selects quantity/stack/purchase; PF2e decides permission/socket, source update/delete, target stack/create, and coin exchange |
 | Compendium/world drop | inventory lists | base `_handleDroppedItem` | `Item.implementation.fromDropData`; `actor.inventory.add` | yes | Copies and stacks through ActorInventory; core size-adjust helper is internal and remains pending |
 | Bulk | inventory header/rows | `prepareInventory` | `actor.inventory.bulk`, `item.bulk` | yes | Never calculated by this module; includes container reduction/size |
 | Coins | character inventory footer | base add/remove handlers | `actor.inventory.currency`, `.addCoins`, `.removeCoins` | yes | Explicit denominations only; PF2e performs all value handling |
-| Identification | `item-line.hbs` | base `toggle-identified` | prepared `item.name`, `item.isIdentified`; Item sheet | partial | Core identify/mystify popup is internal and GM-only, so no V2 mutation control |
+| Identification | `item-line.hbs` | base `toggle-identified` | `item.setIdentificationStatus` | partial | V2 exposes GM/editable identify/mystify; core's source-only `IdentifyItemPopup` status selection remains unavailable |
 | Consumables | `item-line.hbs` | creature `consume-item` | `consumable.consume()`, `system.uses` | yes | PF2e owns chat, casting capability, charges, quantity, and auto-destroy |
 | Shields | `item-line.hbs` | prepared physical item | `system.hp`, `hardness`, `isBroken`, `isDestroyed`, carry API | yes | Raise Shield is an Actions milestone concern; no shield math is copied |
-| Item summary/chat | `item-summary.hbs`, `item-summary-renderer.ts` | `toggle-summary`, `item-to-chat` | internal renderer; `item.toMessage()` | partial | Inline summary/context actions remain a declared parity gap |
+| Item summary/chat | `item-summary.hbs`, `item-summary-renderer.ts` | `toggle-summary`, `item-to-chat` | internal renderer; `TextEditor.enrichHTML`; `item.toMessage()` | partial | V2 renders a local enriched description and delegates chat; core renderer's additional actions remain a declared gap |
+
+### Carry, summary, identification, and currency boundaries
+
+- **Carry:** Core's `carry-type.hbs` conditions `attached` on `isAttachable`,
+  worn-in-slot on `usage.type/where`, implanted on implanted usage, and stowed
+  on a stowing container. The module prepares those same conditions and calls
+  `actor.changeCarryType`; attached intentionally enters PF2e's runtime
+  `ItemAttacher`, while `inSlot` is passed to the public method.
+- **Summary:** `ItemSummaryRenderer` is source-internal. The module therefore
+  enriches only the prepared item description via Foundry `TextEditor` and
+  scopes the disclosure to the row under this Application's `element`; it does
+  not clone core summary actions or query the main global document.
+- **Chat:** `item.toMessage(event)` is a stable runtime Document method and is
+  used directly, so PF2e owns identification visibility and card rendering.
+- **Identification:** `IdentifyItemPopup` is a private deep source import, but
+  `item.setIdentificationStatus` is runtime-reachable. Direct GM-only
+  identified/unidentified controls use that method; the richer popup remains
+  pending.
+- **Currency:** Core `UpdateCurrencyDialog` and distribution dialogs are
+  internal UI. `actor.inventory.addCoins/removeCoins` are runtime APIs and back
+  the module's PP/GP/SP/CP controls. By-value coin breaking, distribution,
+  withdrawal, and treasure-sale UI remain pending and are not described as
+  complete.
+
+### Trade and merchant limitation
+
+Merchant→character uses the public transfer API with `isPurchase=true`; PF2e
+calculates price, removes buyer coins, credits the merchant, and aborts on
+insufficient funds. Core's `#attemptTrade` and trade Svelte application are not
+public. A non-GM creature-to-creature case that core would negotiate is
+therefore stopped with a localized official-sheet fallback. Credstick
+`transferCredits` is likewise internal. These cases are never converted into
+an unpriced/unconfirmed ordinary move.
 
 ### Drag/drop and detached boundary
 
