@@ -18,11 +18,11 @@ Milestone 2 migrates from plain `ApplicationV2` to `HandlebarsApplicationMixin(D
 
 The standard DocumentSheet constructor receives `{ document: actor }`; `document` is the source of truth and the `actor` getter is only a readable alias. The current directory launcher and instance map remain available. Future alternative-sheet registration uses Foundry's `foundry.documents.collections.Actors.registerSheet` contract; registration is deliberately not enabled until the current slice is suitable as a default/selectable full sheet.
 
-## Permissions and forms
+## Permissions and focused editing
 
-`DocumentSheetV2.isEditable` governs editable markup and follows its configured document permission threshold. Submission is protected again with both `isEditable` and `document.canUserModify(game.user, "update")`; therefore hiding inputs is not the security boundary. Owner users can update, while Observer/Limited behavior follows Foundry visibility/edit-permission semantics and remains read-only in this slice.
+`DocumentSheetV2.isEditable` governs editable markup and follows its configured document permission threshold. The sheet has no global form and no global Save button: independent inventory, spell, feat, crafting, and biography interactions must not share a browser-submit lifecycle. HP, hero points, and XP remain display-only until their PF2e semantics are reviewed; there is no generic field-name update path.
 
-The application window content is a real top-level `form`. `DEFAULT_OPTIONS.form` binds the documented Application V2 handler signature `(event, form, FormDataExtended)`, with `submitOnChange: false` and `closeOnSubmit: false`. Enter and the submit button therefore use Application V2 submission and cannot trigger browser navigation. The handler accepts only the reviewed `name` field, trims and validates it, rechecks permission, then calls `document.update({ name })`. HP, hero points, and XP remain display-only until their PF2e semantics are reviewed; there is no generic field-name update path.
+The character-name input is a focused interaction outside a form. Its change/blur path trims and validates the value, skips unchanged names, rechecks both `isEditable` and `document.canUserModify(game.user, "update")`, and only then calls `document.update({ name })`. Enter prevents its default behavior and blurs the field to use that same update path; Escape restores the current document name. Read-only users receive text instead of an input. With no form or submit control, name editing cannot trigger native browser navigation.
 
 ## Rolls
 
@@ -32,9 +32,9 @@ All roll actions remain template-to-controller calls. `RollController` resolves 
 
 Stable technical tab IDs use native V2 `TABS`, `_prepareTabs`, `tabGroups`, and `data-action="tab"`; visible labels come from the module localization namespace. Every primary tab has its own Handlebars PART. Later tabs stay explicit placeholders—no Inventory or other Milestone 3 behavior is introduced.
 
-The primary tab group is `primary`, with the IDs `character`, `actions`, `inventory`, `spellcasting`, `crafting`, `proficiencies`, `feats`, `effects`, `biography`, and `pfs`. Each corresponding PART renders one `.tab` content root whose `data-group` and `data-tab` exactly match its navigation button. `_preparePartContext()` derives the initial `active` class from `tabGroups.primary`; Application V2 then owns tab changes. Navigation labels remain localization keys in the prepared V2 tab model and are localized once by `navigation.hbs`.
+The primary tab group is `primary`, with the IDs `character`, `actions`, `inventory`, `spellcasting`, `crafting`, `proficiencies`, `feats`, `effects`, `biography`, and `pfs`. Each corresponding PART renders one `.tab` content root whose `data-group` and `data-tab` exactly match its navigation button. `_preparePartContext()` passes the entry returned by `_prepareTabs("primary")` to that PART as `tab`, and each template renders `tab.cssClass`. Foundry's prepared tab metadata and `tabGroups` are therefore the only active-state source; the sheet does not duplicate it with a custom `isActive` flag. Navigation labels remain localization keys in the prepared V2 tab model and are localized once by `navigation.hbs`. Full document-hook renders retain the Application V2 instance's `tabGroups`, so an Actor update does not reset the selected tab.
 
-`DocumentSheetV2` inherits Application V2 rendering and `detachWindow()`. All handlers operate on event/form arguments and Documents, never a global `document.querySelector`, so the same form, tabs, rolls, and updates work in the detached document. Actor and embedded-Item hooks remain registered and UUID-filtered because automatic coverage of every embedded update is not assumed; they are removed on close.
+`DocumentSheetV2` inherits Application V2 rendering and `detachWindow()`. All handlers operate on event/form arguments and Documents, never a global `document.querySelector`, so the same focused editing, tabs, rolls, and updates work in the detached document. Actor and embedded-Item hooks remain registered and UUID-filtered because automatic coverage of every embedded update is not assumed; they are removed on close.
 
 ## M3 final transfer compatibility boundary
 

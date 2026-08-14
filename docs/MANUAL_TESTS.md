@@ -249,6 +249,45 @@ Test main-window compendium, world Item and Actor Item → detached inventory, t
 2. Inspect the tab navigation.
 3. Confirm localized English labels appear and no `PF2E_V2_PLAYER_CONSOLE.*` keys are visible.
 
+## Final native-tab and form stabilization
+
+### TAB-FINAL-01 – Native active state
+1. Open the sheet and confirm Character is active.
+2. Click Inventory.
+3. Confirm Inventory is visible and Character is hidden.
+4. Confirm the console contains no errors.
+
+### TAB-FINAL-02 – All tabs
+1. Click Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, Effects, Biography, and PFS.
+2. After each click, confirm exactly one content tab is active.
+3. Confirm there is no `No matching tab element` error and no visible state stall.
+
+### FORM-FIX-01 – No global Save
+1. Open the sheet header.
+2. Confirm there is no global Save button.
+
+### FORM-FIX-02 – Name via blur
+1. Change the character name.
+2. Leave the field.
+3. Confirm the Actor name updates without a reload or UI movement.
+
+### FORM-FIX-03 – Name via Enter
+1. Change the character name and press Enter.
+2. Confirm the expected local name update occurs.
+3. Confirm there is no browser reload, world reload, or freeze.
+4. Repeat with Tab, Escape, and blur; confirm Tab/blur commit and Escape restores the current name without an update.
+
+### FORM-FIX-04 – Detached name edit
+1. Detach the sheet.
+2. Change the name and commit it with blur or Enter.
+3. Confirm the main window and detached window remain stable.
+
+### FORM-FIX-05 – Tab remains selected
+1. Activate Inventory.
+2. Change the Actor name and wait for the update/render.
+3. Confirm Inventory remains active.
+4. Repeat in the detached window with Actions active.
+
 ## Milestone 4 — Actions and Strikes
 
 ### M4-STRIKE-01 – Basic Attack
