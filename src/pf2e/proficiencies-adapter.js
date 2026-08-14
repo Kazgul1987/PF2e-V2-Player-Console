@@ -28,11 +28,14 @@ function rankView(rank) {
 
 function statisticRow(statistic, { slug, label, editable = false, category = null, itemId = null } = {}) {
     const rank = rankView(statistic?.rank);
+    const rawModifier = statistic?.mod ?? statistic?.value;
+    const hasModifier = Number.isFinite(rawModifier);
     return {
         slug,
         itemId,
         label: localize(statistic?.label, label ?? slug),
-        modifier: modifier(statistic?.mod ?? statistic?.value),
+        modifier: hasModifier ? modifier(rawModifier) : null,
+        hasModifier,
         dc: Number.isFinite(Number(statistic?.dc?.value ?? statistic?.dc)) ? Number(statistic?.dc?.value ?? statistic.dc) : null,
         rank,
         editable,

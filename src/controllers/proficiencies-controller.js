@@ -21,7 +21,7 @@ export class ProficienciesController {
             return item.update({ "system.proficient.value": value });
         }
         if (!SLUG.test(slug ?? "")) return;
-        if (category === "skill" && Object.hasOwn(actor._source?.system?.skills ?? {}, slug)) {
+        if (category === "skill" && Object.hasOwn(CONFIG.PF2E.skills ?? {}, slug)) {
             return actor.update({ [`system.skills.${slug}.rank`]: value });
         }
         const source = actor._source?.system?.proficiencies?.attacks?.[slug];

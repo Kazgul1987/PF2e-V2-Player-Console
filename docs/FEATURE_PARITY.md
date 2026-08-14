@@ -187,7 +187,7 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Saving Throws rendering | implemented | prepared `actor.saves` / `getStatistic` |
 | Saving Throw rank edit | safe omission | Class/rule-prepared; official proficiency tab has no save editor |
 | Skills rendering | implemented | prepared `actor.skills` rows |
-| Skill rank edit | implemented | validated source slug → `system.skills.<slug>.rank` only |
+| Skill rank edit | implemented | `CONFIG.PF2E.skills` whitelist → `system.skills.<slug>.rank` only; a missing partial source entry is valid and starts at rank 0 |
 | Lore rendering | implemented | prepared Lore statistic and embedded Item ID |
 | Lore rank edit | implemented | Lore Item `system.proficient.value` |
 | Lore open | implemented | embedded `item.sheet.render(true)` |
@@ -206,4 +206,6 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Permissions | implemented | markup plus `canUserModify(game.user,"update")` controller guard |
 | Detached | implemented structurally | local change/action targets; no global document access; runtime verification required |
 
-`definition`, `predicate`, `maxRank`, category aliases, auto changes, and Rule Element upgrades remain PF2e-owned. A synthetic or Rule-Element-only martial entry is display-only because editing additionally requires the raw source record and its explicit `custom` flag. Modifier and DC fields are never persisted.
+Milestone 8 is complete for the listed scope. Perception and saves are an additional proficiency summary in this sheet rather than a one-to-one copy of Core's proficiency-tab layout.
+
+`definition`, `predicate`, `maxRank`, category aliases, auto changes, and Rule Element upgrades remain PF2e-owned. A synthetic or Rule-Element-only martial entry is display-only because editing additionally requires the raw source record and its explicit `custom` flag. Modifier and DC fields are never persisted. Rows without a numeric prepared modifier omit that field; a real zero remains visible as `+0`.

@@ -669,3 +669,39 @@ Using devtools, attempt empty, fractional, `-1`, `5`, `999`, and nonnumeric rank
 
 ### M8-PROF-15 – Regression
 Switch through Character, Actions, Inventory, Feats, Spellcasting, Crafting and Proficiencies; execute one established safe flow in each and confirm native tab navigation and existing behavior remain intact.
+
+### M8-FIX-01 – Fresh Untrained Skill
+1. Choose a Character whose regular skill has never been manually changed; optionally confirm `system.skills.<slug>` is absent from raw source.
+2. Open Proficiencies and confirm the skill is Untrained.
+3. Set it to Trained, confirm the Actor update occurs, reload, and confirm it remains Trained with no console error.
+
+### M8-FIX-02 – Trained to Expert
+Set a regular Trained skill to Expert. Confirm PF2e recalculates its modifier and the update writes no local modifier field.
+
+### M8-FIX-03 – Expert to Untrained
+Set an Expert regular skill back to rank 0 and confirm persistence after reload.
+
+### M8-FIX-04 – Invalid Skill Slug
+Pass a synthetic or false slug to the controller. Confirm it is a no-op and no arbitrary `system.skills.*` update path is produced.
+
+### M8-FIX-05 – Invalid Rank
+Try `-1`, `5`, `NaN`, and `1.5`. Confirm every value is a no-op and no Actor or Item update occurs.
+
+### M8-FIX-06 – Lore Regression
+Change a Lore rank. Confirm the Lore Item is updated and the regular-skill path is not used.
+
+### M8-FIX-07 – Custom Martial Regression
+Change a persistent custom martial proficiency rank and confirm it works. Confirm a synthetic proficiency remains read-only.
+
+### M8-FIX-08 – Modifier Display
+Open Armor and Weapon Proficiencies. Confirm pure rank rows have no artificial `—`, while genuine numeric modifiers supplied by Core remain visible.
+
+### M8-FIX-09 – Zero Modifier
+Find a Statistic with a genuine modifier of 0. Confirm the UI displays `+0` according to existing formatting and does not hide it as falsy.
+
+### M8-FIX-10 – Detached
+1. Detach the sheet and set a fresh Untrained regular skill to Trained.
+2. Confirm the UI updates, Proficiencies remains active, no reload occurs, and there is no cross-window error.
+
+### M8-FIX-11 – Tab Regression
+Open Character, Actions, Inventory, Feats, Spellcasting, Crafting, and Proficiencies. Confirm every tab works without errors.
