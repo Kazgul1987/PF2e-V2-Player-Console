@@ -114,3 +114,21 @@
 .crafting-formula > .item-summary { grid-column: 1 / -1; }
 .crafting-empty { opacity: .75; text-align: center; }
 @media (max-width: 50rem) { .spell-row { grid-template-columns: minmax(10rem, 1fr) auto; } .spell-meta, .spell-row > .slot-state { grid-column: 1 / -1; } }
+.proficiency-columns { display: grid; gap: .75rem; grid-template-columns: repeat(2, minmax(18rem, 1fr)); }
+.proficiency-section { border: 1px solid var(--color-border-light-primary); border-radius: .3rem; padding: .55rem; }
+.proficiency-section h3 { border-bottom: 1px solid var(--color-border-light-primary); margin: 0 0 .3rem; padding-bottom: .3rem; }
+.proficiency-list { list-style: none; margin: 0; padding: 0; }
+.proficiency-row { align-items: center; border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); display: grid; gap: .35rem .5rem; grid-template-columns: minmax(8rem, 1fr) auto auto minmax(8rem, auto) auto; min-height: 2.25rem; padding: .3rem; }
+.proficiency-name { min-width: 0; }
+.proficiency-name small, .proficiency-same-as, .proficiency-empty { opacity: .7; }
+.proficiency-same-as { grid-column: 1; font-size: .75rem; }
+.proficiency-modifier, .proficiency-dc { font-weight: 700; white-space: nowrap; }
+.proficiency-rank, .proficiency-rank-label { min-width: 8rem; }
+.proficiency-rank-label { text-align: right; }
+.proficiency-row button { min-height: 1.7rem; min-width: 1.7rem; padding: .15rem .35rem; }
+@media (max-width: 50rem) {
+    .proficiency-columns { grid-template-columns: 1fr; }
+    .proficiency-row { grid-template-columns: minmax(8rem, 1fr) auto auto; }
+    .proficiency-rank, .proficiency-rank-label { grid-column: 2 / span 2; justify-self: end; }
+    .proficiency-row button { grid-column: 3; grid-row: 1; }
+}

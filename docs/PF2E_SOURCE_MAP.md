@@ -283,3 +283,25 @@ Search/filter, blank creation, and Compendium Browser launching remain **pending
 - **Reset:** the same `crafting.ts` implements `CharacterCrafting.resetDailyCrafting()`, removing temporary Items, restoring applicable formulas/resources, and clearing `dailyCraftingComplete`. The module only calls this Core method after its presence/state guards; it duplicates none of those mutations.
 
 Quick Alchemy's official handler directly coordinates a flag, reagent update, and internal `craftItem`; it is not exposed as one atomic stable runtime API and remains pending. Advanced/daily alchemy uses `CharacterCrafting.performDailyCrafting()` and is delegated intact. Formula Browser/Picker and rich Core summary renderer are private sheet applications and remain pending/partial respectively.
+
+## Milestone 8 – Proficiencies
+
+The audit target is PF2e 8.4.0 at the pinned V14 reference. The canonical layout and edit affordances are in `static/templates/actors/character/tabs/proficiencies.hbs`; preparation is in `src/module/actor/character/document.ts` and sheet-only normalization in `src/module/actor/character/sheet.ts`. The adapter consumes prepared runtime data only. It does not import Core source or reproduce `createProficiencyModifier`.
+
+| UI area | PF2e source path | Runtime property / API | Editable? | Verified update path / API | Notes |
+|---|---|---|---|---|---|
+| Perception | `character/document.ts:prepareDerivedData`; `partials/sidebar.hbs` | `actor.perception` / `getStatistic("perception")` | no | none | Core sidebar renders rank as text; rank is class/rule prepared. Modifier and optional DC are Statistic output. |
+| Fortitude | `creature/document.ts:prepareSaves`; sidebar | `actor.saves.fortitude` / `getStatistic("fortitude")` | no | none | Prepared Statistic only. |
+| Reflex | same | `actor.saves.reflex` / `getStatistic("reflex")` | no | none | Prepared Statistic only. |
+| Will | same | `actor.saves.will` / `getStatistic("will")` | no | none | Prepared Statistic only. |
+| Skills | `character/tabs/proficiencies.hbs`; `character/document.ts:prepareSkills` | `actor.skills`, prepared `rank`, `mod/value` | yes, owner | `actor.update({"system.skills.<validated-core-slug>.rank": 0..4})` | Only a slug already present in `_source.system.skills` is accepted; totals remain PF2e-prepared. |
+| Lore | same template; `#onChangeAdjustItemStat` | prepared Lore statistic `itemId`; embedded Lore Item | yes, owner | `LoreItem.update({"system.proficient.value": 0..4})` | Never writes `system.skills`; Item sheet opens through `item.sheet.render(true)`. Create/delete/name editing remain omitted from this slice. |
+| Class DC | `character/sheet.ts` class-DC preparation; proficiency template | `actor.classDCs`, `actor.classDC`, `system.proficiencies.classDCs` trace data | no | none | All runtime statistics are rendered, primary first. DC and rank are prepared; zero/one/multiple are supported without synthesizing a DC. |
+| Weapon proficiency | `character/sheet.ts` martial normalization | `actor.system.proficiencies.attacks`, `CONFIG.PF2E.weaponCategories` | standard: no; persistent custom: yes | custom only: `actor.update({"system.proficiencies.attacks.<validated-slug>.rank":0..4})` | Standard categories are read-only like Core. No attack modifier is calculated. |
+| Armor proficiency | same | `actor.system.proficiencies.defenses`, `CONFIG.PF2E.armorCategories` | no | none | Core proficiency tab renders defenses as rank text. AC is never calculated. |
+| Martial/custom | `data.ts:MartialProficiency`; `manage-attack-proficiencies.ts` | prepared attack record (`visible`, `custom`, `sameAs`, `definition`, `maxRank`) plus `_source` | partial | rank update only when both prepared and source records are `custom:true` | Invisible and ordinary untrained extra entries are pruned as in Core. Rule/synthetic-only entries cannot pass the source/custom guard. Core's private ManageAttackProficiencies add/remove dialogs are not duplicated; create/delete are pending. |
+| Spellcasting proficiency | proficiency template; `actor/spellcasting.ts` | `actor.spellcasting.base` Statistic | display only | none | Core's proficiency summary is one base statistic. Entry mutation remains owned by the Spellcasting tab/Core; attack, DC, modifier and rank are prepared values. |
+
+### Mutation and synthetic boundary
+
+The controller accepts only the explicit categories `skill`, `lore`, and `attack`, integer ranks 0–4, and a conservative slug grammar. Skills must exist in raw Actor source, Lore must resolve to an embedded Lore Item, and attacks must be a raw persistent `custom:true` entry. No DOM-provided property path is accepted. Perception, saves, class DCs, armor, standard weapons, synthetic martial entries, and spellcasting are informational. Existing Actor/Item lifecycle hooks rerender the active Application part after Core preparation; native tab state and detached-window-local listeners are unchanged.

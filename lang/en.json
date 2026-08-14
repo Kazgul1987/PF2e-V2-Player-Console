@@ -87,6 +87,19 @@
       "NoPrepared": "No prepared formulas",
       "Known": "Known formulas",
       "DC": "DC"
+    },
+    "Proficiencies": {
+      "Rank": "Proficiency rank",
+      "Primary": "Primary",
+      "Modifier": "Modifier",
+      "DC": "DC",
+      "OpenLore": "Open Lore item",
+      "PerceptionSaves": "Perception & Saving Throws",
+      "NoLore": "No Lore skills",
+      "None": "No entries",
+      "OtherMartial": "Other / Martial Proficiencies",
+      "SameAs": "Based on:",
+      "InvalidRank": "Invalid proficiency rank."
     }
   }
 }

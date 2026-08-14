@@ -1,4 +1,57 @@
-<section class="tab-panel tab {{tab.cssClass}} placeholder" data-group="primary" data-tab="proficiencies">
+<section class="tab-panel tab {{tab.cssClass}} proficiencies-tab" data-group="primary" data-tab="proficiencies">
     <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.proficiencies"}}</h2>
-    <p>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.NotImplemented"}}</p>
+
+    {{#*inline "rank"}}
+        {{#if editable}}
+            <select class="proficiency-rank" data-rank-control data-category="{{category}}" data-slug="{{slug}}" data-item-id="{{itemId}}" aria-label="{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.Rank"}}">
+                {{#each rank.options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+        {{else}}
+            <span class="proficiency-rank-label" data-rank="{{rank.value}}">{{rank.label}}</span>
+        {{/if}}
+    {{/inline}}
+    {{#*inline "row"}}
+        <li class="proficiency-row" data-slug="{{slug}}" {{#if itemId}}data-item-id="{{itemId}}"{{/if}}>
+            <span class="proficiency-name">{{label}}{{#if primary}} <small>{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.Primary"}}</small>{{/if}}</span>
+            {{#if sameAs}}<small class="proficiency-same-as">{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.SameAs"}} {{sameAs}}</small>{{/if}}
+            {{#if modifier}}<span class="proficiency-modifier" title="{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.Modifier"}}">{{modifier}}</span>{{/if}}
+            {{#if dc}}<span class="proficiency-dc">{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.DC"}} {{dc}}</span>{{/if}}
+            {{> rank}}
+            {{#if itemId}}<button type="button" data-action="openLore" title="{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.OpenLore"}}"><i class="fa-solid fa-pen-to-square"></i></button>{{/if}}
+        </li>
+    {{/inline}}
+
+    <div class="proficiency-columns">
+        <section class="proficiency-section">
+            <h3>{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.PerceptionSaves"}}</h3>
+            <ul class="proficiency-list">{{#with proficiencies.perception}}{{> row}}{{/with}}{{#each proficiencies.saves}}{{> row}}{{/each}}</ul>
+        </section>
+        <section class="proficiency-section">
+            <h3>{{localize "PF2E.CoreSkillsHeader"}}</h3>
+            <ul class="proficiency-list">{{#each proficiencies.skills}}{{> row}}{{/each}}</ul>
+        </section>
+        <section class="proficiency-section">
+            <h3>{{localize "PF2E.LoreSkillsHeader"}}</h3>
+            {{#if proficiencies.lores.length}}<ul class="proficiency-list">{{#each proficiencies.lores}}{{> row}}{{/each}}</ul>{{else}}<p class="proficiency-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.NoLore"}}</p>{{/if}}
+        </section>
+        <section class="proficiency-section">
+            <h3>{{localize "PF2E.Actor.Character.ClassDC.Plural"}}</h3>
+            {{#if proficiencies.classDCs.length}}<ul class="proficiency-list">{{#each proficiencies.classDCs}}{{> row}}{{/each}}</ul>{{else}}<p class="proficiency-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.None"}}</p>{{/if}}
+        </section>
+        <section class="proficiency-section">
+            <h3>{{localize "PF2E.Actor.Character.Proficiency.Defense.Title"}}</h3>
+            <ul class="proficiency-list">{{#each proficiencies.armor}}{{> row}}{{/each}}</ul>
+        </section>
+        <section class="proficiency-section">
+            <h3>{{localize "PF2E.Actor.Character.Proficiency.Attack.Title"}}</h3>
+            <ul class="proficiency-list">{{#each proficiencies.weapons}}{{> row}}{{/each}}</ul>
+        </section>
+        <section class="proficiency-section">
+            <h3>{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.OtherMartial"}}</h3>
+            {{#if proficiencies.martial.length}}<ul class="proficiency-list">{{#each proficiencies.martial}}{{> row}}{{/each}}</ul>{{else}}<p class="proficiency-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.None"}}</p>{{/if}}
+        </section>
+        {{#if proficiencies.spellcasting}}
+            <section class="proficiency-section"><h3>{{localize "PF2E.Item.Spell.Plural"}}</h3><ul class="proficiency-list">{{#with proficiencies.spellcasting}}{{> row}}{{/with}}</ul></section>
+        {{/if}}
+    </div>
 </section>

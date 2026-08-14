@@ -177,3 +177,33 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Formula Browser | pending | Core FormulaPicker/browser UI is private |
 | Permissions | implemented | Mutations hidden and controller-guarded |
 | Detached | implemented | Application-local listeners and capability-checked targets; runtime sign-off required |
+
+## Milestone 8 – Proficiencies
+
+| Capability | Status | Core reference / boundary |
+|---|---|---|
+| Perception rendering | implemented | `character/document.ts` prepared `actor.perception`; sidebar rank is informational |
+| Perception rank edit | safe omission | Official sheet does not expose it in the proficiency tab |
+| Saving Throws rendering | implemented | prepared `actor.saves` / `getStatistic` |
+| Saving Throw rank edit | safe omission | Class/rule-prepared; official proficiency tab has no save editor |
+| Skills rendering | implemented | prepared `actor.skills` rows |
+| Skill rank edit | implemented | validated source slug → `system.skills.<slug>.rank` only |
+| Lore rendering | implemented | prepared Lore statistic and embedded Item ID |
+| Lore rank edit | implemented | Lore Item `system.proficient.value` |
+| Lore open | implemented | embedded `item.sheet.render(true)` |
+| Lore create/delete/name | pending | Core generic Item controls are outside the requested safe rank slice |
+| Class DC | implemented | prepared class-DC Statistics and trace data; no local DC math |
+| Multiple Class DCs | implemented | all entries in `actor.classDCs`, primary-first |
+| Class DC rank edit | safe omission | Core summary is read-only |
+| Armor proficiency | implemented | prepared `system.proficiencies.defenses` |
+| Armor rank edit | safe omission | Core renders defense ranks as text |
+| Weapon proficiency | implemented | prepared standard attack categories |
+| Weapon rank edit | safe omission | standard Core rows are readonly |
+| Martial/custom proficiency | implemented | visible prepared non-category attack entries; `sameAs` shown when present |
+| Custom proficiency rank edit | implemented | only persistent `_source` entries with `custom:true` |
+| Custom create/delete | pending | Core `ManageAttackProficiencies` dialog is private source UI; no fake predicate model |
+| Spellcasting proficiency summary | implemented | read-only `actor.spellcasting.base` prepared Statistic |
+| Permissions | implemented | markup plus `canUserModify(game.user,"update")` controller guard |
+| Detached | implemented structurally | local change/action targets; no global document access; runtime verification required |
+
+`definition`, `predicate`, `maxRank`, category aliases, auto changes, and Rule Element upgrades remain PF2e-owned. A synthetic or Rule-Element-only martial entry is display-only because editing additionally requires the raw source record and its explicit `custom` flag. Modifier and DC fields are never persisted.

@@ -11,6 +11,8 @@ import { SpellcastingAdapter } from "../../pf2e/spellcasting-adapter.js";
 import { SpellcastingController } from "../../controllers/spellcasting-controller.js";
 import { CraftingAdapter } from "../../pf2e/crafting-adapter.js";
 import { CraftingController } from "../../controllers/crafting-controller.js";
+import { ProficienciesAdapter } from "../../pf2e/proficiencies-adapter.js";
+import { ProficienciesController } from "../../controllers/proficiencies-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -70,6 +72,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             craftFormula: PF2eCharacterSheetV2.#craftingAction,
             performDailyCrafting: PF2eCharacterSheetV2.#craftingAction,
             resetDailyCrafting: PF2eCharacterSheetV2.#craftingAction,
+            openLore: PF2eCharacterSheetV2.#proficiencyAction,
         },
     };
 
@@ -131,6 +134,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "feats") partContext.feats = FeatsAdapter.prepare(this.actor);
         if (partId === "spellcasting") partContext.spellcasting = await SpellcastingAdapter.prepare(this.actor);
         if (partId === "crafting") partContext.crafting = await CraftingAdapter.prepare(this.actor);
+        if (partId === "proficiencies") partContext.proficiencies = ProficienciesAdapter.prepare(this.actor, this.isEditable);
         return partContext;
     }
 
@@ -281,6 +285,12 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
     }
 
+    static #proficiencyAction(_event, target) {
+        if (target.dataset.action === "openLore") {
+            return ProficienciesController.openLore(this.actor, target.closest("[data-item-id]")?.dataset.itemId);
+        }
+    }
+
     async _onRender(context, options) {
         await super._onRender(context, options);
         this.#renderListeners?.abort();
@@ -360,6 +370,12 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }, listenerOptions);
         crafting?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         crafting?.addEventListener("drop", (event) => void CraftingController.drop(this.actor, event, event.target), listenerOptions);
+        const proficiencies = this.element.querySelector('[data-tab="proficiencies"]');
+        proficiencies?.addEventListener("change", (event) => {
+            const select = event.target;
+            if (!select?.matches?.("[data-rank-control]")) return;
+            void ProficienciesController.updateRank(this.actor, { ...select.dataset, rank: select.value });
+        }, listenerOptions);
     }
 
     async #updateActorName(input) {
