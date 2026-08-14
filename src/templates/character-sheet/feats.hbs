@@ -1,7 +1,6 @@
 <section class="tab-panel tab {{tab.cssClass}} feats-tab" data-group="primary" data-tab="feats">
     <header class="feats-overview">
         <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.feats"}}</h2>
-        {{#if editable}}<button type="button" data-action="createFeat"><i class="fa-solid fa-plus"></i> {{localize "PF2E.Actor.Character.CreateFeat"}}</button>{{/if}}
     </header>
     {{#each feats.groups as |group|}}
         <section class="feat-section" data-group-id="{{group.id}}">
@@ -14,7 +13,7 @@
 </section>
 
 {{#*inline "featEntry"}}
-<li class="feat-entry {{#unless entry.feat}}empty{{/unless}}" data-group-id="{{entry.groupId}}" {{#if entry.slotId}}data-slot-id="{{entry.slotId}}"{{/if}} {{#if entry.feat}}data-item-id="{{entry.feat.id}}" draggable="{{editable}}"{{/if}}>
+<li class="feat-entry {{#unless entry.feat}}empty{{/unless}}" data-group-id="{{entry.groupId}}" {{#if entry.slotId}}data-slot-id="{{entry.slotId}}"{{/if}} {{#if entry.feat}}data-item-id="{{entry.feat.id}}" {{#if editable}}{{#if entry.feat.movable}}draggable="true"{{/if}}{{/if}}{{/if}}>
     {{#if entry.feat}}
         <button type="button" class="feat-name" data-action="featSummary">
             <img src="{{entry.feat.img}}" alt="">
@@ -35,6 +34,6 @@
     {{else}}
         <span class="feat-slot-label">{{entry.slotLabel}}</span><span class="feat-placeholder">{{entry.placeholder}}</span>
     {{/if}}
-    {{#if entry.children}}<ol class="feat-list nested">{{#each entry.children as |child|}}{{> featEntry entry=child editable=../editable}}{{/each}}</ol>{{/if}}
+    {{#if entry.hasChildren}}<ol class="feat-list nested">{{#each entry.children as |child|}}{{> featEntry entry=child editable=../editable}}{{/each}}</ol>{{/if}}
 </li>
 {{/inline}}

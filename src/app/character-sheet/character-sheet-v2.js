@@ -51,7 +51,6 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             featToChat: PF2eCharacterSheetV2.#featAction,
             featSummary: PF2eCharacterSheetV2.#featAction,
             deleteFeat: PF2eCharacterSheetV2.#featAction,
-            createFeat: PF2eCharacterSheetV2.#featAction,
         },
     };
 
@@ -206,7 +205,6 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             case "openFeat": return FeatController.open(this.actor, id);
             case "featToChat": return FeatController.toChat(this.actor, id, event);
             case "deleteFeat": return FeatController.remove(this.actor, id, event);
-            case "createFeat": return FeatController.create(this.actor);
             case "featSummary": {
                 const summary = row?.querySelector(":scope > .item-summary");
                 if (!summary) return;
