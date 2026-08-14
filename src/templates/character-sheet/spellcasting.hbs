@@ -1,4 +1,46 @@
-<section class="tab-panel tab {{tab.cssClass}} placeholder" data-group="primary" data-tab="spellcasting">
+<section class="tab-panel tab {{tab.cssClass}} spellcasting-tab" data-group="primary" data-tab="spellcasting">
     <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.spellcasting"}}</h2>
-    <p>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.NotImplemented"}}</p>
+    {{#if spellcasting.empty}}
+        <p class="spell-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Empty"}}</p>
+    {{else}}
+        {{#each spellcasting.entries as |entry|}}
+            <article class="spell-entry" data-entry-id="{{entry.id}}">
+                <header>
+                    <div><h3>{{entry.name}}</h3><div class="spell-entry-meta">
+                        {{#if entry.tradition}}<span>{{entry.tradition}}</span>{{/if}}<span>{{entry.category}}</span>
+                        {{#if entry.attribute}}<span>{{entry.attribute}}</span>{{/if}}
+                    </div></div>
+                    <div class="spell-statistics">
+                        {{#if entry.canAttack}}<button type="button" data-action="spellAttack" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.RollAttack'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.RollAttack'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Attack"}} {{numberFormat entry.attack sign=true}}</button>{{/if}}
+                        {{#if entry.dc}}<span title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.DC'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.DC"}} {{entry.dc}}</span>{{/if}}
+                    </div>
+                </header>
+                {{#each entry.groups as |group|}}
+                    <section class="spell-rank" data-entry-id="{{entry.id}}" data-group-id="{{group.id}}">
+                        <header><h4>{{group.label}}</h4>{{#if group.uses}}<span>{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Slots"}}: {{group.uses.value}} / {{group.uses.max}}</span>{{/if}}</header>
+                        <ol>
+                        {{#each group.slots as |slot|}}
+                            <li class="spell-row {{#if slot.empty}}empty{{/if}} {{#if slot.expended}}expended{{/if}}" data-entry-id="{{entry.id}}" data-group-id="{{group.id}}" data-slot-index="{{slot.slotIndex}}" {{#unless slot.empty}}data-spell-id="{{slot.spellId}}" draggable="true"{{/unless}}>
+                            {{#if slot.empty}}
+                                <span class="slot-state"><i class="fa-regular fa-square" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.EmptySlot"}}</span>
+                            {{else}}
+                                <button type="button" class="spell-name" data-action="openSpell" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Open'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Open'}}"><img src="{{slot.img}}" alt=""><span><strong>{{slot.name}}</strong><small>{{slot.actionCost}}</small></span></button>
+                                <div class="spell-meta">{{#each slot.traits}}<span class="trait">{{this}}</span>{{/each}}{{#if slot.uses}}<span>{{slot.uses.value}} / {{slot.uses.max}}</span>{{/if}}</div>
+                                <span class="slot-state">{{#if slot.expended}}<i class="fa-solid fa-ban" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Expended"}}{{else}}<i class="fa-solid fa-check" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Available"}}{{/if}}</span>
+                                <div class="item-controls">
+                                    {{#if @root.editable}}<button type="button" data-action="castSpell" data-rank="{{slot.castRank}}" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Cast'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Cast'}}"><i class="fa-solid fa-wand-magic-sparkles"></i></button>{{/if}}
+                                    <button type="button" data-action="spellSummary" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Summary'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Summary'}}"><i class="fa-solid fa-circle-info"></i></button>
+                                    <button type="button" data-action="spellToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button>
+                                    {{#if @root.editable}}{{#if slot.preparedSlot}}<button type="button" data-action="toggleSlotExpended" data-expended="{{slot.expended}}" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.ToggleExpended'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.ToggleExpended'}}"><i class="fa-solid fa-check-double"></i></button><button type="button" data-action="unprepareSpell" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Unprepare'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Unprepare'}}"><i class="fa-solid fa-xmark"></i></button>{{/if}}{{/if}}
+                                </div>
+                                <div class="item-summary" hidden></div>
+                            {{/if}}
+                            </li>
+                        {{/each}}
+                        </ol>
+                    </section>
+                {{/each}}
+            </article>
+        {{/each}}
+    {{/if}}
 </section>

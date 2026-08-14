@@ -7,6 +7,8 @@ import { ActionsAdapter } from "../../pf2e/actions-adapter.js";
 import { ActionController } from "../../controllers/action-controller.js";
 import { FeatsAdapter } from "../../pf2e/feats-adapter.js";
 import { FeatController } from "../../controllers/feat-controller.js";
+import { SpellcastingAdapter } from "../../pf2e/spellcasting-adapter.js";
+import { SpellcastingController } from "../../controllers/spellcasting-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -51,6 +53,13 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             featToChat: PF2eCharacterSheetV2.#featAction,
             featSummary: PF2eCharacterSheetV2.#featAction,
             deleteFeat: PF2eCharacterSheetV2.#featAction,
+            castSpell: PF2eCharacterSheetV2.#spellAction,
+            openSpell: PF2eCharacterSheetV2.#spellAction,
+            spellToChat: PF2eCharacterSheetV2.#spellAction,
+            spellSummary: PF2eCharacterSheetV2.#spellAction,
+            unprepareSpell: PF2eCharacterSheetV2.#spellAction,
+            toggleSlotExpended: PF2eCharacterSheetV2.#spellAction,
+            spellAttack: PF2eCharacterSheetV2.#spellAction,
         },
     };
 
@@ -110,6 +119,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "inventory") partContext.inventory = InventoryAdapter.prepare(this.actor);
         if (partId === "actions") partContext.actions = ActionsAdapter.prepare(this.actor);
         if (partId === "feats") partContext.feats = FeatsAdapter.prepare(this.actor);
+        if (partId === "spellcasting") partContext.spellcasting = await SpellcastingAdapter.prepare(this.actor);
         return partContext;
     }
 
@@ -215,6 +225,26 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
     }
 
+    static async #spellAction(event, target) {
+        const row = target.closest("[data-entry-id]");
+        const data = { ...row?.dataset, ...target.dataset };
+        switch (target.dataset.action) {
+            case "castSpell": return SpellcastingController.cast(this.actor, data);
+            case "openSpell": return SpellcastingController.open(this.actor, data.spellId);
+            case "spellToChat": return SpellcastingController.chat(this.actor, data.spellId, event);
+            case "unprepareSpell": return SpellcastingController.unprepare(this.actor, data);
+            case "toggleSlotExpended": return SpellcastingController.expend(this.actor, data);
+            case "spellAttack": return SpellcastingController.attack(this.actor, data.entryId, event);
+            case "spellSummary": {
+                const summary = row?.querySelector(":scope > .item-summary");
+                if (!summary) return;
+                if (!summary.hidden) { summary.hidden = true; summary.replaceChildren(); return; }
+                summary.innerHTML = await SpellcastingController.summary(this.actor, data.spellId);
+                summary.hidden = false;
+            }
+        }
+    }
+
     async _onRender(context, options) {
         await super._onRender(context, options);
         this.#renderListeners?.abort();
@@ -261,6 +291,13 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }, listenerOptions);
         feats?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         feats?.addEventListener("drop", (event) => void FeatController.drop(this.actor, event, event.target), listenerOptions);
+        const spellcasting = this.element.querySelector('[data-tab="spellcasting"]');
+        spellcasting?.addEventListener("dragstart", (event) => {
+            const target = event.target?.closest?.("[draggable][data-spell-id]");
+            if (target) SpellcastingController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        spellcasting?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        spellcasting?.addEventListener("drop", (event) => void SpellcastingController.drop(this.actor, event, event.target), listenerOptions);
     }
 
     async #updateActorName(input) {

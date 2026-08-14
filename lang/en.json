@@ -52,6 +52,21 @@
       "Prompt": "Choose the quantity to transfer to {actor}.",
       "NewStack": "Create a new stack",
       "Button": "Transfer"
+    },
+    "Spellcasting": {
+      "Empty": "No spellcasting entries",
+      "Attack": "Attack",
+      "DC": "DC",
+      "RollAttack": "Roll spell attack",
+      "Slots": "Slots",
+      "EmptySlot": "Empty slot",
+      "Expended": "Expended",
+      "Available": "Available",
+      "Open": "Open spell",
+      "Cast": "Cast spell",
+      "Summary": "Toggle spell summary",
+      "ToggleExpended": "Toggle expended state",
+      "Unprepare": "Unprepare spell"
     }
   }
 }

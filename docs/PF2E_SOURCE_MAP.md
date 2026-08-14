@@ -237,3 +237,21 @@ PF2e prepares `sheetData.feats = [...actor.feats, actor.feats.bonus]` in `src/mo
 Core's Character Sheet `_onSortItem` guard at `reference/pf2e/src/module/actor/character/sheet.ts:1549-1550` returns `[]` when `group?.slotted && !featSlot.slotId`. The V2 controller applies that guard only when the resolved Feat already belongs to the same Actor: **internal same-Actor drop + slotted target group + missing `slotId` → no-op**. External Compendium, World Item, and other-Actor drops therefore still reach `CharacterFeats.insertFeat`, which remains responsible for finding a valid location or rejecting the drop.
 
 Search/filter, blank creation, and Compendium Browser launching remain **pending** because Core's browser/create UI is not a stable public workflow. Rich summary actions are **partial** because `ItemSummaryRenderer` is internal. Native cross-window `DataTransfer` remains browser-dependent and requires manual testing.
+
+## Milestone 6 – Spellcasting
+
+| PF2e surface | PF2e source path | Runtime API used by this module | Notes / limitations |
+| --- | --- | --- | --- |
+| `ActorSpellcasting` | `src/module/actor/spellcasting.ts` | `actor.spellcasting.collections` | Central iterator includes regular, focus, item-backed and ephemeral ritual collections; the adapter does not fall back to `itemTypes.spellcastingEntry`. |
+| `SpellcastingEntryPF2e` | `src/module/item/spellcasting-entry/document.ts` | collection `entry`, `entry.statistic` | Supplies category flags, attack statistic and DC; item-entry create/delete UI is intentionally pending. |
+| `SpellCollection` | `src/module/item/spellcasting-entry/collection.ts` | collection iteration/get, `addSpell`, `prepareSpell`, `setSlotExpendedState`, `swapSlotPositions` | Owns copy/move, rank validation and prepared-slot updates. No parallel slot model is created. |
+| `RitualSpellcasting` | `src/module/item/spellcasting-entry/rituals.ts` | ritual collection `getSheetData`, entry `cast` | Ephemeral section renders; cast delegates to its chat-only core implementation. It is never treated as deletable entry data. |
+| Prepared sheet data | `src/module/item/spellcasting-entry/document.ts`, `collection.ts` | `entry.getSheetData({ spells: collection })`, internally `getSpellData()` | Groups, rank labels, active slots, uses, cast ranks and expended flags are PF2e-prepared data and are only normalized to primitives. |
+| Cast and consume | `src/module/item/spellcasting-entry/document.ts` | `entry.cast(spell, { rank, slotId })` | `cast` calls Core `consume`; Core owns prepared/spontaneous slots, innate uses, focus points, at-will behavior, `computeCastRank`, validation, and message creation. |
+| Add / move | `src/module/item/spellcasting-entry/collection.ts` | `collection.addSpell(spell, { groupId })` | Compendium, world, other-actor and same-actor drops use Core copying/moving and heightening validation. |
+| Prepare / unprepare | `src/module/item/spellcasting-entry/collection.ts` | `prepareSpell(spellOrNull, groupId, slotIndex)` | Concrete prepared-slot drops and unprepare never delete the Spell Item. Flexible preparation remains partial because Core presents its management in `SpellPreparationApp`. |
+| Expended / swap | `src/module/item/spellcasting-entry/collection.ts` | `setSlotExpendedState(...)`, `swapSlotPositions(...)` | Both mutations are Core-owned. Slot swaps are enabled only for a same-entry/same-group drag carrying PF2e-compatible `spellFrom` metadata. |
+| `canCast` | `document.ts`, `rituals.ts`, `item-spellcasting.ts` | indirectly enforced by entry/core flows | No local tradition/focus/cantrip eligibility implementation. |
+| `Spell.toMessage` | `src/module/item/spell/document.ts` | `spell.toMessage(event)` for chat-only; indirectly from `entry.cast` | Chat-only is separate from cast, preventing accidental consumption. |
+| Spell attack | `document.ts`; `src/system/statistic` | `entry.statistic.check.roll(RollController.eventToRollParams(event))` | Reuses the module's dialog/blind-roll event mapping. DC is display-only from prepared statistic chat data. |
+| Item activations | `item-spellcasting.ts`, consumable activation sources | none in spell section | Safe omission: inventory/PF2e activation flows retain charge ownership; no charge logic is recreated here. |
