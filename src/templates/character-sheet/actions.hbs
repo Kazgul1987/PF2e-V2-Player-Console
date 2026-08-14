@@ -1,4 +1,4 @@
-<main class="tab-panel tab {{tab.cssClass}} actions-tab" data-group="primary" data-tab="actions">
+<section class="tab-panel tab {{#if isActive}}active{{/if}} actions-tab" data-group="primary" data-tab="actions">
     <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.actions"}}</h2>
 
     {{#if actions.toggles.length}}
@@ -39,7 +39,7 @@
     {{> actionSection title="PF2E.Actor.Character.ActiveHeader" items=actions.sections.explorationActive exploration=true}}
     {{> actionSection title="PF2E.TabActionsExplorationLabel" items=actions.sections.exploration exploration=true}}
     {{> actionSection title="PF2E.TabActionsDowntimeLabel" items=actions.sections.downtime}}
-</main>
+</section>
 
 {{#*inline "strikeRow"}}
 <li class="strike-row {{#if strike.ready}}ready{{/if}}" data-strike-index="{{strike.index}}" data-alt-usage-index="{{strike.altUsageIndex}}">

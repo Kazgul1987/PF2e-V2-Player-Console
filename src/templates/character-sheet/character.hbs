@@ -1,6 +1,6 @@
-<main class="tab-panel tab {{tab.cssClass}}" data-group="primary" data-tab="character">
+<section class="tab-panel tab {{#if isActive}}active{{/if}}" data-group="primary" data-tab="character">
     <button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="perception"><h2>{{localize "PF2E.PerceptionHeader"}}</h2><strong>{{actor.perception.modifier}}</strong></button>
     <button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="perception" data-secret aria-label="{{localize 'PF2E.Check.Specific.Perception.Secret'}}"><i class="fa-solid fa-eye-slash"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Actions.SecretPerception"}}</button>
     <section><h2>{{localize "PF2E.SavesHeader"}}</h2><div class="stat-grid">{{#each actor.saves}}<button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span>{{label}}</span><strong>{{modifier}}</strong></button>{{/each}}</div></section>
     <section><h2>{{localize "PF2E.SkillsLabel"}}</h2><div class="stat-grid skills">{{#each actor.skills}}<button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span>{{label}}</span><strong>{{modifier}}</strong></button>{{/each}}</div></section>
-</main>
+</section>

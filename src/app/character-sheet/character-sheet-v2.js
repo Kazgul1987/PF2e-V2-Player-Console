@@ -104,7 +104,10 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     async _preparePartContext(partId, context, options) {
         const partContext = await super._preparePartContext(partId, context, options);
-        if (TABS.includes(partId)) partContext.tab = context.tabs[partId];
+        if (TABS.includes(partId)) {
+            partContext.tab = context.tabs[partId];
+            partContext.isActive = this.tabGroups.primary === partId;
+        }
         if (partId === "inventory") partContext.inventory = InventoryAdapter.prepare(this.actor);
         if (partId === "actions") partContext.actions = ActionsAdapter.prepare(this.actor);
         return partContext;
