@@ -17,14 +17,8 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             positioned: true,
             resizable: true,
             minimizable: true,
-            contentTag: "form",
         },
         position: { width: 920, height: 760 },
-        form: {
-            handler: PF2eCharacterSheetV2.#submitActor,
-            submitOnChange: false,
-            closeOnSubmit: false,
-        },
         actions: {
             detach: PF2eCharacterSheetV2.#detach,
             rollStatistic: PF2eCharacterSheetV2.#rollStatistic,
@@ -106,7 +100,6 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         const partContext = await super._preparePartContext(partId, context, options);
         if (TABS.includes(partId)) {
             partContext.tab = context.tabs[partId];
-            partContext.isActive = this.tabGroups.primary === partId;
         }
         if (partId === "inventory") partContext.inventory = InventoryAdapter.prepare(this.actor);
         if (partId === "actions") partContext.actions = ActionsAdapter.prepare(this.actor);
@@ -200,9 +193,21 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     async _onRender(context, options) {
         await super._onRender(context, options);
-        this.#dragListeners?.abort();
-        this.#dragListeners = new AbortController();
-        const listenerOptions = { signal: this.#dragListeners.signal };
+        this.#renderListeners?.abort();
+        this.#renderListeners = new AbortController();
+        const listenerOptions = { signal: this.#renderListeners.signal };
+        const nameInput = this.element.querySelector('[data-actor-name]');
+        nameInput?.addEventListener("change", (event) => void this.#updateActorName(event.currentTarget), listenerOptions);
+        nameInput?.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                event.currentTarget.blur();
+            } else if (event.key === "Escape") {
+                event.preventDefault();
+                event.currentTarget.value = this.actor.name;
+                event.currentTarget.blur();
+            }
+        }, listenerOptions);
         const actions = this.element.querySelector('[data-tab="actions"]');
         actions?.addEventListener("change", (event) => {
             const target = event.target;
@@ -228,15 +233,22 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         inventory.addEventListener("drop", (event) => void InventoryController.drop(this.actor, event, event.target), listenerOptions);
     }
 
-    static async #submitActor(_event, _form, formData) {
+    async #updateActorName(input) {
+        const name = String(input.value ?? "").trim();
+        if (!name) {
+            input.value = this.actor.name;
+            return ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Errors.NameRequired"));
+        }
+        if (name === this.actor.name) {
+            input.value = name;
+            return;
+        }
         if (!this.isEditable || !this.document.canUserModify(game.user, "update")) {
+            input.value = this.actor.name;
             console.warn(`${LOG_PREFIX} User may not update Actor`, { actor: this.actor.uuid, user: game.user.id });
             return ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Errors.NotEditable"));
         }
-
-        const name = String(formData.object.name ?? "").trim();
-        if (!name) return ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Errors.NameRequired"));
-        if (name !== this.document.name) await this.document.update({ name });
+        await this.document.update({ name });
     }
 
     #registerDocumentHooks() {
@@ -255,5 +267,5 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     #hooks = [];
-    #dragListeners = null;
+    #renderListeners = null;
 }
