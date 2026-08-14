@@ -15,12 +15,14 @@ export class FeatsAdapter {
     }
 
     static #entry(slot, group) {
+        const children = (slot.children ?? []).map((child) => this.#entry(child, group));
         return {
             slotId: slot.id ?? null,
             slotLabel: slot.label ?? null,
             placeholder: slot.feat ? null : game.i18n.localize(slot.placeholder ?? "PF2E.EmptySlot"),
             feat: slot.feat ? this.#feat(slot.feat) : null,
-            children: (slot.children ?? []).map((child) => this.#entry(child, group)),
+            children,
+            hasChildren: children.length > 0,
             groupId: group.id,
         };
     }
@@ -39,6 +41,7 @@ export class FeatsAdapter {
             category: game.i18n.localize(CONFIG.PF2E.featCategories?.[item.category] ?? item.category ?? ""),
             traits,
             actionCost: cost,
+            movable: !item.grantedBy,
         };
     }
 }

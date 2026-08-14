@@ -19,17 +19,9 @@ export class FeatController {
         const item = this.item(actor, id);
         return event?.ctrlKey || event?.shiftKey ? item?.delete() : item?.deleteDialog();
     }
-    static async create(actor) {
-        if (!this.#editable(actor)) return;
-        return actor.createEmbeddedDocuments("Item", [{
-            name: game.i18n.localize(CONFIG.PF2E.featCategories.bonus),
-            type: "feat",
-            system: { category: "bonus" },
-        }]);
-    }
     static dragStart(actor, event, target) {
         const item = this.item(actor, target.dataset.itemId);
-        if (item?.isOfType?.("feat") && event.dataTransfer) {
+        if (item?.isOfType?.("feat") && !item.grantedBy && event.dataTransfer) {
             event.dataTransfer.setData("text/plain", JSON.stringify(item.toDragData()));
         }
     }
@@ -39,14 +31,20 @@ export class FeatController {
         const data = TextEditor.getDragEventData(event);
         const item = await Item.implementation.fromDropData(data);
         if (!item?.isOfType?.("feat")) return;
-        const entry = target.closest("[data-group-id]");
-        const groupId = entry?.dataset.groupId ?? "bonus";
+
+        const groupId = target.closest("[data-group-id]")?.dataset.groupId;
+        const slotData = groupId
+            ? { groupId, slotId: target.closest("[data-slot-id]")?.dataset.slotId ?? null }
+            : null;
+        const sameActor = item.parent?.uuid === actor.uuid;
+
+        // Nested grants are prepared as children by PF2e and are not independent move targets.
+        if (sameActor && item.grantedBy) return;
+
         const group = groupId === "bonus" ? actor.feats.bonus : actor.feats.get(groupId);
-        if (!group) return;
-        const slotId = target.closest("[data-slot-id]")?.dataset.slotId ?? null;
-        if (item.actor?.uuid !== actor.uuid || item.group !== group || group.slotted) {
-            return group.insertFeat(item, slotId);
-        }
+        const resorting = sameActor && item.group === group && !group?.slotted;
+        if (!resorting) return actor.feats.insertFeat(item, slotData);
+
         const targetItem = this.item(actor, target.closest("[data-item-id]")?.dataset.itemId);
         if (targetItem && targetItem !== item) {
             const siblings = group.feats.flatMap((entry) => entry.feat && entry.feat !== item ? [entry.feat] : []);

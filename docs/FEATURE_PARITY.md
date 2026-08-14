@@ -21,7 +21,9 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Live Actor/item refresh | ✓ | ✓ | implemented | document hooks | update/create/delete hooks | M2-LIVE-01 | UUID filtered and cleaned on close |
 | Localization foundation | ✓ | ✓ | implemented | PF2e and module lang files | `game.i18n`, `localize` | M2-LOC-01/02 | English and German |
 | HP/hero points/XP editing | ✓ | — | pending | PF2e resource handlers | pending review | — | Display only; no generic update |
-| Strikes/actions/spells/feats/crafting/effects | ✓ | — | M4+ | respective core tabs | — | — | Not implemented in this milestone |
+| Spells/crafting/effects | ✓ | — | M6+ | respective core tabs | — | — | Not implemented in this milestone |
+| Strikes/actions | ✓ | ✓ | Milestone 4 implemented | respective core tabs | prepared PF2e runtime APIs | M4 tests | Runtime sign-off remains listed below |
+| Feats | ✓ | ✓ | Milestone 5 implemented | character feats tab/collection/group | `actor.feats` | M5 tests | Create remains pending; runtime sign-off remains listed below |
 
 ## Milestone 3 inventory detail
 
@@ -106,11 +108,11 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Send to Chat | implemented | common chat handler | `item.toMessage(event)` |
 | Delete | implemented | common delete handler | `deleteDialog` (modifier bypass); Core grant lifecycle retained |
 | Sorting | implemented | `_onSortItem` / base sortable | `sortRelative` for unslotted group |
-| Internal D&D | implemented | `_onSortItem` | group/slot moves via `group.insertFeat` |
+| Internal D&D | implemented | `_onSortItem` | cross-group/slot moves via `actor.feats.insertFeat`; nested grants are not independent move sources |
 | Compendium Drop | implemented | `_onDropItem` | `fromDropData` then `insertFeat` |
 | World Item Drop | implemented | `_onDropItem` | same copy path |
 | Actor Drop | implemented | `_onDropItem` | copied via `insertFeat`, never physical transfer |
-| Create | implemented | `create-feat` | Core-equivalent blank bonus Feat; Browser search pending |
+| Create | pending | no stable public blank-Feat workflow | Deliberately omitted: bonus is a group, not a Feat category; Browser search pending |
 | Permissions | implemented | DocumentSheet editability | controls hidden and controller `canUserModify` guard |
 | Detached | implemented statically | Application V2 | part-local listeners/event targets; native cross-window D&D needs runtime test |
 | Search/filter/browser | pending | private Core Compendium Browser flow | safe omission; no private UI copied |

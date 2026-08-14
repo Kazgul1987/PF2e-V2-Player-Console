@@ -403,3 +403,47 @@ Compare Actions, Inventory, and Feats at wide and narrow detached sizes. Confirm
 
 ### M5-FEAT-11 – Live update and tabs
 Keep Feats active while creating, updating, and deleting Feat Items. Confirm the tab remains active after each existing lifecycle-hook rerender.
+
+## Milestone 5 fixup — Core-aligned Feat insertion
+
+### M5-FIX-01 – Compendium → Bonus
+1. Drag a Feat from a compendium to the Bonus group.
+2. Confirm it is inserted correctly.
+3. Confirm no `category="bonus"` manipulation occurs.
+
+### M5-FIX-02 – Compendium → Slot
+1. Drag a Feat from a compendium to a valid Feat slot.
+2. Confirm PF2e accepts it, chooses its Core fallback, or rejects it as appropriate.
+
+### M5-FIX-03 – World Item → Group
+1. Drag a World Feat Item to a Feat group.
+2. Confirm PF2e inserts it into the appropriate group and leaves the World Item intact.
+
+### M5-FIX-04 – Actor → Actor
+1. Drag a Feat from another character to this character's Feats tab.
+2. Confirm the PF2e collection determines placement.
+3. Confirm this is a copy/insertion and not the physical-item transfer workflow.
+
+### M5-FIX-05 – Internal Group Move
+1. Move an existing Feat on the same Actor to another group or slot.
+2. Confirm there is no duplicate.
+3. Confirm PF2e determines whether the target is allowed and applies any fallback.
+
+### M5-FIX-06 – Sorting
+1. Reorder two Feats in the same unslotted group.
+2. Rerender and confirm the order persists.
+
+### M5-FIX-07 – Bonus Group
+1. Inspect and move eligible Bonus Feats.
+2. Confirm no Item category named `bonus` is required.
+
+### M5-FIX-08 – Granted Child
+1. Open a group containing a nested child grant.
+2. Confirm the child renders correctly and has no independent drag handle.
+3. Confirm open, summary, chat, and Core-owned deletion behavior still work without local grant mutation.
+
+### M5-FIX-09 – Detached
+1. Detach the sheet.
+2. Exercise external and internal Feat drag/drop as the browser permits.
+3. Open a summary and an Item sheet.
+4. Confirm neither browser-window console reports DOM/window errors.
