@@ -447,3 +447,43 @@ Keep Feats active while creating, updating, and deleting Feat Items. Confirm the
 2. Exercise external and internal Feat drag/drop as the browser permits.
 3. Open a summary and an Item sheet.
 4. Confirm neither browser-window console reports DOM/window errors.
+
+## Milestone 5 final — Slotted internal-drop guard
+
+### M5-FINAL-01 – Internal slotted group header drop
+1. Open a character with a slotted Feat group.
+2. Drag an existing Feat from an occupied slot.
+3. Drop it on the header or empty area of the same slotted group.
+4. Confirm no concrete slot is targeted.
+5. Confirm the Feat remains in its previous slot.
+6. Confirm no duplication occurs.
+7. Confirm the console reports no errors.
+
+### M5-FINAL-02 – Internal valid slot move
+1. Drag an existing Feat.
+2. Drop it on a concrete valid slot in the same or another permitted group.
+3. Confirm PF2e processes the move.
+
+### M5-FINAL-03 – External drop without concrete slot
+1. Drag a Feat from a compendium.
+2. Drop it on a slotted group without targeting a concrete slot.
+3. Confirm the drop is still delegated to `actor.feats.insertFeat(...)`.
+4. Confirm PF2e decides the target, fallback, or rejection.
+
+### M5-FINAL-04 – Unslotted sorting
+1. Reorder two Feats in the same unslotted group.
+2. Confirm the order persists.
+
+### M5-FINAL-05 – Bonus drop
+1. Drop an internal or external Feat on the Bonus group.
+2. Confirm the existing Core behavior is preserved.
+
+### M5-FINAL-06 – Granted child
+1. Inspect a granted child Feat.
+2. Confirm no unauthorized independent move is possible.
+
+### M5-FINAL-07 – Detached
+1. Detach the sheet.
+2. Test an internal concrete-slot move.
+3. Test an invalid group-header drop.
+4. Confirm there are no DOM or Window errors.

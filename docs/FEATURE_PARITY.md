@@ -23,7 +23,7 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | HP/hero points/XP editing | ✓ | — | pending | PF2e resource handlers | pending review | — | Display only; no generic update |
 | Spells/crafting/effects | ✓ | — | M6+ | respective core tabs | — | — | Not implemented in this milestone |
 | Strikes/actions | ✓ | ✓ | Milestone 4 implemented | respective core tabs | prepared PF2e runtime APIs | M4 tests | Runtime sign-off remains listed below |
-| Feats | ✓ | ✓ | Milestone 5 implemented | character feats tab/collection/group | `actor.feats` | M5 tests | Create remains pending; runtime sign-off remains listed below |
+| Feats | ✓ | ✓ | Milestone 5 complete | character feats tab/collection/group | `actor.feats` | M5 tests, M5-FINAL-01–07 | Feature slice complete; Create remains a transparent safe omission and Foundry runtime checks remain listed below |
 
 ## Milestone 3 inventory detail
 
@@ -108,7 +108,7 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Send to Chat | implemented | common chat handler | `item.toMessage(event)` |
 | Delete | implemented | common delete handler | `deleteDialog` (modifier bypass); Core grant lifecycle retained |
 | Sorting | implemented | `_onSortItem` / base sortable | `sortRelative` for unslotted group |
-| Internal D&D | implemented | `_onSortItem` | cross-group/slot moves via `actor.feats.insertFeat`; nested grants are not independent move sources |
+| Internal D&D | implemented | `_onSortItem` | cross-group/slot moves via `actor.feats.insertFeat`; same-Actor + slotted target + missing `slotId` is a no-op; nested grants are not independent move sources |
 | Compendium Drop | implemented | `_onDropItem` | `fromDropData` then `insertFeat` |
 | World Item Drop | implemented | `_onDropItem` | same copy path |
 | Actor Drop | implemented | `_onDropItem` | copied via `insertFeat`, never physical transfer |
