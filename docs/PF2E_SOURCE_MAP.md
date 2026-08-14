@@ -21,9 +21,9 @@ Saves and skills use the same path. Rows and slugs come from prepared Actor data
 - **Special case:** a truthy `anchor.dataset.secret` adds `extraRollOptions: ["secret"]`.
 - **Runtime API:** the module resolves `getStatistic("perception")` and calls `roll`; its secret button supplies the same extra option.
 
-## Actor name edit and V14 form path
+## Actor name edit
 
-The core name control is `reference/pf2e/static/templates/actors/character/partials/header.hbs` and ultimately updates the Actor Document. Foundry's exact V2 form contract is declared in `reference/pf2e/types/foundry/client/applications/_types.d.mts`: `ApplicationFormSubmission(event, form, FormDataExtended)`. `application.d.mts` defines `_onSubmitForm`; `document-sheet.d.mts` defines document-sheet submit processing. A real top-level form is configured through `DEFAULT_OPTIONS.form`; the narrow handler validates `formData.object.name` and calls `document.update({ name })`.
+The core name control is `reference/pf2e/static/templates/actors/character/partials/header.hbs` and ultimately updates the Actor Document. This module intentionally has no top-level form or global Save/Submit lifecycle: its focused input trims and validates on blur, Enter uses that same path, Escape restores the Document value, and the mutation is a targeted `document.update({ name })`.
 
 ## Permissions
 
@@ -273,5 +273,13 @@ Search/filter, blank creation, and Compendium Browser launching remain **pending
 | same | `craft(index)` | Ability-specific resource/slot consumption and temporary Item creation | Prepared formula Craft action |
 | `src/module/system/action-macros/crafting/craft.ts` | `game.pf2e.actions.craft({uuid,quantity,actors,event})` | Official known-formula Craft check/card flow | Known formula Craft action |
 | `src/module/actor/character/sheet.ts` and `static/templates/actors/character/tabs/crafting.hbs` | `CraftingFormula` drag payload and ability methods | Official interaction/reference layout | Formula D&D only; sorting/private picker omitted |
+
+### Daily Crafting state and guards
+
+- **`hasDailyCrafting`:** `reference/pf2e/src/module/actor/character/sheet.ts` prepares it from `actor.crafting.abilities.some((ability) => ability.isDailyPrep || ability.isAlchemical)`. The adapter and runtime controller use that same live-ability predicate rather than Actor level, feat names, or other heuristics.
+- **`isDailyPrep`:** `reference/pf2e/src/module/actor/character/crafting/ability.ts` initializes the property from prepared crafting-ability data and currently also sets it for alchemical abilities as a compatibility step.
+- **Completion state:** `reference/pf2e/src/module/actor/character/sheet.ts` reads `flags.pf2e.dailyCraftingComplete`; `reference/pf2e/static/templates/actors/character/tabs/crafting.hbs` disables Perform when true and Reset when false.
+- **Perform:** `reference/pf2e/src/module/actor/character/crafting/crafting.ts` implements `CharacterCrafting.performDailyCrafting()`, filters daily-preparation abilities, validates resources, expends formulas, adds Items, and sets `dailyCraftingComplete`.
+- **Reset:** the same `crafting.ts` implements `CharacterCrafting.resetDailyCrafting()`, removing temporary Items, restoring applicable formulas/resources, and clearing `dailyCraftingComplete`. The module only calls this Core method after its presence/state guards; it duplicates none of those mutations.
 
 Quick Alchemy's official handler directly coordinates a flag, reagent update, and internal `craftItem`; it is not exposed as one atomic stable runtime API and remains pending. Advanced/daily alchemy uses `CharacterCrafting.performDailyCrafting()` and is delegated intact. Formula Browser/Picker and rich Core summary renderer are private sheet applications and remain pending/partial respectively.

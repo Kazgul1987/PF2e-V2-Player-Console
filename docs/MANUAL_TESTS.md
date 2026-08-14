@@ -2,9 +2,9 @@
 
 These tests require a running Foundry V14/PF2e world and cannot be replaced by Node validation. Compare with the official sheet, and repeat interaction cases after **Detach to Browser Window** where specified.
 
-## M2-FORM-01 – Name via Save/Submit
+## M2-FORM-01 – Name via blur
 
-1. Open the V2 sheet as owner; change the name and use Save.
+1. Open the V2 sheet as owner, change the name, and blur the input.
 2. Verify the Actor Document, directory, official PF2e sheet, V2 header, and V2 window title.
 3. Confirm the sheet remains open and only `name` changed.
 
@@ -13,13 +13,14 @@ These tests require a running Foundry V14/PF2e world and cannot be replaced by N
 1. Put the cursor in the name field, change it, and press Enter.
 2. Confirm there is no browser navigation or page reload.
 3. Confirm the Actor name updates and all views synchronize.
-4. Submit whitespace-only text and confirm validation prevents the update.
+4. Enter whitespace-only text and confirm validation prevents the update.
 
-## M2-FORM-03 – Detached edit
+## M2-FORM-03 – Name via Escape and detached edit
 
-1. Detach the sheet, change the name, and submit with both Save and Enter.
-2. Verify the Actor update and synchronization in the main Foundry window.
-3. Confirm keyboard navigation reaches the input and submit button without returning to the main DOM.
+1. Change the name, press Escape, and confirm the current Actor name is restored without an update.
+2. Detach the sheet, change the name, and commit separately with blur and Enter.
+3. Verify the Actor update and synchronization in the main Foundry window.
+4. Confirm keyboard navigation reaches the input without returning to the main DOM.
 
 ## M2-ROLL-01 – Standard skill, Lore, and save
 
@@ -45,7 +46,7 @@ Use the dedicated Secret Perception control as GM and player. Confirm PF2e recei
 
 1. Open an Actor as Owner, Observer, and Limited wherever core permits visibility.
 2. Confirm Owner can edit and Observer/Limited see read-only name markup.
-3. Attempt a synthetic/DOM-triggered submit as a non-owner and confirm the Document does not update and a localized error appears.
+3. Attempt to trigger the focused name-update action as a non-owner and confirm the Document does not update and a localized error appears.
 4. Compare permitted rolls and chat visibility with core.
 
 ## M2-LOC-01 – English
@@ -66,7 +67,7 @@ With attached and detached sheets open, update the Actor from core, then create,
 
 ## Required milestone sign-off
 
-All cases above are mandatory in a running world. Particular regression focus: open → detach → switch tab → edit/Enter → skill/save/perception/secret roll → operate dialog → external Actor/Item update. Static checks cannot prove browser-window focus, Foundry permission thresholds, localization loading, PF2e chat visibility, or sheet registration compatibility.
+All cases above are mandatory in a running world. Particular regression focus: open → detach → switch tab → edit via blur/Enter/Escape → skill/save/perception/secret roll → operate dialog → external Actor/Item update. Static checks cannot prove browser-window focus, Foundry permission thresholds, localization loading, PF2e chat visibility, or sheet registration compatibility.
 
 ## Milestone 3 inventory
 
@@ -561,7 +562,7 @@ Keep Feats active while creating, updating, and deleting Feat Items. Confirm the
 - **M6-SLOT-05/06 – Prepared max:** Increase 3→4 and decrease 4→2; verify Core-prepared concrete slots.
 - **M6-SLOT-07 – Cast after edit:** Edit current slots, cast, and verify Core consumption uses the new value.
 - **M6-SLOT-08 – Observer:** Verify counters are visible without editable inputs.
-- **M6-SLOT-09 – Detached:** Edit by blur and Enter, cancel with Escape, and verify no submit/reload or tab change.
+- **M6-SLOT-09 – Detached:** Edit by blur and Enter, cancel with Escape, and verify no reload or tab change.
 
 ## Milestone 7 – Crafting
 
@@ -576,3 +577,47 @@ Keep Feats active while creating, updating, and deleting Feat Items. Confirm the
 - **M7-CRAFT-15:** Detached: prepare, quantity, summary, D&D, and Craft; verify no cross-window DOM error.
 - **M7-CRAFT-16:** Observer sees entries/formulas/open/summary/chat but no mutation controls; direct mutations reject.
 - **M7 regression:** Recheck Character, Actions, Inventory, Feats, Spellcasting/slot editing, name editing, native tabs, and detached behavior.
+
+## Milestone 7 fixup – guarded daily crafting
+
+### M7-FIX-01 – No Daily Crafting
+1. Open a Character without a Daily-Crafting ability and select Crafting.
+2. Confirm Perform Daily Crafting and Reset Daily Crafting are not visible.
+3. Confirm there are no console errors.
+
+### M7-FIX-02 – Daily Crafting available
+1. Open a Character with a Daily-Crafting ability and select Crafting.
+2. Confirm both daily controls are visible.
+3. While `dailyCraftingComplete` is false, confirm Perform is enabled and Reset is disabled.
+
+### M7-FIX-03 – Perform
+1. Select Perform Daily Crafting and confirm PF2e Core processes the crafting.
+2. Confirm `dailyCraftingComplete` becomes true, Perform becomes disabled, and Reset becomes enabled.
+
+### M7-FIX-04 – Reset
+1. With Daily Crafting completed, select Reset Daily Crafting and confirm Core `resetDailyCrafting()` runs.
+2. Confirm `dailyCraftingComplete` becomes false, Perform becomes enabled, and Reset becomes disabled.
+
+### M7-FIX-05 – Controller safety
+1. On a Character without Daily Crafting, deliberately invoke each daily action handler from the console/action dispatch.
+2. Confirm Perform and Reset are both no-ops without a runtime exception.
+
+### M7-FIX-06 – Double Perform
+1. With `dailyCraftingComplete` true, deliberately invoke Perform again.
+2. Confirm it is a no-op and no resource is consumed twice.
+
+### M7-FIX-07 – Reset before Perform
+1. With `dailyCraftingComplete` false, deliberately invoke Reset.
+2. Confirm it is a no-op with no unexpected temporary-Item or resource mutation.
+
+### M7-FIX-08 – Detached daily crafting
+1. Detach the sheet, open Crafting, then perform and reset Daily Crafting.
+2. Confirm there is no reload, UI movement, or cross-window DOM error.
+
+### M7-FIX-09 – Spell-slot regression
+1. Open Spellcasting and change both the current (`value`) and maximum (`max`) slot counts.
+2. Confirm both persist and the crafting fix introduced no regression.
+
+### M7-FIX-10 – Tab regression
+1. Click Character, Actions, Inventory, Feats, Spellcasting, and Crafting.
+2. Confirm every tab activates without a `changeTab` error.
