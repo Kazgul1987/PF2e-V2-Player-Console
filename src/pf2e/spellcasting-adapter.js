@@ -6,7 +6,7 @@ export class SpellcastingAdapter {
         const collections = actor?.spellcasting?.collections;
         if (!collections) throw new Error(`${LOG_PREFIX} ActorSpellcasting collections are unavailable`);
         const entries = await Promise.all(collections.map(async (collection) => {
-            const data = await collection.entry.getSheetData({ spells: collection });
+            const data = await collection.entry.getSheetData();
             return this.#entry(data);
         }));
         return { entries: entries.sort((a, b) => a.sort - b.sort), empty: entries.length === 0 };

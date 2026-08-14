@@ -510,3 +510,44 @@ Keep Feats active while creating, updating, and deleting Feat Items. Confirm the
 - **M6-SPELL-26 – Detached Full Flow:** Detach; render, cast, summarize, open, prepare/toggle and drag/drop; verify the main UI and both DOM contexts remain stable.
 - **M6-SPELL-27 – Permissions:** As Observer verify read-only rendering/open/summary/chat and absence or rejection of mutation controls.
 - **M6 regression:** Recheck Character, Actions, Inventory, Feats, native tabs, name editing, and detached behavior.
+
+## Milestone 6 fixup — Prepared slot swap guard
+
+### M6-FIX-01 – Prepared Slot Swap
+1. Open a classic (non-flexible) prepared caster with two occupied slots in one rank group.
+2. Drag Spell A onto Spell B's slot.
+3. Confirm Core `swapSlotPositions()` is used and both positions swap correctly.
+4. Confirm there are no console errors.
+
+### M6-FIX-02 – Spontaneous Same Rank
+1. Open a spontaneous caster and drag Spell A onto Spell B in the same rank group.
+2. Confirm `swapSlotPositions()` is not called, no prepared-slot error occurs, and there is no runtime crash.
+
+### M6-FIX-03 – Focus
+1. Drag one focus spell onto another focus spell.
+2. Confirm there is no `swapSlotPositions()` call and no prepared-slot mutation.
+
+### M6-FIX-04 – Innate
+1. Drag an innate spell within the same rank group.
+2. Confirm there is no `swapSlotPositions()` call and spell uses remain intact.
+
+### M6-FIX-05 – Ritual
+1. Drag Ritual A onto Ritual B in the rituals entry.
+2. Confirm there is no `swapSlotPositions()` call, no access to a `SpellcastingEntryPF2e` document, and no runtime crash.
+
+### M6-FIX-06 – Flexible
+1. Drag a spell within the same rank group of a flexible caster.
+2. Confirm there is no classic prepared-slot swap and Core behavior remains intact.
+
+### M6-FIX-07 – Cross-Rank Prepared Move
+1. Drag a prepared spell from rank 1 onto rank 2.
+2. Confirm `swapSlotPositions()` is not called and the existing Core add/prepare flow handles the drop.
+
+### M6-FIX-08 – Invalid Slot Index
+1. Simulate drops with a missing, non-integer, or negative source or target `slotIndex`.
+2. Confirm `swapSlotPositions()` is not called and no exception occurs.
+
+### M6-FIX-09 – Detached
+1. Detach the sheet and perform a prepared slot swap.
+2. Perform a spontaneous same-rank drag and a ritual drag.
+3. Confirm neither window reports cross-window or DOM errors.
