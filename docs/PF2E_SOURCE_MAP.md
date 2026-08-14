@@ -212,3 +212,20 @@ The character Document prepares strikes in `reference/pf2e/src/module/actor/char
 Attack/damage methods receive the original Application-V2 click event exactly as Core does. PF2e therefore interprets Shift/Ctrl/Meta, `showCheckDialogs`, roll mode, targeting, and callbacks in its own Check/Damage code; the generic statistic controller is not involved. Rolls are not pre-emptively owner-gated: the prepared PF2e method remains responsible for whether a user may roll. Document mutations (ammo link, auxiliary action, trait selection, exploration, and roll-option toggles) separately require `actor.canUserModify(game.user,"update")`.
 
 All lookups start from the action target's closest row or from the Application's own `this.element`. No selector reaches into global `document`, so strike, action summary, ammo select, and toggle handlers remain structurally safe after `detachWindow()`. Actor/item lifecycle hooks already re-render this sheet for equipment, ammunition, rule, condition, and embedded Item changes. Combat-only synthetic changes that do not emit an Actor/Item update still require Foundry runtime verification.
+
+## Milestone 5 Feats source map
+
+PF2e prepares `sheetData.feats = [...actor.feats, actor.feats.bonus]` in `src/module/actor/character/sheet.ts`. `CharacterFeats` in `src/module/actor/character/feats/index.ts` creates ancestry/class/skill/general, ancestry-feature/class-feature, optional archetype/mythic and bonus groups from class-granted slots and variant settings. `FeatGroup` in `feats/group.ts` assigns Items, exposes localized group/slot data and nested grants, validates categories, and owns `insertFeat`; the module consumes these prepared objects and never reproduces eligibility or slot rules.
+
+| Function | Core Reference | Runtime API | V2 Implementation |
+|---|---|---|---|
+| Groups, slots, features | `character/feats/index.ts`, `group.ts`; `tabs/feats.hbs` | `actor.feats`, `.bonus`, group `feats/slots` | `FeatsAdapter.prepare` preserves all runtime-created groups, empty slots and nested grants |
+| Name/icon/level/category/traits/cost | feat Item Document; `feat-slot.hbs`; `chat/feat-card.hbs` | prepared Item getters, `system.traits`, `actionCost`, `CONFIG.PF2E` labels; `actionGlyph` helper | Presentation-only row model and template; no name/category/action heuristics |
+| Open/chat/delete | actor base Item handlers | `item.sheet.render(true)`, `item.toMessage(event)`, `deleteDialog`/`delete` | `FeatController`; PF2e Document lifecycle owns grant handling |
+| Summary | internal `item-summary-renderer.ts` | `TextEditor.enrichHTML`, prepared description | shared inventory/action summary pattern, row-local target |
+| Create bonus feat | `character/sheet.ts` `create-feat` | `actor.createEmbeddedDocuments("Item", ...)` | exact Core bonus-category source shape; owner guarded |
+| Drop and slot placement | `character/sheet.ts:_onDropItem/_onSortItem` | `Item.implementation.fromDropData`, `group.insertFeat(item,slotId)` | compendium/world/other-Actor Items are copied through Core group insertion; no physical transfer |
+| Free-group sorting | base sortable Item handler | `item.sortRelative({target,siblings})` | same-Actor, same unslotted group only; slotted/group moves use `insertFeat` |
+| Permissions/detached/live | DocumentSheet and existing hooks | `canUserModify`, Application element, Actor/Item hooks | mutations guarded; listeners and summaries scoped to `this.element`/event targets; existing hooks rerender |
+
+Search/filter and Compendium Browser launching remain **pending** because Core calls its internal browser tab/filter UI. Rich summary actions are **partial** because `ItemSummaryRenderer` is internal. Heritage/background documents affect prepared ancestry/skill slots and nested grants, but are not invented as independent groups. Native cross-window `DataTransfer` remains browser-dependent and requires manual testing.

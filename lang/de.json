@@ -34,7 +34,9 @@
       "SheetTitle": "{name} — V2-Charakterbogen",
       "Coins": "Münzen",
       "Item": "Gegenstand",
-      "State": "Tragezustand"
+      "State": "Tragezustand",
+      "ActionCost": "Aktionskosten",
+      "Passive": "Passiv"
     },
     "Errors": {
       "CharacterOnly": "PF2e V2 Player Console kann nur PF2e-Charaktere öffnen.",

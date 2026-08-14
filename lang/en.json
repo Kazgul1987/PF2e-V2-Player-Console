@@ -34,7 +34,9 @@
       "SheetTitle": "{name} — V2 Character Sheet",
       "Coins": "Coins",
       "Item": "Item",
-      "State": "Carry state"
+      "State": "Carry state",
+      "ActionCost": "Action cost",
+      "Passive": "Passive"
     },
     "Errors": {
       "CharacterOnly": "PF2e V2 Player Console can only open PF2e characters.",

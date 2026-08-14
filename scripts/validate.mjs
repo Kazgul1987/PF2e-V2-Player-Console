@@ -33,8 +33,8 @@ console.log("Manifest and module paths are valid.");
 const sourceRoot = fileURLToPath(new URL("../src", import.meta.url));
 const sourceFiles = [
     "module.js", "constants.js", "app/character-sheet/character-sheet-v2.js",
-    "controllers/roll-controller.js", "controllers/inventory-controller.js", "controllers/action-controller.js",
-    "pf2e/character-adapter.js", "pf2e/inventory-adapter.js", "pf2e/actions-adapter.js",
+    "controllers/roll-controller.js", "controllers/inventory-controller.js", "controllers/action-controller.js", "controllers/feat-controller.js",
+    "pf2e/character-adapter.js", "pf2e/inventory-adapter.js", "pf2e/actions-adapter.js", "pf2e/feats-adapter.js",
 ];
 for (const relativePath of sourceFiles) {
     const absolutePath = resolve(sourceRoot, relativePath);

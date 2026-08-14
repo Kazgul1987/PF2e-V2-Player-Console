@@ -368,3 +368,38 @@ Verify grouping, traits, Open, Summary, Chat, and Use against Core.
 2. Test Attack, all MAP variants, Damage, Critical, linked Ammo, every Auxiliary Action, every Rule Toggle, Action Item open/chat/use, and roll dialogs.
 3. Change weapon equip state, conditions, ammo quantity, and action Items in the main window and verify live refresh.
 4. Check both browser-window consoles for DOM/window errors.
+
+## Milestone 5 — Feats
+
+### M5-FEAT-01 – Render
+Open a character with several feats, select Feats, and compare all prepared groups, occupied/empty slots, features, nested grants, levels, traits, categories, and action costs with Core.
+
+### M5-FEAT-02 – Open Item
+Open a feat and confirm its real PF2e Item sheet appears.
+
+### M5-FEAT-03 – Summary
+Toggle a feat summary open and closed and confirm there are no DOM errors.
+
+### M5-FEAT-04 – Chat
+Send a feat to chat and confirm PF2e creates its standard chat card.
+
+### M5-FEAT-05 – Sorting
+Move a feat inside a permitted unslotted group and between permitted Core slots/groups; rerender and verify persistence and Core validation.
+
+### M5-FEAT-06 – Compendium Drop
+Drop a Feat from a compendium onto an appropriate group/slot and confirm the Actor receives it through PF2e insertion.
+
+### M5-FEAT-07 – World Item Drop
+Repeat M5-FEAT-06 with a World Item and verify the world source remains intact.
+
+### M5-FEAT-08 – Permissions
+Open as Observer; confirm summaries/open/chat remain available and Create, Delete, and outgoing mutation drag handles are absent or refused.
+
+### M5-FEAT-09 – Detached
+Detach the sheet, then Open, Summary, Chat, Delete confirmation, same-window sorting, and main-window-to-detached compendium/world/Actor drops as the browser permits. Check both consoles for cross-window DOM errors.
+
+### M5-FEAT-10 – Alignment
+Compare Actions, Inventory, and Feats at wide and narrow detached sizes. Confirm ordinary rows share the same left edge and container items, alternate strikes, nested grants, details, and summaries use only a small border/padding hierarchy.
+
+### M5-FEAT-11 – Live update and tabs
+Keep Feats active while creating, updating, and deleting Feat Items. Confirm the tab remains active after each existing lifecycle-hook rerender.
