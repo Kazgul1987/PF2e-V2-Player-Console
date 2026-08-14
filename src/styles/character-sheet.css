@@ -83,3 +83,19 @@
 .feat-list.nested { background: color-mix(in srgb, var(--color-bg-option) 35%, transparent); border-left: 2px solid var(--color-border-light-primary); padding-left: .25rem; }
 .feat-entry.empty { grid-template-columns: minmax(3rem, auto) 1fr; min-height: 2.25rem; }
 @media (max-width: 50rem) { .feat-entry { grid-template-columns: minmax(10rem, 1fr) auto; } .feat-meta { grid-column: 1 / -1; } .feat-entry > .item-controls { justify-self: end; } }
+.spell-entry { border: 1px solid var(--color-border-light-primary); border-radius: .3rem; margin-bottom: 1rem; padding: .6rem; }
+.spell-entry > header, .spell-rank > header { align-items: center; display: flex; gap: .75rem; justify-content: space-between; }
+.spell-entry h3, .spell-rank h4 { margin: .2rem 0; }
+.spell-entry-meta, .spell-statistics, .spell-meta { align-items: center; display: flex; flex-wrap: wrap; gap: .35rem .75rem; }
+.spell-rank > header { border-bottom: 1px solid var(--color-border-light-primary); margin-top: .5rem; }
+.spell-rank ol { list-style: none; margin: 0; padding: 0; }
+.spell-row { align-items: center; border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); display: grid; gap: .5rem; grid-template-columns: minmax(13rem, 2fr) minmax(8rem, 1fr) auto auto; min-height: 2.6rem; padding: .35rem; }
+.spell-row[draggable=true] { cursor: grab; }
+.spell-row.expended { opacity: .65; }
+.spell-name { align-items: center; background: none; border: 0; color: inherit; display: flex; gap: .5rem; padding: 0; text-align: left; }
+.spell-name img { height: 2rem; object-fit: cover; width: 2rem; }
+.spell-name span { display: flex; flex-direction: column; }
+.slot-state { font-size: .8rem; }
+.spell-row > .item-summary { grid-column: 1 / -1; }
+.spell-empty { opacity: .75; text-align: center; }
+@media (max-width: 50rem) { .spell-row { grid-template-columns: minmax(10rem, 1fr) auto; } .spell-meta, .spell-row > .slot-state { grid-column: 1 / -1; } }

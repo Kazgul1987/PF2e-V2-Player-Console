@@ -487,3 +487,26 @@ Keep Feats active while creating, updating, and deleting Feat Items. Confirm the
 2. Test an internal concrete-slot move.
 3. Test an invalid group-header drop.
 4. Confirm there are no DOM or Window errors.
+
+## Milestone 6 – Spellcasting
+
+- **M6-SPELL-01 – No Spellcasting:** Open a character without entries, select Spellcasting, verify the localized compact empty state and no console errors.
+- **M6-SPELL-02 – Prepared Render:** Verify cantrips, several Core-provided ranks, prepared slots, and empty slots.
+- **M6-SPELL-03 – Prepare:** Drop a known spell on a free slot; verify Core accepts it and the live hook refreshes the UI.
+- **M6-SPELL-04 – Unprepare:** Remove a prepared assignment; verify the Spell Item remains known and the slot becomes empty.
+- **M6-SPELL-05 – Cast Prepared:** Cast from a concrete slot; verify chat and that Core expends that slot.
+- **M6-SPELL-06 – Expended Toggle:** Toggle available/expended and verify persistence through Core.
+- **M6-SPELL-07 – Slot Swap:** Drag between two occupied slots in the same rank and verify spell and expended state remain Core-conformant.
+- **M6-SPELL-08/09 – Spontaneous:** Verify known spells and slot value/max; cast at the displayed rank and verify only Core decrements slots.
+- **M6-SPELL-10 – Flexible:** Compare rendering/casting with Core; verify the documented preparation/signature limitation.
+- **M6-SPELL-11 – Innate Uses:** Cast until zero and verify Core decrements uses and blocks further casting.
+- **M6-SPELL-12/13 – Focus:** Cast a focus spell and focus cantrip; verify Core focus-point costs and insufficient-points warning.
+- **M6-SPELL-14 – Ritual:** Verify ritual rendering, open, summary, chat and Core's chat-only ritual cast flow.
+- **M6-SPELL-15/16/17 – External drops:** Drop Compendium, world, and other-actor spells on entry/rank; verify Core `addSpell` copy/move behavior.
+- **M6-SPELL-18 – Same Actor Entry Move:** Move between entries and verify no duplication.
+- **M6-SPELL-19/20 – Invalid rank/focus mismatch:** Verify Core rejects invalid lower-rank and focus-to-normal-entry drops with its own warning.
+- **M6-SPELL-21/22/23/24 – Controls:** Verify open, enriched summary toggle, non-consuming chat, and spell attack dialog/modifier keys.
+- **M6-SPELL-25 – Multiple Entries:** Render prepared, innate, focus, and ritual entries together; verify unique targets.
+- **M6-SPELL-26 – Detached Full Flow:** Detach; render, cast, summarize, open, prepare/toggle and drag/drop; verify the main UI and both DOM contexts remain stable.
+- **M6-SPELL-27 – Permissions:** As Observer verify read-only rendering/open/summary/chat and absence or rejection of mutation controls.
+- **M6 regression:** Recheck Character, Actions, Inventory, Feats, native tabs, name editing, and detached behavior.

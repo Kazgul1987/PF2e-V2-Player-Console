@@ -13,7 +13,7 @@ export class RollController {
         }
 
         return statistic.roll({
-            ...this.#eventToRollParams(event),
+            ...this.eventToRollParams(event),
             ...(secret ? { extraRollOptions: ["secret"] } : {}),
         });
     }
@@ -31,7 +31,7 @@ export class RollController {
     }
 
     /** Mirror PF2e's non-exported sheet helper using only stable runtime state. */
-    static #eventToRollParams(event) {
+    static eventToRollParams(event) {
         const skipDefault = !game.user.settings.showCheckDialogs;
         if (!event || !("ctrlKey" in event) || !("metaKey" in event) || !("shiftKey" in event)) {
             return { skipDialog: skipDefault };

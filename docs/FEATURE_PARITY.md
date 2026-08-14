@@ -116,3 +116,26 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Permissions | implemented | DocumentSheet editability | controls hidden and controller `canUserModify` guard |
 | Detached | implemented statically | Application V2 | part-local listeners/event targets; native cross-window D&D needs runtime test |
 | Search/filter/browser | pending | private Core Compendium Browser flow | safe omission; no private UI copied |
+
+## Milestone 6 – Spellcasting
+
+| Capability | Status | Notes |
+| --- | --- | --- |
+| Entry rendering / multiple entries | implemented | `ActorSpellcasting.collections`, including rituals |
+| Prepared / cantrips / ranks / slots | implemented | Core prepared groups and concrete empty/available/expended slots |
+| Spontaneous / innate / focus | implemented | Rendering and `entry.cast`; all consumption remains in PF2e |
+| Flexible | partial | Core groups/slots render and cast; the private preparation-app workflow is not cloned |
+| Rituals | implemented | Render/open/summary/chat; Core ritual `cast` is chat-only |
+| Item activations | safe omission | Inventory/Core activation owns charges |
+| Cast / consumption | implemented | `entry.cast({rank, slotId})`; no local counters |
+| Prepared assignment / unprepare | implemented | Concrete slot drop / button use `prepareSpell` |
+| Expended toggle / slot swap | implemented | Core collection APIs |
+| Spell D&D / entry move | implemented | Core `addSpell({groupId})`; prepared slot targets remain distinct |
+| Entry D&D | pending | Sorting entries is nonessential and official sheet-specific |
+| Spell open / summary / chat | implemented | Document sheet, enriched description, non-consuming `toMessage` |
+| Attack / DC | implemented | Entry statistic check; prepared statistic DC display |
+| Delete spell | pending | Avoids conflating deletion with unprepare in this slice |
+| Delete entry / create entry | pending | Official dialog/default construction is not reproduced |
+| Signature spells | partial | Prepared flags can render; management remains in PF2e preparation UI |
+| Detached | implemented | Application-local listeners and capability-checked drop targets |
+| Permissions | implemented | Mutations require Actor update permission; read-only open/summary/chat remain visible |

@@ -52,6 +52,21 @@
       "Prompt": "Wähle die Menge für die Übertragung an {actor}.",
       "NewStack": "Neuen Stapel anlegen",
       "Button": "Übertragen"
+    },
+    "Spellcasting": {
+      "Empty": "Keine Zauberwirken-Einträge",
+      "Attack": "Angriff",
+      "DC": "SG",
+      "RollAttack": "Zauberangriff würfeln",
+      "Slots": "Plätze",
+      "EmptySlot": "Leerer Platz",
+      "Expended": "Verbraucht",
+      "Available": "Verfügbar",
+      "Open": "Zauber öffnen",
+      "Cast": "Zauber wirken",
+      "Summary": "Zauberbeschreibung umschalten",
+      "ToggleExpended": "Verbrauchsstatus umschalten",
+      "Unprepare": "Zauber aus Platz entfernen"
     }
   }
 }
