@@ -262,6 +262,29 @@ Test main-window compendium, world Item and Actor Item → detached inventory, t
 2. After each click, confirm exactly one content tab is active.
 3. Confirm there is no `No matching tab element` error and no visible state stall.
 
+### TAB-NAV-01 – Actions
+1. Open the V2 sheet.
+2. Click Actions.
+3. Confirm Actions is visible.
+4. Confirm Character is hidden.
+5. Confirm there is no console error.
+
+### TAB-NAV-02 – Inventory
+1. Click Inventory.
+2. Confirm Inventory is visible.
+3. Confirm there is no console error.
+
+### TAB-NAV-03 – All tabs
+1. Click Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, Effects, Biography, and PFS once each.
+2. After each click, confirm exactly one content tab is active.
+3. Confirm there is no `No matching tab element` error.
+
+### TAB-NAV-04 – Detached
+1. Detach the sheet.
+2. Click through every primary tab.
+3. Confirm there is no error.
+4. Confirm there is no DOM or Window problem.
+
 ### FORM-FIX-01 – No global Save
 1. Open the sheet header.
 2. Confirm there is no global Save button.
