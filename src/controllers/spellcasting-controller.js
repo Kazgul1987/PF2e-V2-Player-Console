@@ -28,6 +28,16 @@ export class SpellcastingController {
         const check = this.#collection(actor, entryId)?.entry?.statistic?.check;
         return check?.roll?.(RollController.eventToRollParams(event));
     }
+    static async updateSlotCount(actor, data) {
+        if (!this.#editable(actor) || !["value", "max"].includes(data.field)) return;
+        const collection = this.#collection(actor, data.entryId);
+        const entry = collection?.entry;
+        const rank = Number(data.rank);
+        const value = Math.max(0, Math.trunc(Number(data.value)));
+        if (!entry || entry.isEphemeral || entry.isRitual || entry.type !== "spellcastingEntry" ||
+            !Number.isInteger(rank) || rank < 0 || rank > 10 || !Number.isFinite(value)) return;
+        return entry.update({ [`system.slots.slot${rank}.${data.field}`]: value });
+    }
     static unprepare(actor, data) {
         if (!this.#editable(actor)) return;
         return this.#collection(actor, data.entryId)?.prepareSpell(null, data.groupId, Number(data.slotIndex));

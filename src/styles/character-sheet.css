@@ -98,4 +98,19 @@
 .slot-state { font-size: .8rem; }
 .spell-row > .item-summary { grid-column: 1 / -1; }
 .spell-empty { opacity: .75; text-align: center; }
+.slot-count { align-items: center; display: inline-flex; gap: .25rem; }
+.slot-count input, .formula-quantity { height: 1.8rem; text-align: center; width: 3rem; }
+.crafting-overview, .crafting-ability > header { align-items: center; display: flex; gap: .75rem; justify-content: space-between; }
+.crafting-ability { border: 1px solid var(--color-border-light-primary); border-radius: .3rem; margin-bottom: .75rem; padding: .6rem; }
+.crafting-ability.insufficient { border-color: var(--color-level-error); }
+.crafting-ability h3 { margin: .15rem 0; }
+.crafting-resources { align-items: flex-end; display: flex; flex-direction: column; font-size: .85rem; gap: .2rem; }
+.crafting-formulas { list-style: none; margin: 0; padding: 0; }
+.crafting-formula { align-items: center; border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); display: grid; gap: .5rem; grid-template-columns: minmax(14rem, 1fr) auto auto; padding: .4rem; }
+.crafting-formula.expended { opacity: .6; }
+.formula-name { align-items: center; background: none; border: 0; color: inherit; display: flex; gap: .5rem; padding: 0; text-align: left; }
+.formula-name img { height: 2rem; object-fit: cover; width: 2rem; }
+.formula-name span { display: flex; flex-direction: column; }
+.crafting-formula > .item-summary { grid-column: 1 / -1; }
+.crafting-empty { opacity: .75; text-align: center; }
 @media (max-width: 50rem) { .spell-row { grid-template-columns: minmax(10rem, 1fr) auto; } .spell-meta, .spell-row > .slot-state { grid-column: 1 / -1; } }

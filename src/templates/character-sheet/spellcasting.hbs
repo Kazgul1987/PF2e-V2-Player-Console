@@ -17,7 +17,10 @@
                 </header>
                 {{#each entry.groups as |group|}}
                     <section class="spell-rank" data-entry-id="{{entry.id}}" data-group-id="{{group.id}}">
-                        <header><h4>{{group.label}}</h4>{{#if group.uses}}<span>{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Slots"}}: {{group.uses.value}} / {{group.uses.max}}</span>{{/if}}</header>
+                        <header><h4>{{group.label}}</h4>{{#if group.uses}}<span class="slot-count">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Slots"}}:
+                            {{#if group.editableValue}}{{#if group.editableUses}}{{#if @root.editable}}<input type="number" min="0" inputmode="numeric" data-slot-count data-rank="{{group.number}}" data-field="value" value="{{group.uses.value}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.CurrentSlots'}}">{{else}}{{group.uses.value}}{{/if}}{{else}}{{group.uses.value}}{{/if}}<span>/</span>{{/if}}
+                            {{#if group.editableUses}}{{#if @root.editable}}<input type="number" min="0" inputmode="numeric" data-slot-count data-rank="{{group.number}}" data-field="max" value="{{group.uses.max}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.MaximumSlots'}}">{{else}}{{group.uses.max}}{{/if}}{{else}}{{group.uses.max}}{{/if}}
+                        </span>{{/if}}</header>
                         <ol>
                         {{#each group.slots as |slot|}}
                             <li class="spell-row {{#if slot.empty}}empty{{/if}} {{#if slot.expended}}expended{{/if}}" data-entry-id="{{entry.id}}" data-group-id="{{group.id}}" data-slot-index="{{slot.slotIndex}}" {{#unless slot.empty}}data-spell-id="{{slot.spellId}}" draggable="true"{{/unless}}>

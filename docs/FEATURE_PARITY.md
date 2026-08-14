@@ -140,3 +140,32 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Signature spells | partial | Prepared flags can render; management remains in PF2e preparation UI |
 | Detached | implemented | Application-local listeners and capability-checked drop targets |
 | Permissions | implemented | Mutations require Actor update permission; read-only open/summary/chat remain visible |
+
+### Milestone 6 slot-count addendum
+
+| Capability | Status | Notes |
+| --- | --- | --- |
+| Editable current slot count | implemented | Persistent entry update; Core clamps `value` |
+| Editable maximum slot count | implemented | Persistent entry update; Core rebuilds prepared data on preparation |
+
+## Milestone 7 – Crafting
+
+| Capability | Status | Notes |
+| --- | --- | --- |
+| Entry rendering | implemented | All runtime `CraftingAbility` objects |
+| Prepared formulas | implemented | Core `getSheetData()` |
+| Formula quantity | implemented | `setFormulaQuantity` |
+| Batch size | implemented | Displayed from Core prepared data |
+| Resources | implemented | Core current/max/cost, display-only |
+| Prepare | implemented | Formula D&D delegates `prepareFormula` |
+| Unprepare | implemented | `unprepareFormula(index)` |
+| Craft | implemented | Ability `craft(index)` and registered known-formula Craft action |
+| Quick Alchemy | pending | Official flow is not one public atomic API |
+| Daily/Advanced Alchemy | implemented | `performDailyCrafting` / `resetDailyCrafting` |
+| Open Item | implemented | Resolved Item sheet |
+| Summary | partial | Shared enriched-description infrastructure; rich internal renderer unavailable |
+| Chat | implemented | Item `toMessage` |
+| D&D | partial | Formula-to-ability prepare; sorting and arbitrary Item drops omitted safely |
+| Formula Browser | pending | Core FormulaPicker/browser UI is private |
+| Permissions | implemented | Mutations hidden and controller-guarded |
+| Detached | implemented | Application-local listeners and capability-checked targets; runtime sign-off required |
