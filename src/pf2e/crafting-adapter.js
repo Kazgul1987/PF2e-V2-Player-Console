@@ -8,6 +8,11 @@ export class CraftingAdapter {
             throw new Error(`${LOG_PREFIX} CharacterCrafting runtime API is unavailable`);
         }
         const known = await crafting.getFormulas();
+        // Match the Core character sheet: alchemical abilities are included for
+        // compatibility even though current Core preparation also marks them daily.
+        const hasDailyCrafting = crafting.abilities.some(
+            (ability) => ability.isDailyPrep || ability.isAlchemical,
+        );
         const abilities = await Promise.all(crafting.abilities.map(async (ability) => {
             const data = await ability.getSheetData();
             return {
@@ -25,6 +30,7 @@ export class CraftingAdapter {
         return {
             abilities, known: known.map((formula) => this.#formula(formula, null)),
             empty: abilities.length === 0 && known.length === 0,
+            hasDailyCrafting,
             dailyComplete: !!actor.flags?.pf2e?.dailyCraftingComplete,
         };
     }

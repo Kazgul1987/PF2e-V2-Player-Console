@@ -14,14 +14,16 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Save roll | ✓ | ✓ | implemented | base `roll-check` | `getStatistic(slug).roll` | M2-ROLL-01 | Fortitude, Reflex, Will |
 | Roll dialog | ✓ | ✓ | mirrored | `sheet/helpers.ts` | `skipDialog` | M2-ROLL-02 | Shift inversion included |
 | GM/blind modifier | ✓ | ✓ | mirrored | `sheet/helpers.ts` | `messageMode` | M2-ROLL-03 | Ctrl or Meta |
-| Name editing | ✓ | ✓ | implemented | core header / Foundry form | V2 form, `document.update` | M2-FORM-01/02 | Only reviewed editable field |
-| Observer/read-only | ✓ | ✓ | implemented | Foundry document sheet | `isEditable`, `canUserModify` | M2-PERM-01 | UI and submit both guarded |
+| Name editing | ✓ | ✓ | implemented | core header / focused input | `document.update` on blur/Enter | M2-FORM-01/02/03 | Escape restores the Document value; no global form |
+| Observer/read-only | ✓ | ✓ | implemented | Foundry document sheet | `isEditable`, `canUserModify` | M2-PERM-01 | UI and focused update action both guarded |
 | Detached roll | — | ✓ | implemented | Application V2 | `detachWindow()` | M2-ROLL-01–05 | Browser validation required |
-| Detached edit | — | ✓ | implemented | Application V2 form | form handler, Document update | M2-FORM-03 | Browser validation required |
+| Detached edit | — | ✓ | implemented | Application V2 focused input | blur/keyboard handler, Document update | M2-FORM-03 | Browser validation required |
 | Live Actor/item refresh | ✓ | ✓ | implemented | document hooks | update/create/delete hooks | M2-LIVE-01 | UUID filtered and cleaned on close |
 | Localization foundation | ✓ | ✓ | implemented | PF2e and module lang files | `game.i18n`, `localize` | M2-LOC-01/02 | English and German |
 | HP/hero points/XP editing | ✓ | — | pending | PF2e resource handlers | pending review | — | Display only; no generic update |
-| Spells/crafting/effects | ✓ | — | M6+ | respective core tabs | — | — | Not implemented in this milestone |
+| Spellcasting | ✓ | ✓ | Milestone 6 implemented | spellcasting entry/collection documents | prepared collection and entry APIs | M6 tests | Runtime sign-off remains listed below |
+| Crafting | ✓ | ✓* | Milestone 7 implemented/partial | character crafting runtime | ability and crafting APIs | M7 tests, M7-FIX-01–10 | `*` Quick Alchemy and private picker remain pending |
+| Effects | ✓ | — | pending | effects tab | pending review | — | Not started |
 | Strikes/actions | ✓ | ✓ | Milestone 4 implemented | respective core tabs | prepared PF2e runtime APIs | M4 tests | Runtime sign-off remains listed below |
 | Feats | ✓ | ✓ | Milestone 5 complete | character feats tab/collection/group | `actor.feats` | M5 tests, M5-FINAL-01–07 | Feature slice complete; Create remains a transparent safe omission and Foundry runtime checks remain listed below |
 
@@ -128,6 +130,8 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Rituals | implemented | Render/open/summary/chat; Core ritual `cast` is chat-only |
 | Item activations | safe omission | Inventory/Core activation owns charges |
 | Cast / consumption | implemented | `entry.cast({rank, slotId})`; no local counters |
+| Editable current spell slots | implemented | Targeted entry update of `system.slots.slotN.value`; PF2e validates and persists |
+| Editable maximum spell slots | implemented | Targeted entry update of `system.slots.slotN.max`; PF2e prepares/clamps the resulting slots |
 | Prepared assignment / unprepare | implemented | Concrete slot drop / button use `prepareSpell` |
 | Expended toggle | implemented | Core `setSlotExpendedState` API |
 | Prepared slot swap | implemented | Core `swapSlotPositions` API, limited to classic prepared (non-flexible) entries |
@@ -162,6 +166,10 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Craft | implemented | Ability `craft(index)` and registered known-formula Craft action |
 | Quick Alchemy | pending | Official flow is not one public atomic API |
 | Daily/Advanced Alchemy | implemented | `performDailyCrafting` / `resetDailyCrafting` |
+| Daily Crafting visibility | implemented | Controls exist only when Core-prepared abilities include daily/alchemical crafting |
+| Perform Daily Crafting | implemented | Enabled only before completion; controller delegates to `performDailyCrafting()` |
+| Reset Daily Crafting | implemented | Enabled only after completion; controller delegates to `resetDailyCrafting()` |
+| Daily state controls | implemented | Adapter reads the PF2e flag and controller independently guards ability presence and state |
 | Open Item | implemented | Resolved Item sheet |
 | Summary | partial | Shared enriched-description infrastructure; rich internal renderer unavailable |
 | Chat | implemented | Item `toMessage` |

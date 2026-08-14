@@ -1,5 +1,8 @@
 export class CraftingController {
     static #ability(actor, id) { return actor?.crafting?.abilities?.get?.(id) ?? null; }
+    static #hasDailyCrafting(crafting) {
+        return crafting?.abilities?.some?.((ability) => ability.isDailyPrep || ability.isAlchemical) === true;
+    }
     static #editable(actor) {
         const allowed = actor?.canUserModify?.(game.user, "update") === true;
         if (!allowed) ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Errors.NotEditable"));
@@ -41,7 +44,11 @@ export class CraftingController {
     }
     static daily(actor, reset = false) {
         if (!this.#editable(actor)) return;
-        return reset ? actor.crafting?.resetDailyCrafting?.() : actor.crafting?.performDailyCrafting?.();
+        const crafting = actor?.crafting;
+        if (!this.#hasDailyCrafting(crafting)) return;
+        const dailyComplete = !!actor.flags?.pf2e?.dailyCraftingComplete;
+        if (reset !== dailyComplete) return;
+        return reset ? crafting.resetDailyCrafting?.() : crafting.performDailyCrafting?.();
     }
     static async drop(actor, event, target) {
         event.preventDefault();
