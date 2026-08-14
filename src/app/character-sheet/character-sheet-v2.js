@@ -5,6 +5,8 @@ import { InventoryAdapter } from "../../pf2e/inventory-adapter.js";
 import { InventoryController } from "../../controllers/inventory-controller.js";
 import { ActionsAdapter } from "../../pf2e/actions-adapter.js";
 import { ActionController } from "../../controllers/action-controller.js";
+import { FeatsAdapter } from "../../pf2e/feats-adapter.js";
+import { FeatController } from "../../controllers/feat-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -45,6 +47,11 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             useActionItem: PF2eCharacterSheetV2.#actionAction,
             actionSummary: PF2eCharacterSheetV2.#actionAction,
             toggleExploration: PF2eCharacterSheetV2.#actionAction,
+            openFeat: PF2eCharacterSheetV2.#featAction,
+            featToChat: PF2eCharacterSheetV2.#featAction,
+            featSummary: PF2eCharacterSheetV2.#featAction,
+            deleteFeat: PF2eCharacterSheetV2.#featAction,
+            createFeat: PF2eCharacterSheetV2.#featAction,
         },
     };
 
@@ -103,6 +110,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
         if (partId === "inventory") partContext.inventory = InventoryAdapter.prepare(this.actor);
         if (partId === "actions") partContext.actions = ActionsAdapter.prepare(this.actor);
+        if (partId === "feats") partContext.feats = FeatsAdapter.prepare(this.actor);
         return partContext;
     }
 
@@ -191,6 +199,24 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
     }
 
+    static async #featAction(event, target) {
+        const row = target.closest("[data-item-id]");
+        const id = row?.dataset.itemId;
+        switch (target.dataset.action) {
+            case "openFeat": return FeatController.open(this.actor, id);
+            case "featToChat": return FeatController.toChat(this.actor, id, event);
+            case "deleteFeat": return FeatController.remove(this.actor, id, event);
+            case "createFeat": return FeatController.create(this.actor);
+            case "featSummary": {
+                const summary = row?.querySelector(":scope > .item-summary");
+                if (!summary) return;
+                if (!summary.hidden) { summary.hidden = true; summary.replaceChildren(); return; }
+                summary.innerHTML = await FeatController.summary(this.actor, id);
+                summary.hidden = false;
+            }
+        }
+    }
+
     async _onRender(context, options) {
         await super._onRender(context, options);
         this.#renderListeners?.abort();
@@ -224,13 +250,19 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             }
         }, listenerOptions);
         const inventory = this.element.querySelector('[data-tab="inventory"]');
-        if (!inventory) return;
-        inventory.addEventListener("dragstart", (event) => {
+        inventory?.addEventListener("dragstart", (event) => {
             const target = event.target.closest("[draggable][data-item-id]");
             if (target) InventoryController.dragStart(this.actor, event, target);
         }, listenerOptions);
-        inventory.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
-        inventory.addEventListener("drop", (event) => void InventoryController.drop(this.actor, event, event.target), listenerOptions);
+        inventory?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        inventory?.addEventListener("drop", (event) => void InventoryController.drop(this.actor, event, event.target), listenerOptions);
+        const feats = this.element.querySelector('[data-tab="feats"]');
+        feats?.addEventListener("dragstart", (event) => {
+            const target = event.target.closest("[draggable][data-item-id]");
+            if (target) FeatController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        feats?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        feats?.addEventListener("drop", (event) => void FeatController.drop(this.actor, event, event.target), listenerOptions);
     }
 
     async #updateActorName(input) {

@@ -91,3 +91,26 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Action use/roll | ✓ | ✓* | partial | registered `game.pf2e.actions`; Item chat fallback | M4-ACTION-01 | Internal `createUseActionMessage` cannot be imported |
 | Elemental Blast | ✓ | — | pending / safe omission | no public runtime class | future M4 follow-up | Core constructs internal `ElementalBlast`; canonical item is not duplicated |
 | Detached strike roll | — | ✓ | statically scoped; runtime sign-off | Application action + runtime strike | M4-DETACH-01 | No global sheet DOM selector |
+
+## Milestone 5 feats detail
+
+| Feature | Status | Core Reference | Runtime API / notes |
+|---|---|---|---|
+| Feat list | implemented | `character/tabs/feats.hbs` | prepared `actor.feats` Items |
+| Grouping and slots | implemented | `character/feats/index.ts`, `group.ts` | runtime groups, slots and labels; no hardcoded categories |
+| Features / nested grants | implemented | `FeatGroup.assignFeat/#getChildSlots` | ancestry/class features and prepared child grants |
+| Action cost | implemented | feat chat/item templates | `item.actionCost` + PF2e `actionGlyph` helper; otherwise localized Passive |
+| Traits | implemented | Feat Document | prepared trait slugs and `CONFIG.PF2E` labels |
+| Summary | partial | internal summary renderer | detached-safe enriched description; rich Core actions pending |
+| Open Item | implemented | common edit handler | `item.sheet.render(true)` |
+| Send to Chat | implemented | common chat handler | `item.toMessage(event)` |
+| Delete | implemented | common delete handler | `deleteDialog` (modifier bypass); Core grant lifecycle retained |
+| Sorting | implemented | `_onSortItem` / base sortable | `sortRelative` for unslotted group |
+| Internal D&D | implemented | `_onSortItem` | group/slot moves via `group.insertFeat` |
+| Compendium Drop | implemented | `_onDropItem` | `fromDropData` then `insertFeat` |
+| World Item Drop | implemented | `_onDropItem` | same copy path |
+| Actor Drop | implemented | `_onDropItem` | copied via `insertFeat`, never physical transfer |
+| Create | implemented | `create-feat` | Core-equivalent blank bonus Feat; Browser search pending |
+| Permissions | implemented | DocumentSheet editability | controls hidden and controller `canUserModify` guard |
+| Detached | implemented statically | Application V2 | part-local listeners/event targets; native cross-window D&D needs runtime test |
+| Search/filter/browser | pending | private Core Compendium Browser flow | safe omission; no private UI copied |
