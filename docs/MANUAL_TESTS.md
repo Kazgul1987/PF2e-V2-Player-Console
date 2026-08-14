@@ -216,6 +216,39 @@ Test main-window compendium, world Item and Actor Item → detached inventory, t
 2. Confirm the complete sheet renders without a missing-partial error.
 3. Detach it, then open Inventory and Actions and confirm they remain operational.
 
+## Application V2 primary tabs
+
+### TAB-01 – Character → Actions
+1. Open the V2 sheet.
+2. Click Actions.
+3. Confirm the Actions content appears and the Character content disappears.
+4. Confirm the console contains no errors.
+
+### TAB-02 – Actions → Inventory
+1. Click Inventory.
+2. Confirm the Inventory content appears and the Actions content disappears.
+3. Confirm there is no `changeTab` error.
+
+### TAB-03 – All primary tabs
+1. Open Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, Effects, Biography, and PFS once each.
+2. Confirm every tab opens without a runtime error.
+3. Confirm exactly one content tab is active at a time.
+
+### TAB-04 – Detached window
+1. Detach the sheet.
+2. Open every primary tab.
+3. Confirm there are no DOM, Window, or `changeTab` errors in either console.
+
+### TAB-05 – German localization
+1. Set the Foundry language to German.
+2. Inspect the tab navigation.
+3. Confirm localized German labels appear and no `PF2E_V2_PLAYER_CONSOLE.*` keys are visible.
+
+### TAB-06 – English localization
+1. Set the Foundry language to English.
+2. Inspect the tab navigation.
+3. Confirm localized English labels appear and no `PF2E_V2_PLAYER_CONSOLE.*` keys are visible.
+
 ## Milestone 4 — Actions and Strikes
 
 ### M4-STRIKE-01 – Basic Attack

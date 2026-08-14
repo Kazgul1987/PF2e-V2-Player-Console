@@ -32,6 +32,8 @@ All roll actions remain template-to-controller calls. `RollController` resolves 
 
 Stable technical tab IDs use native V2 `TABS`, `_prepareTabs`, `tabGroups`, and `data-action="tab"`; visible labels come from the module localization namespace. Every primary tab has its own Handlebars PART. Later tabs stay explicit placeholders—no Inventory or other Milestone 3 behavior is introduced.
 
+The primary tab group is `primary`, with the IDs `character`, `actions`, `inventory`, `spellcasting`, `crafting`, `proficiencies`, `feats`, `effects`, `biography`, and `pfs`. Each corresponding PART renders one `.tab` content root whose `data-group` and `data-tab` exactly match its navigation button. `_preparePartContext()` derives the initial `active` class from `tabGroups.primary`; Application V2 then owns tab changes. Navigation labels remain localization keys in the prepared V2 tab model and are localized once by `navigation.hbs`.
+
 `DocumentSheetV2` inherits Application V2 rendering and `detachWindow()`. All handlers operate on event/form arguments and Documents, never a global `document.querySelector`, so the same form, tabs, rolls, and updates work in the detached document. Actor and embedded-Item hooks remain registered and UUID-filtered because automatic coverage of every embedded update is not assumed; they are removed on close.
 
 ## M3 final transfer compatibility boundary
