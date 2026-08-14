@@ -255,3 +255,23 @@ Search/filter, blank creation, and Compendium Browser launching remain **pending
 | `Spell.toMessage` | `src/module/item/spell/document.ts` | `spell.toMessage(event)` for chat-only; indirectly from `entry.cast` | Chat-only is separate from cast, preventing accidental consumption. |
 | Spell attack | `document.ts`; `src/system/statistic` | `entry.statistic.check.roll(RollController.eventToRollParams(event))` | Reuses the module's dialog/blind-roll event mapping. DC is display-only from prepared statistic chat data. |
 | Item activations | `item-spellcasting.ts`, consumable activation sources | none in spell section | Safe omission: inventory/PF2e activation flows retain charge ownership; no charge logic is recreated here. |
+
+## Milestone 6 addendum – editable spell-slot counts
+
+- **Core model:** `reference/pf2e/src/module/item/spellcasting-entry/data.ts` defines `SpellSlotData` with `value`, `max`, and `prepared` under `system.slots.slot0` through `slot10`.
+- **Core preparation/lifecycle:** `reference/pf2e/src/module/item/spellcasting-entry/document.ts` sizes classic prepared arrays to `group.max` during `prepareBaseData`; `_preUpdate` normalizes `max` and clamps `value` to `0...max`; `consume` updates the same slot `value` for spontaneous/flexible casting.
+- **Core UI:** `reference/pf2e/static/templates/actors/partials/spell-collection.hbs` exposes group counters only for `group.uses` outside focus pools. Innate uses remain per Spell Item and rituals are virtual.
+- **Runtime API:** persistent `SpellcastingEntryPF2e.update({"system.slots.slotN.value|max": integer})`. The module whitelists the terminal field and rank and lets the Document lifecycle perform final validation.
+
+## Milestone 7 – Crafting
+
+| Core source | Runtime API | Purpose | Module usage |
+| --- | --- | --- | --- |
+| `src/module/actor/character/crafting/crafting.ts` | `actor.crafting.getFormulas()`, `.abilities`, `.performDailyCrafting()`, `.resetDailyCrafting()` | Known formulas, ability collection, atomic daily preparation/resource flow | Adapter data and targeted daily controls |
+| `src/module/actor/character/crafting/ability.ts` | `ability.getSheetData()` | Prepared formulas, computed batches, capacity and resources | View-model source; no local calculations |
+| same | `prepareFormula(uuid)`, `unprepareFormula(index)`, `setFormulaQuantity(index,value)` | Predicate-validated preparation persistence in owning rule elements | D&D prepare and targeted controls |
+| same | `craft(index)` | Ability-specific resource/slot consumption and temporary Item creation | Prepared formula Craft action |
+| `src/module/system/action-macros/crafting/craft.ts` | `game.pf2e.actions.craft({uuid,quantity,actors,event})` | Official known-formula Craft check/card flow | Known formula Craft action |
+| `src/module/actor/character/sheet.ts` and `static/templates/actors/character/tabs/crafting.hbs` | `CraftingFormula` drag payload and ability methods | Official interaction/reference layout | Formula D&D only; sorting/private picker omitted |
+
+Quick Alchemy's official handler directly coordinates a flag, reagent update, and internal `craftItem`; it is not exposed as one atomic stable runtime API and remains pending. Advanced/daily alchemy uses `CharacterCrafting.performDailyCrafting()` and is delegated intact. Formula Browser/Picker and rich Core summary renderer are private sheet applications and remain pending/partial respectively.

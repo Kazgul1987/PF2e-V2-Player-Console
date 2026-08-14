@@ -551,3 +551,28 @@ Keep Feats active while creating, updating, and deleting Feat Items. Confirm the
 1. Detach the sheet and perform a prepared slot swap.
 2. Perform a spontaneous same-rank drag and a ritual drag.
 3. Confirm neither window reports cross-window or DOM errors.
+
+## Milestone 6 addendum – slot count editing
+
+- **M6-SLOT-01 – Current:** Change spontaneous rank-1 current slots and verify Item persistence.
+- **M6-SLOT-02 – Maximum:** Change rank-1 maximum and verify persistence.
+- **M6-SLOT-03 – Value > Max:** Enter a value above max and verify PF2e clamps it.
+- **M6-SLOT-04 – Negative:** Enter a negative value and verify normalization/Core behavior.
+- **M6-SLOT-05/06 – Prepared max:** Increase 3→4 and decrease 4→2; verify Core-prepared concrete slots.
+- **M6-SLOT-07 – Cast after edit:** Edit current slots, cast, and verify Core consumption uses the new value.
+- **M6-SLOT-08 – Observer:** Verify counters are visible without editable inputs.
+- **M6-SLOT-09 – Detached:** Edit by blur and Enter, cancel with Escape, and verify no submit/reload or tab change.
+
+## Milestone 7 – Crafting
+
+- **M7-CRAFT-01:** Character without abilities/formulas shows the localized empty state without errors.
+- **M7-CRAFT-02/03:** Render one and multiple abilities; verify unique slugs, resources, capacity, and prepared rows.
+- **M7-CRAFT-04/05:** Drop a valid Formula payload on an ability, then unprepare it; verify only Core preparation changes.
+- **M7-CRAFT-06:** Edit prepared quantity by blur/Enter and cancel with Escape; verify Core batch/capacity limits.
+- **M7-CRAFT-07/08:** Craft prepared and known formulas; verify official check or ability flow, Item result, and Core resource consumption.
+- **M7-CRAFT-09/10:** Drop valid and invalid Formula payloads; verify Core accepts/rejects without crashes.
+- **M7-CRAFT-11/12/13:** Open, summarize, and send prepared and known Formula Items to chat.
+- **M7-CRAFT-14:** Quick Alchemy remains pending; perform it on the official sheet and confirm this sheet reflects resulting Actor/Item updates.
+- **M7-CRAFT-15:** Detached: prepare, quantity, summary, D&D, and Craft; verify no cross-window DOM error.
+- **M7-CRAFT-16:** Observer sees entries/formulas/open/summary/chat but no mutation controls; direct mutations reject.
+- **M7 regression:** Recheck Character, Actions, Inventory, Feats, Spellcasting/slot editing, name editing, native tabs, and detached behavior.

@@ -1,4 +1,24 @@
-<section class="tab-panel tab {{tab.cssClass}} placeholder" data-group="primary" data-tab="crafting">
-    <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.crafting"}}</h2>
-    <p>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.NotImplemented"}}</p>
+<section class="tab-panel tab {{tab.cssClass}} crafting-tab" data-group="primary" data-tab="crafting">
+    <header class="crafting-overview"><h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.crafting"}}</h2>
+        {{#if @root.editable}}<div class="item-controls"><button type="button" data-action="performDailyCrafting">{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Daily"}}</button><button type="button" data-action="resetDailyCrafting">{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.ResetDaily"}}</button></div>{{/if}}
+    </header>
+    {{#if crafting.empty}}<p class="crafting-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Empty"}}</p>{{/if}}
+    {{#each crafting.abilities as |ability|}}
+        <article class="crafting-ability {{#if ability.insufficient}}insufficient{{/if}}" data-crafting-id="{{ability.id}}">
+            <header><div><h3>{{ability.name}}</h3><small>{{#if ability.isDailyPrep}}{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.DailyPreparation"}}{{else}}{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.OnDemand"}}{{/if}}</small></div>
+                <div class="crafting-resources">{{#if ability.slots}}<span>{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Slots"}} {{ability.slots.remaining}} / {{ability.slots.max}}</span>{{/if}}{{#if ability.resource}}<span>{{ability.resource.label}} {{ability.resource.value}} / {{ability.resource.max}} ({{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Cost"}} {{ability.resource.cost}})</span>{{/if}}</div>
+            </header>
+            <ol class="crafting-formulas">
+            {{#each ability.formulas as |formula|}}<li class="crafting-formula {{#if formula.expended}}expended{{/if}}" data-formula-uuid="{{formula.uuid}}" data-formula-index="{{formula.index}}">
+                <button type="button" class="formula-name" data-action="openFormula"><img src="{{formula.img}}" alt=""><span><strong>{{formula.name}}</strong><small>{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Level"}} {{formula.level}} · {{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Batch"}} {{formula.batchSize}}</small></span></button>
+                {{#if @root.editable}}<input class="formula-quantity" type="number" min="0" data-formula-quantity value="{{formula.quantity}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Crafting.Quantity'}}">{{else}}<span>{{formula.quantity}}</span>{{/if}}
+                <div class="item-controls">{{#if @root.editable}}<button type="button" data-action="craftFormula" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Crafting.Craft'}}"><i class="fa-solid fa-hammer"></i></button><button type="button" data-action="unprepareFormula" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Crafting.Unprepare'}}"><i class="fa-solid fa-xmark"></i></button>{{/if}}<button type="button" data-action="formulaSummary" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Crafting.Summary'}}"><i class="fa-solid fa-circle-info"></i></button><button type="button" data-action="formulaToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button></div>
+                <div class="item-summary" hidden></div>
+            </li>{{else}}<li class="crafting-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.NoPrepared"}}</li>{{/each}}
+            </ol>
+        </article>
+    {{/each}}
+    {{#if crafting.known.length}}<section class="known-formulas"><h3>{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Known"}}</h3><ol class="crafting-formulas">
+        {{#each crafting.known as |formula|}}<li class="crafting-formula" data-formula-uuid="{{formula.uuid}}" data-craft-quantity="{{formula.batchSize}}"><button type="button" class="formula-name" data-action="openFormula"><img src="{{formula.img}}" alt=""><span><strong>{{formula.name}}</strong><small>{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Level"}} {{formula.level}} · {{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.Batch"}} {{formula.batchSize}}</small></span></button><span>{{localize "PF2E_V2_PLAYER_CONSOLE.Crafting.DC"}} {{formula.dc}}</span><div class="item-controls"><button type="button" data-action="formulaSummary"><i class="fa-solid fa-circle-info"></i></button><button type="button" data-action="formulaToChat"><i class="fa-solid fa-message"></i></button>{{#if @root.editable}}<button type="button" data-action="craftFormula"><i class="fa-solid fa-hammer"></i></button>{{/if}}</div><div class="item-summary" hidden></div></li>{{/each}}
+    </ol></section>{{/if}}
 </section>

@@ -9,6 +9,8 @@ import { FeatsAdapter } from "../../pf2e/feats-adapter.js";
 import { FeatController } from "../../controllers/feat-controller.js";
 import { SpellcastingAdapter } from "../../pf2e/spellcasting-adapter.js";
 import { SpellcastingController } from "../../controllers/spellcasting-controller.js";
+import { CraftingAdapter } from "../../pf2e/crafting-adapter.js";
+import { CraftingController } from "../../controllers/crafting-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -60,6 +62,14 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             unprepareSpell: PF2eCharacterSheetV2.#spellAction,
             toggleSlotExpended: PF2eCharacterSheetV2.#spellAction,
             spellAttack: PF2eCharacterSheetV2.#spellAction,
+            openFormula: PF2eCharacterSheetV2.#craftingAction,
+            formulaToChat: PF2eCharacterSheetV2.#craftingAction,
+            formulaSummary: PF2eCharacterSheetV2.#craftingAction,
+            prepareFormula: PF2eCharacterSheetV2.#craftingAction,
+            unprepareFormula: PF2eCharacterSheetV2.#craftingAction,
+            craftFormula: PF2eCharacterSheetV2.#craftingAction,
+            performDailyCrafting: PF2eCharacterSheetV2.#craftingAction,
+            resetDailyCrafting: PF2eCharacterSheetV2.#craftingAction,
         },
     };
 
@@ -120,6 +130,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "actions") partContext.actions = ActionsAdapter.prepare(this.actor);
         if (partId === "feats") partContext.feats = FeatsAdapter.prepare(this.actor);
         if (partId === "spellcasting") partContext.spellcasting = await SpellcastingAdapter.prepare(this.actor);
+        if (partId === "crafting") partContext.crafting = await CraftingAdapter.prepare(this.actor);
         return partContext;
     }
 
@@ -245,6 +256,31 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
     }
 
+    static async #craftingAction(event, target) {
+        const row = target.closest("[data-formula-uuid]");
+        const ability = target.closest("[data-crafting-id]")?.dataset.craftingId ?? target.dataset.craftingId;
+        const uuid = row?.dataset.formulaUuid ?? target.dataset.formulaUuid;
+        const index = Number(row?.dataset.formulaIndex);
+        switch (target.dataset.action) {
+            case "openFormula": return CraftingController.open(uuid);
+            case "formulaToChat": return CraftingController.chat(uuid, event);
+            case "prepareFormula": return CraftingController.prepare(this.actor, ability, uuid);
+            case "unprepareFormula": return CraftingController.unprepare(this.actor, ability, index);
+            case "craftFormula": return Number.isInteger(index)
+                ? CraftingController.craftPrepared(this.actor, ability, index)
+                : CraftingController.craftKnown(this.actor, uuid, event, row?.dataset.craftQuantity);
+            case "performDailyCrafting": return CraftingController.daily(this.actor);
+            case "resetDailyCrafting": return CraftingController.daily(this.actor, true);
+            case "formulaSummary": {
+                const summary = row?.querySelector(":scope > .item-summary");
+                if (!summary) return;
+                if (!summary.hidden) { summary.hidden = true; summary.replaceChildren(); return; }
+                summary.innerHTML = await CraftingController.summary(uuid);
+                summary.hidden = false;
+            }
+        }
+    }
+
     async _onRender(context, options) {
         await super._onRender(context, options);
         this.#renderListeners?.abort();
@@ -298,6 +334,32 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }, listenerOptions);
         spellcasting?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         spellcasting?.addEventListener("drop", (event) => void SpellcastingController.drop(this.actor, event, event.target), listenerOptions);
+        spellcasting?.addEventListener("change", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-slot-count]")) return;
+            void SpellcastingController.updateSlotCount(this.actor, { ...input.closest("[data-entry-id]")?.dataset, ...input.dataset, value: input.value });
+        }, listenerOptions);
+        spellcasting?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-slot-count]")) return;
+            if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+            if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
+        }, listenerOptions);
+        const crafting = this.element.querySelector('[data-tab="crafting"]');
+        crafting?.addEventListener("change", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-formula-quantity]")) return;
+            const row = input.closest("[data-formula-index]");
+            void CraftingController.quantity(this.actor, row?.closest("[data-crafting-id]")?.dataset.craftingId, Number(row?.dataset.formulaIndex), input.value);
+        }, listenerOptions);
+        crafting?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-formula-quantity]")) return;
+            if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+            if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
+        }, listenerOptions);
+        crafting?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        crafting?.addEventListener("drop", (event) => void CraftingController.drop(this.actor, event, event.target), listenerOptions);
     }
 
     async #updateActorName(input) {

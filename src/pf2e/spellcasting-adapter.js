@@ -22,10 +22,14 @@ export class SpellcastingAdapter {
             dc: statistic?.dc?.value ?? null,
             rank: statistic?.rank ?? null,
             isPrepared: !!data.isPrepared, isFlexible: !!data.isFlexible, isRitual: !!data.isRitual,
-            isEphemeral: !!data.isEphemeral, canAttack: !!statistic?.check,
+            isEphemeral: !!data.isEphemeral, persisted: !data.isEphemeral && !data.isRitual,
+            canAttack: !!statistic?.check,
             groups: data.groups.map((group) => ({
                 id: String(group.id), label: game.i18n.localize(group.label), number: group.number ?? null,
                 uses: group.uses ? { value: group.uses.value, max: group.uses.max } : null,
+                editableUses: !!group.uses && !data.isFocusPool && !data.isInnate && !data.isRitual &&
+                    !data.isEphemeral && Number.isInteger(group.number),
+                editableValue: group.uses?.value !== undefined && group.uses?.value !== null,
                 slots: group.active.map((active, slotIndex) => this.#slot(active, slotIndex, group, data)),
             })),
         };

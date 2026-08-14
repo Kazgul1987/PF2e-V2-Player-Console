@@ -66,7 +66,27 @@
       "Cast": "Cast spell",
       "Summary": "Toggle spell summary",
       "ToggleExpended": "Toggle expended state",
-      "Unprepare": "Unprepare spell"
+      "Unprepare": "Unprepare spell",
+      "CurrentSlots": "Current spell slots",
+      "MaximumSlots": "Maximum spell slots"
+    },
+    "Crafting": {
+      "Empty": "No crafting abilities or known formulas",
+      "Daily": "Perform daily crafting",
+      "ResetDaily": "Reset daily crafting",
+      "DailyPreparation": "Daily preparation",
+      "OnDemand": "On demand",
+      "Slots": "Slots",
+      "Cost": "Cost",
+      "Level": "Level",
+      "Batch": "Batch",
+      "Quantity": "Formula quantity",
+      "Craft": "Craft",
+      "Unprepare": "Unprepare formula",
+      "Summary": "Toggle formula summary",
+      "NoPrepared": "No prepared formulas",
+      "Known": "Known formulas",
+      "DC": "DC"
     }
   }
 }
