@@ -14,7 +14,7 @@
         <li class="proficiency-row" data-slug="{{slug}}" {{#if itemId}}data-item-id="{{itemId}}"{{/if}}>
             <span class="proficiency-name">{{label}}{{#if primary}} <small>{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.Primary"}}</small>{{/if}}</span>
             {{#if sameAs}}<small class="proficiency-same-as">{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.SameAs"}} {{sameAs}}</small>{{/if}}
-            {{#if modifier}}<span class="proficiency-modifier" title="{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.Modifier"}}">{{modifier}}</span>{{/if}}
+            {{#if hasModifier}}<span class="proficiency-modifier" title="{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.Modifier"}}">{{modifier}}</span>{{/if}}
             {{#if dc}}<span class="proficiency-dc">{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.DC"}} {{dc}}</span>{{/if}}
             {{> rank}}
             {{#if itemId}}<button type="button" data-action="openLore" title="{{localize "PF2E_V2_PLAYER_CONSOLE.Proficiencies.OpenLore"}}"><i class="fa-solid fa-pen-to-square"></i></button>{{/if}}
