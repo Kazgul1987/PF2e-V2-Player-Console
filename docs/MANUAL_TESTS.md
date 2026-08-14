@@ -621,3 +621,51 @@ Keep Feats active while creating, updating, and deleting Feat Items. Confirm the
 ### M7-FIX-10 – Tab regression
 1. Click Character, Actions, Inventory, Feats, Spellcasting, and Crafting.
 2. Confirm every tab activates without a `changeTab` error.
+
+## Milestone 8 – Proficiencies
+
+### M8-PROF-01 – Render
+1. Open a Character and select Proficiencies.
+2. Confirm Perception/Saves, Skills, Lore, Class DC, Armor, Weapons, Other/Martial and applicable Spellcasting sections render without console errors.
+
+### M8-PROF-02 – Perception
+Compare rank, total modifier and any displayed DC with the official sheet. Confirm there is no rank control.
+
+### M8-PROF-03 – Saves
+Compare Fortitude, Reflex and Will ranks/modifiers (and available DCs) with the official sheet. Confirm all are read-only.
+
+### M8-PROF-04 – Skill Rank
+As owner, change one regular skill rank. Confirm the Actor updates only `system.skills.<slug>.rank`, PF2e recalculates the modifier, the official sheet agrees, and Proficiencies remains active.
+
+### M8-PROF-05 – Lore
+Use a Character with Lore. Confirm name/rank/modifier, change rank, verify the Lore Item's `system.proficient.value`, and open its Item sheet. Confirm no `system.skills` Lore record is written.
+
+### M8-PROF-06 – Class DC
+Use a Character with one Class DC and compare its label, primary marker, rank and DC with Core.
+
+### M8-PROF-07 – Multiple Class DCs
+Use a Character with multiple Class DCs. Confirm every distinct slug appears, primary is identified, and no row/ID collision occurs. Also test a Character with none.
+
+### M8-PROF-08 – Armor
+Compare every prepared armor category (including Unarmored/Light/Medium/Heavy when present) with Core. Confirm ranks are informational and AC is not changed.
+
+### M8-PROF-09 – Weapons
+Compare prepared Unarmed/Simple/Martial/Advanced categories with Core. Confirm standard category ranks are informational.
+
+### M8-PROF-10 – Custom/Martial
+Use a persistent custom weapon group/base proficiency and a Rule Element-created proficiency. Confirm both prepared visible entries render, only the persistent `custom:true` source entry offers rank editing, and `sameAs` is informational.
+
+### M8-PROF-11 – Rule Element Update
+Enable/disable a Rule Element that changes a rank/proficiency. Confirm the Actor update rerenders the V2 value from prepared data and no local override is written.
+
+### M8-PROF-12 – Observer
+Open as Observer. Confirm every rank is legible text, no rank selects appear, and Lore open remains available only according to Foundry Item visibility.
+
+### M8-PROF-13 – Detached
+Detach the sheet, select Proficiencies, edit a Skill, Lore, and persistent custom attack rank. Confirm the active tab remains, no page reload/cross-window error occurs, and Item opening uses the Document sheet API.
+
+### M8-PROF-14 – Invalid Rank
+Using devtools, attempt empty, fractional, `-1`, `5`, `999`, and nonnumeric rank values. Confirm the controller rejects each and no Actor/Item update occurs.
+
+### M8-PROF-15 – Regression
+Switch through Character, Actions, Inventory, Feats, Spellcasting, Crafting and Proficiencies; execute one established safe flow in each and confirm native tab navigation and existing behavior remain intact.

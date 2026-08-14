@@ -87,6 +87,19 @@
       "NoPrepared": "Keine vorbereiteten Formeln",
       "Known": "Bekannte Formeln",
       "DC": "SG"
+    },
+    "Proficiencies": {
+      "Rank": "Kompetenzgrad",
+      "Primary": "Primär",
+      "Modifier": "Modifikator",
+      "DC": "SG",
+      "OpenLore": "Wissensfertigkeit öffnen",
+      "PerceptionSaves": "Wahrnehmung & Rettungswürfe",
+      "NoLore": "Keine Wissensfertigkeiten",
+      "None": "Keine Einträge",
+      "OtherMartial": "Weitere / Kampf-Kompetenzen",
+      "SameAs": "Basiert auf:",
+      "InvalidRank": "Ungültiger Kompetenzgrad."
     }
   }
 }
