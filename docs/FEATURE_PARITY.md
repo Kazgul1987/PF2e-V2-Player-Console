@@ -129,7 +129,8 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Item activations | safe omission | Inventory/Core activation owns charges |
 | Cast / consumption | implemented | `entry.cast({rank, slotId})`; no local counters |
 | Prepared assignment / unprepare | implemented | Concrete slot drop / button use `prepareSpell` |
-| Expended toggle / slot swap | implemented | Core collection APIs |
+| Expended toggle | implemented | Core `setSlotExpendedState` API |
+| Prepared slot swap | implemented | Core `swapSlotPositions` API, limited to classic prepared (non-flexible) entries |
 | Spell D&D / entry move | implemented | Core `addSpell({groupId})`; prepared slot targets remain distinct |
 | Entry D&D | pending | Sorting entries is nonessential and official sheet-specific |
 | Spell open / summary / chat | implemented | Document sheet, enriched description, non-consuming `toMessage` |

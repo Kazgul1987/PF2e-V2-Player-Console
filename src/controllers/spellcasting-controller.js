@@ -52,9 +52,15 @@ export class SpellcastingController {
         if (!collection) return;
         const data = TextEditor.getDragEventData(event);
         const source = data.spellFrom;
+        const sourceSlotIndex = Number(source?.slotIndex);
         const slotIndex = Number(destination.slotIndex);
-        if (source && source.collectionId === destination.entryId && String(source.groupId) === destination.groupId && Number.isInteger(slotIndex)) {
-            return collection.swapSlotPositions(destination.groupId, Number(source.slotIndex), slotIndex);
+        const canSwapPreparedSlots = collection.entry.isPrepared === true &&
+            collection.entry.isFlexible === false && collection.entry.isRitual !== true;
+        const validSourceSlot = Number.isInteger(sourceSlotIndex) && sourceSlotIndex >= 0;
+        const validTargetSlot = Number.isInteger(slotIndex) && slotIndex >= 0;
+        if (canSwapPreparedSlots && validSourceSlot && validTargetSlot && source?.collectionId === destination.entryId &&
+            String(source.groupId) === destination.groupId) {
+            return collection.swapSlotPositions(destination.groupId, sourceSlotIndex, slotIndex);
         }
         const item = await Item.implementation.fromDropData(data);
         if (!item?.isOfType?.("spell")) return;
