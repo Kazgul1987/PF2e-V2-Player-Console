@@ -37,11 +37,14 @@ export class FeatController {
             ? { groupId, slotId: target.closest("[data-slot-id]")?.dataset.slotId ?? null }
             : null;
         const sameActor = item.parent?.uuid === actor.uuid;
+        const group = groupId === "bonus" ? actor.feats.bonus : actor.feats.get(groupId);
 
         // Nested grants are prepared as children by PF2e and are not independent move targets.
         if (sameActor && item.grantedBy) return;
 
-        const group = groupId === "bonus" ? actor.feats.bonus : actor.feats.get(groupId);
+        // Core refuses to detach an embedded feat by moving it to a slotted group's non-slot area.
+        if (sameActor && group?.slotted && !slotData?.slotId) return [];
+
         const resorting = sameActor && item.group === group && !group?.slotted;
         if (!resorting) return actor.feats.insertFeat(item, slotData);
 
