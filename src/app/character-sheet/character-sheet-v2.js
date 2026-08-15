@@ -17,6 +17,8 @@ import { EffectsAdapter } from "../../pf2e/effects-adapter.js";
 import { EffectsController } from "../../controllers/effects-controller.js";
 import { BiographyAdapter } from "../../pf2e/biography-adapter.js";
 import { BiographyController } from "../../controllers/biography-controller.js";
+import { PFSAdapter } from "../../pf2e/pfs-adapter.js";
+import { PFSController } from "../../controllers/pfs-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -95,6 +97,11 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             editBiographyRichText: PF2eCharacterSheetV2.#biographyAction,
             saveBiographyRichText: PF2eCharacterSheetV2.#biographyAction,
             cancelBiographyRichText: PF2eCharacterSheetV2.#biographyAction,
+            openPFSBoon: PF2eCharacterSheetV2.#pfsAction,
+            pfsBoonToChat: PF2eCharacterSheetV2.#pfsAction,
+            pfsBoonSummary: PF2eCharacterSheetV2.#pfsAction,
+            deletePFSBoon: PF2eCharacterSheetV2.#pfsAction,
+            browsePFSBoons: PF2eCharacterSheetV2.#pfsAction,
         },
     };
 
@@ -159,6 +166,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "proficiencies") partContext.proficiencies = ProficienciesAdapter.prepare(this.actor, this.isEditable);
         if (partId === "effects") partContext.effects = EffectsAdapter.prepare(this.actor, this.isEditable);
         if (partId === "biography") partContext.biography = await BiographyAdapter.prepare(this.actor, this.isEditable);
+        if (partId === "pfs") partContext.pfs = PFSAdapter.prepare(this.actor);
         return partContext;
     }
 
@@ -353,6 +361,24 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
     }
 
+    static async #pfsAction(event, target) {
+        const row = target.closest("[data-item-id]");
+        const id = row?.dataset.itemId;
+        switch (target.dataset.action) {
+            case "openPFSBoon": return PFSController.open(this.actor, id);
+            case "pfsBoonToChat": return PFSController.toChat(this.actor, id, event);
+            case "deletePFSBoon": return PFSController.remove(this.actor, id, event);
+            case "browsePFSBoons": return PFSController.browse(this.actor);
+            case "pfsBoonSummary": {
+                const summary = row?.querySelector(":scope > .item-summary");
+                if (!summary) return;
+                if (!summary.hidden) { summary.hidden = true; summary.replaceChildren(); return; }
+                summary.innerHTML = await PFSController.summary(this.actor, id);
+                summary.hidden = false;
+            }
+        }
+    }
+
     async #openBiographyEditor(target) {
         if (this.#biographyEditor || !this.isEditable) return;
         const container = target.closest("[data-richtext-field]");
@@ -518,6 +544,39 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
                 input.blur();
             }
         }, listenerOptions);
+        const pfs = getTabPanel("pfs");
+        pfs?.addEventListener("change", async (event) => {
+            const input = event.target;
+            let accepted;
+            if (input?.matches?.("[data-pfs-number]")) {
+                accepted = await PFSController.updateOrganizedPlayNumber(this.actor, input.dataset.pfsNumber, input.value);
+            } else if (input?.matches?.("[data-pfs-level-bump]")) {
+                accepted = await PFSController.toggleLevelBump(this.actor, input.checked);
+            } else if (input?.matches?.("[data-pfs-faction]")) {
+                accepted = await PFSController.updateFaction(this.actor, input.value);
+            } else if (input?.matches?.("[data-pfs-reputation]")) {
+                accepted = await PFSController.updateReputation(this.actor, input.dataset.pfsReputation, input.value);
+            } else return;
+            if (!accepted && input.matches("[data-pfs-level-bump]")) {
+                input.checked = Boolean(this.actor.system.pfs.levelBump);
+            } else if (!accepted && input.matches("[data-pfs-faction]")) {
+                input.value = this.actor.system.pfs.currentFaction;
+            } else if (!accepted) {
+                input.value = PFSController.value(this.actor, input.dataset.pfsNumber, input.dataset.pfsReputation);
+            }
+        }, listenerOptions);
+        pfs?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-pfs-number], [data-pfs-reputation]")) return;
+            if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+            if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
+        }, listenerOptions);
+        pfs?.addEventListener("dragstart", (event) => {
+            const target = event.target?.closest?.("[draggable][data-item-id]");
+            if (target) PFSController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        pfs?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        pfs?.addEventListener("drop", (event) => void PFSController.drop(this.actor, event), listenerOptions);
     }
 
     async #updateActorName(input) {

@@ -110,6 +110,9 @@
     },
     "Biography": {
       "Edit": "Edit rich text"
+    },
+    "PFS": {
+      "Empty": "No PFS boons"
     }
   }
 }

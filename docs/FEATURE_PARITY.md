@@ -265,3 +265,23 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Limited-owner visibility | implemented | Non-visible sections are absent from the view model and DOM |
 | Permissions | implemented | Controls plus controller `canUserModify` guards; visibility also requires ownership |
 | Detached editor | implemented structurally | Application-local V14 `HTMLProseMirrorElement`; no global document lookup or realm-sensitive `instanceof`; runtime sign-off required |
+
+## Milestone 11 – PFS / Organized Play
+
+| Capability | Status | Notes |
+|---|---|---|
+| Player Number | implemented | Nullable, focused update; current Core-template range 10000–99999 |
+| Character Number | implemented | Nullable, focused update; range 2001–9999 |
+| Level Bump | implemented | Boolean flag only; all mechanical preparation remains Core-owned |
+| Current Faction | implemented | `CONFIG.PF2E.pfsFactions` options and whitelist |
+| Reputation | implemented | All runtime-configured factions; nullable integers; no local ranks |
+| School | safe omission | Source/config remain, but current official PFS tab has no School control or active flow |
+| PFS Boon rendering | implemented | Prepared `actor.pfsBoons` only |
+| Boon summary | implemented | Existing enriched Item-description pattern |
+| Boon open | implemented | Embedded Item sheet |
+| Boon chat | implemented | PF2e `toMessage` |
+| Boon delete | implemented | Owner and non-granted PFS Boons only |
+| Boon browser | implemented | Public runtime feat tab with `pfsboon` and actor-level filter; discovery/drop model |
+| Boon D&D | implemented | External genuine boons embed; normal feats and same-Actor drops are no-ops |
+| Permissions | implemented | Read-only markup plus mutation guards |
+| Detached | implemented structurally | Local tab-panel events and realm-safe `closest`; Foundry runtime verification required |
