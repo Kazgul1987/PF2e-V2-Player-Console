@@ -33,6 +33,10 @@ The core name control is `reference/pf2e/static/templates/actors/character/parti
 
 Foundry V14 exposes `DocumentSheetV2` from `foundry.applications.api`; its declaration shows that it extends `ApplicationV2`. `HandlebarsApplicationMixin(DocumentSheetV2)` therefore retains PARTS, TABS, actions, rendering, and inherited `detachWindow()` while adding document binding/forms/permissions/lifecycle. The Actor-sheet registration contract is `foundry.documents.collections.Actors.registerSheet`, demonstrated by PF2e at `reference/pf2e/src/scripts/register-sheets.ts` (around lines 45–70) and typed in `world-collection.d.mts`. The module is architecturally registration-ready but does not replace/register as default during this incomplete milestone.
 
+### Tab listener roots
+
+Application V2 navigation buttons and content panels intentionally share `data-group="primary"` and their `data-tab` value. Runtime listeners therefore bind through the application element to `.tab-panel[data-group="primary"][data-tab="..."]`, never a bare `[data-tab="..."]` selector that could resolve to the navigation button. This is a module event-binding constraint rather than a PF2e rule.
+
 ## Localization
 
 Stable core labels reused by templates include `PF2E.PerceptionHeader`, `PF2E.SavesHeader`, `PF2E.SkillsLabel`, `PF2E.LevelLabel`, and `PF2E.Check.Specific.Perception.Secret`, verified in PF2e's `static/lang/en.json` and core templates. Module-specific actions, placeholders, tabs, and errors use `PF2E_V2_PLAYER_CONSOLE.*` from `lang/en.json` and `lang/de.json`; no PF2e keys are guessed.
