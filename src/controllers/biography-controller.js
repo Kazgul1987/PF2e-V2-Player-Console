@@ -8,10 +8,9 @@ const SIMPLE_PATHS = {
     dislikes: "system.details.biography.dislikes",
     catchphrases: "system.details.biography.catchphrases",
 };
-const RICH_PATHS = Object.fromEntries(
-    ["appearance", "backstory", "campaignNotes", "allies", "enemies", "organizations"]
-        .map((field) => [field, `system.details.biography.${field}`]),
-);
+const RICH_TEXT_FIELDS = new Set([
+    "appearance", "backstory", "campaignNotes", "allies", "enemies", "organizations",
+]);
 const LIST_FIELDS = new Set(["edicts", "anathema"]);
 const VISIBILITY_SECTIONS = new Set(["appearance", "backstory", "personality", "campaign"]);
 
@@ -29,6 +28,10 @@ export class BiographyController {
         return String(this.#biography(actor)[field] ?? "");
     }
 
+    static richTextValue(actor, field) {
+        return RICH_TEXT_FIELDS.has(field) ? String(this.#biography(actor)[field] ?? "") : null;
+    }
+
     static async updateText(actor, field, value) {
         if (!this.#editable(actor) || !Object.hasOwn(SIMPLE_PATHS, field)) return;
         const next = String(value ?? "");
@@ -37,10 +40,10 @@ export class BiographyController {
     }
 
     static async updateRichText(actor, field, value) {
-        if (!this.#editable(actor) || !Object.hasOwn(RICH_PATHS, field)) return;
+        if (!this.#editable(actor) || !RICH_TEXT_FIELDS.has(field)) return;
         const next = String(value ?? "");
         if (next === String(this.#biography(actor)[field] ?? "")) return;
-        return actor.update({ [RICH_PATHS[field]]: next });
+        return actor.update({ [`system.details.biography.${field}`]: next });
     }
 
     static async toggleVisibility(actor, section) {

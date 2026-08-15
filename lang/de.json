@@ -24,7 +24,8 @@
       "SendToChat": "An Chat senden",
       "RollOptions": "Wurfoptionen",
       "NoStrikes": "Keine vorbereiteten Angriffe",
-      "Ammo": "Munition"
+      "Ammo": "Munition",
+      "Cancel": "Abbrechen"
     },
     "Labels": {
       "CharacterName": "Charaktername",
@@ -106,6 +107,9 @@
       "SecondsRemaining": "Noch {seconds} Sekunden",
       "Granted": "Von einem anderen Gegenstand verliehen",
       "Locked": "Durch einen anderen Zustand gesperrt oder gesteuert"
+    },
+    "Biography": {
+      "Edit": "Rich-Text bearbeiten"
     }
   }
 }

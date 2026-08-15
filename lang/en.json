@@ -24,7 +24,8 @@
       "SendToChat": "Send to chat",
       "RollOptions": "Roll options",
       "NoStrikes": "No prepared strikes",
-      "Ammo": "Ammunition"
+      "Ammo": "Ammunition",
+      "Cancel": "Cancel"
     },
     "Labels": {
       "CharacterName": "Character name",
@@ -106,6 +107,9 @@
       "SecondsRemaining": "{seconds} seconds remaining",
       "Granted": "Granted by another item",
       "Locked": "Locked or controlled by another condition"
+    },
+    "Biography": {
+      "Edit": "Edit rich text"
     }
   }
 }

@@ -248,19 +248,20 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 
 | Capability | Status | Notes |
 |---|---|---|
-| Appearance rendering/editing | implemented | Enriched display and Core ProseMirror editor helper |
+| Appearance rendering/editing | implemented structurally | Enriched display plus an explicit V2 edit action; Foundry runtime sign-off required |
 | Height / Weight | implemented | Focused source updates |
 | Appearance visibility | implemented | Owner toggle; private section omitted for non-owner |
-| Backstory rendering/editing | implemented | Enriched display and Core ProseMirror editor helper |
+| Backstory rendering/editing | implemented structurally | Local V2 ProseMirror element with explicit save/cancel; Foundry runtime sign-off required |
 | Birth place | implemented | Focused source update |
 | Backstory visibility | implemented | Persisted Core visibility field |
 | Attitude / Beliefs | implemented | Focused text updates |
 | Edicts / Anathema | implemented | Source arrays; add/edit/delete with validated indices |
 | Likes / Dislikes / Catchphrases | implemented | Focused text updates |
 | Personality visibility | implemented | Persisted Core visibility field |
-| Campaign notes / Allies / Enemies / Organizations | implemented | Six verified rich-text fields use the editor/enrichment pipeline |
+| Campaign notes / Allies / Enemies / Organizations | implemented structurally | All six whitelisted fields use the local editor lifecycle; Foundry runtime sign-off required |
 | Campaign visibility | implemented | Persisted Core visibility field |
-| Rich-text enrichment | implemented | Foundry `TextEditor.enrichHTML`, actor roll data, owner-only secrets, actor-relative UUIDs |
+| Rich-text save / cancel | implemented structurally | Element `save()` supplies canonical HTML; cancel disconnects without mutation |
+| Rich-text enrichment | implemented structurally | Public `game.pf2e.TextEditor.enrichHTML` with roll data, owner secrets, and actor-relative UUID context; Foundry fallback retained; runtime syntax comparison required |
 | Limited-owner visibility | implemented | Non-visible sections are absent from the view model and DOM |
 | Permissions | implemented | Controls plus controller `canUserModify` guards; visibility also requires ownership |
-| Detached editor | implemented structurally | Application V2 part, standard ProseMirror helper, and application-local listeners; runtime sign-off required |
+| Detached editor | implemented structurally | Application-local V14 `HTMLProseMirrorElement`; no global document lookup or realm-sensitive `instanceof`; runtime sign-off required |
