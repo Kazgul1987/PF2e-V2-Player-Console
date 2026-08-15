@@ -42,6 +42,7 @@ export class EffectsAdapter {
             locked: condition.isLocked === true,
             readonly: condition.readonly === true,
             mutable,
+            canRecover: mutable && condition.slug === "persistent-damage" && !!persistent && typeof condition.rollRecovery === "function",
             persistent: persistent ? {
                 formula: persistent.formula,
                 damageType: game.i18n.localize(CONFIG.PF2E.damageTypes?.[persistent.damageType] ?? persistent.damageType),
@@ -54,12 +55,17 @@ export class EffectsAdapter {
     static #effect(effect, editable) {
         const duration = effect.system?.duration ?? {};
         const remaining = effect.remainingDuration;
+        const isCounter = effect.system?.badge?.type === "counter";
+        const mutable = editable && !effect.grantedBy && !effect.isExpired;
         return {
             ...this.#base(effect),
             expired: effect.isExpired === true,
             unidentified: effect.isIdentified === false,
             granted: !!effect.grantedBy,
             deletable: editable && !effect.grantedBy,
+            isCounter,
+            canIncrease: mutable && isCounter && typeof effect.increase === "function",
+            canDecrease: mutable && isCounter && typeof effect.decrease === "function",
             duration: {
                 unit: duration.unit ?? null,
                 value: duration.value ?? null,

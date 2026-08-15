@@ -706,6 +706,9 @@ Find a Statistic with a genuine modifier of 0. Confirm the UI displays `+0` acco
 ### M8-FIX-11 – Tab Regression
 Open Character, Actions, Inventory, Feats, Spellcasting, Crafting, and Proficiencies. Confirm every tab works without errors.
 
+### M8-RUNTIME-01..07 – Prepared Skill Refresh Matrix
+In order, test Untrained → Trained (including reload), Trained → Expert, Expert → Master, Master → Legendary, and Legendary → Untrained. After every update compare `_source.system.skills[slug].rank`, prepared `system.skills[slug].rank`, `actor.skills[slug].rank`, `.mod`, and `.check.mod` in devtools and confirm rank plus displayed modifier change together. Repeat with a synthetic/Rule Element bonus (the bonus must remain included) and repeat the edit in a detached sheet without stale UI. Also confirm Lore, custom Martial, class DCs, saves, and Perception still match Core.
+
 ## Milestone 9 – Effects / Conditions / Afflictions
 
 ### M9-EFFECT-01 – Empty State
@@ -739,7 +742,7 @@ Decrease a value-one Condition; compare removal/end state with the official shee
 Create an overriding/reference combination; verify only Core-active conditions list and no hidden entry can be mutated.
 
 ### M9-EFFECT-11 – Persistent Damage
-Apply persistent damage; verify formula, localized damage type, and DC where present. Verify no local recovery or flat-check behavior exists.
+Apply persistent damage; verify formula, localized damage type, and DC where present. Use Recovery and verify PF2e owns the flat check, chat, and success removal.
 
 ### M9-EFFECT-12 – Affliction Render
 On a V14-dev build supporting Afflictions, verify icon/name, current/max stage and onset without console errors.
@@ -748,7 +751,7 @@ On a V14-dev build supporting Afflictions, verify icon/name, current/max stage a
 Use +/- and verify `AfflictionPF2e.increase/decrease` produces the same linked conditions, damage message, and deletion behavior as Core.
 
 ### M9-EFFECT-14 – Effect Drop
-Drop a world/compendium Effect and verify PF2e embeds and prepares it. Separately test a spell-origin Effect in the official sheet because context augmentation is partial here.
+Drop a world/compendium Effect and verify PF2e embeds and prepares it with drop context and counter value preserved; compare a spell-origin Effect with the official sheet.
 
 ### M9-EFFECT-15 – Invalid Drop
 Drop a weapon or feat and verify no mutation, notification, or crash.
@@ -764,3 +767,15 @@ Advance combat/world time for a short Effect; verify Core hooks/preparation upda
 
 ### M9-EFFECT-19 – Tab Regression
 Click Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, and Effects; after each M9 mutation verify Effects remains active and native tabs show no errors.
+
+### M9-FIX-01..04 – Effect Counter Boundary
+On a real counter Effect, use + and - and confirm `EffectPF2e.increase/decrease` owns the badge changes, including decreasing value 1 to Core's resulting state. Confirm an ordinary Effect has no counter controls.
+
+### M9-FIX-05..06 – Condition Scope and Recovery
+Compare an active/inactive/overridden setup with the official character Effects tab and confirm only `conditions.active` is shown. On persistent damage, click Recovery and confirm `ConditionPF2e.rollRecovery()` produces Core chat and success/removal behavior; ordinary Conditions must have no Recovery control.
+
+### M9-FIX-07..12 – Drop Matrix
+Drop Compendium and world Effects, an Effect from another Actor, and a Compendium Affliction; confirm Rule Elements/source context survive, IDs do not collide, and Affliction stages remain Core-owned. Confirm a granted Effect is a no-op, a Condition uses `increaseCondition`, and Weapon/Feat/Spell drops are no-ops without mutation or errors.
+
+### M9-FIX-13 – Detached Fixup
+Detach the sheet and repeat Effect counter +/-, Condition +/-, persistent recovery, and each supported drop. Confirm local-window event targets work without cross-window errors or stale values.

@@ -22,6 +22,7 @@
                 <span class="item-controls">
                     <button type="button" data-action="effectToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button>
                     <button type="button" data-action="openEffect" title="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-up-right-from-square"></i></button>
+                    {{#if condition.canRecover}}<button type="button" data-action="recoverPersistentDamage" title="{{localize 'PF2E.Item.Condition.PersistentDamage.Chat.RecoverLabel' name=condition.name}}"><i class="fa-solid fa-dice-d20"></i></button>{{/if}}
                     {{#if condition.mutable}}<button type="button" data-action="removeCondition" title="{{localize 'PF2E.DeleteItemTitle'}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
                 </span>
                 <div class="item-summary" hidden></div>
@@ -39,7 +40,7 @@
             <li class="effect-row {{#if effect.expired}}expired{{/if}}" data-item-id="{{effect.id}}" {{#if effect.deletable}}draggable="true"{{/if}}>
                 <button type="button" class="effect-name" data-action="effectSummary"><img src="{{effect.img}}" alt=""><span><strong>{{effect.name}}</strong><small class="trait-list">{{#each effect.traits as |trait|}}<span class="trait">{{trait.label}}</span>{{/each}}</small></span></button>
                 <span class="effect-duration">{{#if effect.expired}}{{localize "PF2E.EffectPanel.Expired"}}{{else}}{{effect.duration.label}}{{#if effect.duration.hasRemaining}} · {{localize "PF2E_V2_PLAYER_CONSOLE.Effects.SecondsRemaining" seconds=effect.duration.remaining}}{{/if}}{{/if}}</span>
-                <span class="effect-badge">{{#if effect.badge}}{{effect.badge.value}}{{/if}}{{#if effect.granted}}<i class="fa-solid fa-link" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Effects.Granted'}}"></i>{{/if}}</span>
+                <span class="effect-badge">{{#if effect.canDecrease}}<button type="button" data-action="decreaseEffect" title="{{localize 'PF2E.DecrementEffectTitle'}}"><i class="fa-solid fa-minus"></i></button>{{/if}}{{#if effect.badge}}{{effect.badge.value}}{{/if}}{{#if effect.canIncrease}}<button type="button" data-action="increaseEffect" title="{{localize 'PF2E.IncrementEffectTitle'}}"><i class="fa-solid fa-plus"></i></button>{{/if}}{{#if effect.granted}}<i class="fa-solid fa-link" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Effects.Granted'}}"></i>{{/if}}</span>
                 <span class="item-controls"><button type="button" data-action="effectToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button><button type="button" data-action="openEffect" title="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-up-right-from-square"></i></button>{{#if effect.deletable}}<button type="button" data-action="deleteEffect" title="{{localize 'PF2E.DeleteItemTitle'}}"><i class="fa-solid fa-trash"></i></button>{{/if}}</span>
                 <div class="item-summary" hidden></div>
             </li>

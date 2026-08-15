@@ -43,6 +43,20 @@ export class EffectsController {
         return event?.ctrlKey || event?.shiftKey ? effect.delete() : effect.deleteDialog();
     }
 
+    static async changeEffect(actor, id, direction) {
+        if (!this.#editable(actor)) return;
+        const effect = actor.items?.get?.(id);
+        if (!effect?.isOfType?.("effect") || effect.grantedBy || effect.isExpired || effect.system?.badge?.type !== "counter") return;
+        return direction > 0 ? effect.increase() : effect.decrease();
+    }
+
+    static async recoverPersistentDamage(actor, id) {
+        if (!this.#editable(actor)) return;
+        const condition = actor.conditions?.get?.(id);
+        if (!condition?.isOfType?.("condition") || condition.slug !== "persistent-damage" || !condition.system?.persistent || condition.readonly || condition.isLocked) return;
+        return condition.rollRecovery();
+    }
+
     static async changeAffliction(actor, id, direction) {
         if (!this.#editable(actor)) return;
         const affliction = actor.items?.get?.(id);
@@ -63,13 +77,21 @@ export class EffectsController {
         const data = TextEditor.getDragEventData(event);
         if (data?.type !== "Item") return [];
         const item = await Item.implementation.fromDropData(data).catch(() => null);
-        if (!item?.isOfType?.("effect", "condition", "affliction") || item.parent?.uuid === actor.uuid) return [];
+        if (!item?.isOfType?.("effect", "condition", "affliction") || item.parent?.uuid === actor.uuid || item.grantedBy) return [];
         if (item.isOfType("condition")) {
             const value = typeof data.value === "number" && item.system?.value?.isValued ? data.value : undefined;
             const created = await actor.increaseCondition(item.slug, { value });
             return created ? [created] : [];
         }
-        const source = new Item.implementation(item.toObject()).clone().toObject();
+        const itemSource = item.toObject();
+        const { level, value, context } = data;
+        if (typeof level === "number" && level >= 0) itemSource.system.level.value = Math.floor(level);
+        if (itemSource.type === "effect" && itemSource.system.badge?.type === "counter" && typeof value === "number") {
+            itemSource.system.badge.value = value;
+        }
+        itemSource.system.context = context ?? null;
+        // Match PF2e's actor-sheet creation boundary: cloning clears the source ID.
+        const source = new Item.implementation(itemSource).clone().toObject();
         return actor.createEmbeddedDocuments("Item", [source]);
     }
 }

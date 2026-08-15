@@ -188,6 +188,7 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Saving Throw rank edit | safe omission | Class/rule-prepared; official proficiency tab has no save editor |
 | Skills rendering | implemented | prepared `actor.skills` rows |
 | Skill rank edit | implemented | `CONFIG.PF2E.skills` whitelist → `system.skills.<slug>.rank` only; a missing partial source entry is valid and starts at rank 0 |
+| Skill modifier refresh after rank update | implemented | change listener awaits the Document update, then renders freshly prepared `actor.skills` Statistics |
 | Lore rendering | implemented | prepared Lore statistic and embedded Item ID |
 | Lore rank edit | implemented | Lore Item `system.proficient.value` |
 | Lore open | implemented | embedded `item.sheet.render(true)` |
@@ -221,6 +222,8 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Effect open | implemented | Embedded Item sheet |
 | Effect chat | implemented | `toMessage` |
 | Effect delete | implemented | Free Effect Items only; Core document lifecycle |
+| Effect counter rendering | implemented | Only `system.badge.type === "counter"` is treated as a counter |
+| Effect counter increase/decrease | implemented | `EffectPF2e.increase()` / `decrease()`; Core owns bounds and the end state |
 | Granted effect protection | implemented | Delete/drag omitted when `grantedBy` exists |
 | Condition rendering | implemented | `actor.conditions.active` |
 | Valued condition rendering | implemented | `system.value.isValued`, not hardcoded slugs |
@@ -228,12 +231,12 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Condition decrease | implemented | `actor.decreaseCondition(condition)` |
 | Condition remove | implemented | `decreaseCondition(condition,{forceRemove:true})` |
 | Overridden/inactive conditions | safe omission | Official character tab uses `conditions.active`; inactive entries are not independently mutated |
-| Persistent damage | partial | Core formula/type/DC shown and Core removal used; recovery/editor/increment omitted |
+| Persistent damage recovery | implemented | Persistent Damage only; delegates the flat check, chat, and success removal to `ConditionPF2e.rollRecovery()` |
 | Affliction rendering | implemented | Prepared affliction Item stage/onset data |
 | Affliction stage | implemented | Core `increase()` / `decrease()` lifecycle methods |
-| Effect D&D | partial | Basic external Item cloning only; spell-context augmentation remains official-sheet-only |
+| Effect D&D | implemented | Core-compatible drop source/context/badge flow and clone-to-clear-ID creation; granted drops are a safe no-op |
 | Condition D&D | implemented | `fromDropData` then `actor.increaseCondition` |
-| Affliction D&D | partial | Basic external Item cloning; V14-dev production limitation applies |
+| Affliction D&D | implemented | Same Core-compatible external Item source and clone-to-clear-ID flow; stage data is untouched |
 | Add Condition UI | pending | No stable public selector application |
 | Permissions | implemented | Markup and runtime Actor permission guards |
 | Detached | implemented structurally | Application-local action/drop targets; runtime verification required |
