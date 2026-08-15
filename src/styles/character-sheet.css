@@ -8,6 +8,8 @@
     --pf2e-v2-border-strong: #496357;
     --pf2e-v2-text: #252b28;
     --pf2e-v2-text-muted: #5c665f;
+    --pf2e-v2-heading: #332f2a;
+    --pf2e-v2-heading-muted: #655e53;
     --pf2e-v2-text-on-accent: #fffaf0;
     --pf2e-v2-accent: #356b55;
     --pf2e-v2-accent-strong: #214b3b;
@@ -24,6 +26,8 @@
     --pf2e-v2-row-height: 2.65rem;
     --pf2e-v2-control-height: 2rem;
     --pf2e-v2-control-padding: .3rem .55rem;
+    --pf2e-v2-icon-control-size: 1.875rem;
+    --pf2e-v2-icon-size: .8125rem;
     --pf2e-v2-section-space: .85rem;
     color: var(--pf2e-v2-text);
     min-width: 22rem;
@@ -31,7 +35,8 @@
 .pf2e-v2-character-sheet[data-theme="classic"] {
     --pf2e-v2-bg-app: #eee3ce; --pf2e-v2-bg-panel: #fbf4e5; --pf2e-v2-bg-panel-alt: #e5d6bb;
     --pf2e-v2-bg-header: #681f2a; --pf2e-v2-border: #aa9576; --pf2e-v2-border-strong: #79562e;
-    --pf2e-v2-text: #2d2825; --pf2e-v2-text-muted: #6b5d52; --pf2e-v2-accent: #8a2937;
+    --pf2e-v2-text: #2d2825; --pf2e-v2-text-muted: #6b5d52; --pf2e-v2-heading: #462f31;
+    --pf2e-v2-heading-muted: #6d5853; --pf2e-v2-accent: #8a2937;
     --pf2e-v2-accent-strong: #611c28; --pf2e-v2-highlight: #9a7031; --pf2e-v2-focus: #bd8531;
 }
 .pf2e-v2-character-sheet[data-theme="remaster"] {
@@ -45,13 +50,15 @@
     --pf2e-v2-bg-app: #292f32; --pf2e-v2-bg-panel: #353c3e; --pf2e-v2-bg-panel-alt: #40494a;
     --pf2e-v2-bg-header: #263d37; --pf2e-v2-border: #697475; --pf2e-v2-border-strong: #87a296;
     --pf2e-v2-text: #edf0e8; --pf2e-v2-text-muted: #bbc4bd; --pf2e-v2-text-on-accent: #f7f3e9;
+    --pf2e-v2-heading: #f1eee4; --pf2e-v2-heading-muted: #c8cec8;
     --pf2e-v2-accent: #789d8b; --pf2e-v2-accent-strong: #99b9aa; --pf2e-v2-highlight: #bf9361;
     --pf2e-v2-danger: #df8585; --pf2e-v2-success: #8fc7a3; --pf2e-v2-warning: #e0b76c; --pf2e-v2-focus: #e1ad5c;
 }
 .pf2e-v2-character-sheet[data-density="compact"] {
     --pf2e-v2-gap-xs: .15rem; --pf2e-v2-gap-sm: .3rem; --pf2e-v2-gap-md: .5rem;
     --pf2e-v2-row-height: 2.15rem; --pf2e-v2-control-height: 1.7rem;
-    --pf2e-v2-control-padding: .15rem .4rem; --pf2e-v2-section-space: .55rem;
+    --pf2e-v2-control-padding: .15rem .4rem; --pf2e-v2-icon-control-size: 1.625rem;
+    --pf2e-v2-icon-size: .75rem; --pf2e-v2-section-space: .55rem;
 }
 .pf2e-v2-character-sheet .window-content { display: flex; flex-direction: column; gap: .75rem; overflow: hidden; padding: 1rem; }
 .pc-header { align-items: center; display: grid; gap: 1rem; grid-template-columns: 5rem 1fr auto; }
@@ -257,6 +264,10 @@
 .pf2e-v2-character-sheet .pc-header img { border-color: var(--pf2e-v2-highlight); border-radius: var(--pf2e-v2-radius-md); }
 .pf2e-v2-character-sheet .pc-header h1 { color: inherit; font-family: Georgia, "Times New Roman", serif; font-variant: small-caps; letter-spacing: .035em; }
 .pf2e-v2-character-sheet .pc-header input { background: color-mix(in srgb, var(--pf2e-v2-bg-panel) 92%, transparent); color: var(--pf2e-v2-text); }
+.pf2e-v2-character-sheet .pc-header h1 input {
+    box-sizing: border-box; line-height: 1.25; min-height: 2.65rem; overflow: hidden;
+    padding-block: .4rem; text-overflow: ellipsis; white-space: nowrap;
+}
 .pf2e-v2-character-sheet .headline-stats div { background: color-mix(in srgb, var(--pf2e-v2-bg-panel) 16%, transparent); border-color: color-mix(in srgb, var(--pf2e-v2-highlight) 65%, transparent); }
 .pf2e-v2-character-sheet .headline-stats dt { color: color-mix(in srgb, var(--pf2e-v2-text-on-accent) 78%, transparent); font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .pf2e-v2-character-sheet .sheet-tabs { background: var(--pf2e-v2-bg-panel-alt); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-md); gap: 2px; padding: var(--pf2e-v2-gap-xs); }
@@ -268,9 +279,10 @@
     background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-md); padding: var(--pf2e-v2-gap-md);
 }
 .pf2e-v2-character-sheet :is(.inventory-section > header, .action-section > h3, .feat-section > h3, .effect-section > h3, .spell-entry > header, .spell-rank > header, .crafting-ability > header, .proficiency-section h3, .biography-header, .pfs-boons > header) {
-    border-bottom: 2px solid var(--pf2e-v2-accent); color: var(--pf2e-v2-accent-strong); margin: 0 0 var(--pf2e-v2-gap-sm); min-height: var(--pf2e-v2-control-height); padding: 0 var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-xs);
+    border-bottom: 2px solid var(--pf2e-v2-accent); color: var(--pf2e-v2-heading); margin: 0 0 var(--pf2e-v2-gap-sm); min-height: var(--pf2e-v2-control-height); padding: 0 var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-xs);
 }
-.pf2e-v2-character-sheet[data-theme="dark"] :is(h1, h2, h3, h4, .spell-entry > header, .proficiency-section h3, .biography-header) { color: var(--pf2e-v2-text); }
+.pf2e-v2-character-sheet .tab-panel h2 { color: var(--pf2e-v2-heading); }
+.pf2e-v2-character-sheet :is(.coins h3, .inventory-columns) { color: var(--pf2e-v2-heading-muted); }
 .pf2e-v2-character-sheet :is(.inventory-item, .strike-row, .action-list > li, .feat-entry, .spell-row, .crafting-formula, .proficiency-row, .effect-row, .pfs-boon-row) {
     border-bottom-color: color-mix(in srgb, var(--pf2e-v2-border) 65%, transparent); min-height: var(--pf2e-v2-row-height); padding: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm);
 }
@@ -296,6 +308,20 @@
 .pf2e-v2-character-sheet .biography-richtext-editor-host { background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); padding: var(--pf2e-v2-gap-sm); }
 .pf2e-v2-character-sheet .crafting-ability.insufficient { border-color: var(--pf2e-v2-danger); }
 .pf2e-v2-character-sheet :is(.action-controls .active, .weapon-toggles .active, .item-controls .active) { color: var(--pf2e-v2-accent-strong); }
+
+/* Inventory polish: compact icon-only controls without shrinking readable carry-state labels. */
+.pf2e-v2-character-sheet .inventory-columns {
+    border-bottom-color: var(--pf2e-v2-border); margin-bottom: var(--pf2e-v2-gap-xs);
+    padding: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm) var(--pf2e-v2-gap-sm);
+}
+.pf2e-v2-character-sheet .inventory :is(.item-controls, .stepper) { gap: 2px; }
+.pf2e-v2-character-sheet .inventory :is(.item-controls, .stepper, .coins) button,
+.pf2e-v2-character-sheet .inventory-section > header > button {
+    align-items: center; display: inline-flex; font-size: var(--pf2e-v2-icon-size); height: var(--pf2e-v2-icon-control-size);
+    justify-content: center; line-height: 1; min-height: var(--pf2e-v2-icon-control-size); min-width: var(--pf2e-v2-icon-control-size);
+    padding: 0; width: var(--pf2e-v2-icon-control-size);
+}
+.pf2e-v2-character-sheet .inventory .carry-actions { gap: var(--pf2e-v2-gap-xs); }
 
 /* Detached-first responsive layout: controls wrap instead of becoming unreachable. */
 @media (max-width: 64rem) {

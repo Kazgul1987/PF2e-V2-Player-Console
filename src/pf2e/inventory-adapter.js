@@ -24,14 +24,17 @@ export class InventoryAdapter {
             items: roots.filter((item) => types.includes(item.type)).map((item) => this.#item(item, actor)),
         }));
         const currency = actor.inventory.currency;
+        const preparedBulk = actor.inventory.bulk;
         return {
             sections,
-            bulk: String(actor.inventory.bulk ?? "—"),
+            bulk: preparedBulk?.value
+                ? `${preparedBulk.value.toString()} / ${preparedBulk.max}`
+                : "—",
             invested: actor.inventory.invested ?? null,
             coins: ["pp", "gp", "sp", "cp"].map((denomination) => ({
                 denomination,
                 value: Number(currency?.[denomination] ?? 0),
-                label: game.i18n.localize(`PF2E.Currency.${denomination.toUpperCase()}`),
+                label: game.i18n.localize(`PF2E.Currency.${denomination}`),
             })),
         };
     }

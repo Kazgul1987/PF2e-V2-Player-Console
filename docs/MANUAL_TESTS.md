@@ -909,3 +909,17 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M12-UI-16 Biography:** Recheck rich-text Edit, Save, Cancel, and visibility without editor clipping.
 - **M12-UI-17 Effects:** Recheck condition +/- controls, counters, persistent-damage recovery, affliction stages, and drops.
 - **M12-UI-18 PFS:** Recheck player/character numbers, level bump, faction, reputation, boon browser, summaries, and boon controls.
+
+## Milestone 12 – Visual Polish Pass 1
+
+- **M12-POLISH-01 – Character Name:** Open characters named “Lim Richward”, “Ramona Tehvers”, and “A Very Long Character Name”. Confirm capitals/serifs are not vertically clipped, the field has balanced vertical space, and portrait, name, level, HP, and AC remain responsive around 520–600px.
+- **M12-POLISH-02 – Remaster Headings:** In Remaster, confirm Perception, Saves, Skills, Inventory, and Coins are clearly readable on parchment, with major, subsection, and column-label hierarchy intact.
+- **M12-POLISH-03 – Classic Headings:** Repeat the heading contrast and hierarchy check in Classic.
+- **M12-POLISH-04 – Dark Headings:** Repeat the heading contrast and hierarchy check in Dark; headings must use the light theme value.
+- **M12-POLISH-05 – Currency Labels:** Open Inventory and confirm Platinum, Gold, Silver, and Copper are localized; no visible `PF2E.Currency.*` key remains.
+- **M12-POLISH-06 – Bulk:** Confirm the Inventory overview displays a readable prepared PF2e Bulk value and maximum, never `[object Object]`.
+- **M12-POLISH-07 – Coin Controls:** Exercise PP/GP/SP/CP add and remove controls and confirm values update as before.
+- **M12-POLISH-08 – Icon Controls:** Confirm quantity +/−, summary/chat, edit, delete, visibility/identification, invest, consume, container, and create controls are compact, keyboard-focusable, labelled, and clickable.
+- **M12-POLISH-09 – Carry Controls:** Exercise Held 1H, Held 2H, Worn, Stowed, and Dropped; confirm labels remain readable, controls wrap without overlap, and state updates.
+- **M12-POLISH-10 – Compact Density:** Compare Comfortable and Compact. Confirm icon-only controls reduce sensibly while carry-state text buttons remain readable.
+- **M12-POLISH-11 – Detached:** In a detached window, repeat header checks at 520–600px and Inventory checks at narrow and 720–900px widths. Recheck quantity, carry, invest, summary, edit, delete, drag/drop, and coins; then verify Intimidation Expert→Master updates source rank/modifier/DC, Biography Edit/Save/Cancel still works, and Actions, Spellcasting, Crafting, Effects, and PFS show no obvious regression.

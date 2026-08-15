@@ -1,21 +1,21 @@
 <li class="inventory-item" data-item-id="{{item.id}}" data-drop-container="{{#if item.isContainer}}{{item.id}}{{else}}{{item.containerId}}{{/if}}" draggable="{{editable}}">
     <div class="inventory-row">
         <button type="button" class="item-name" data-action="itemSummary"><img src="{{item.img}}" alt=""/><span>{{item.name}}</span>{{#if item.containerName}}<small>{{item.containerName}}</small>{{/if}}</button>
-        <span class="stepper">{{#if editable}}{{#if item.canEditQuantity}}<button type="button" data-action="quantity" data-delta="-1">−</button>{{/if}}{{/if}}{{item.quantity}}{{#if editable}}{{#if item.canEditQuantity}}<button type="button" data-action="quantity" data-delta="1">+</button>{{/if}}{{/if}}</span>
+        <span class="stepper">{{#if editable}}{{#if item.canEditQuantity}}<button type="button" data-action="quantity" data-delta="-1" title="{{localize 'PF2E.QuantityLabel'}} −" aria-label="{{localize 'PF2E.QuantityLabel'}} −">−</button>{{/if}}{{/if}}{{item.quantity}}{{#if editable}}{{#if item.canEditQuantity}}<button type="button" data-action="quantity" data-delta="1" title="{{localize 'PF2E.QuantityLabel'}} +" aria-label="{{localize 'PF2E.QuantityLabel'}} +">+</button>{{/if}}{{/if}}</span>
         <span>{{item.bulk}}</span>
         <span class="item-state">
             {{item.carryType}}{{#if item.handsHeld}} ({{item.handsHeld}}){{/if}}
             {{#if editable}}<span class="carry-actions">{{#each item.carryOptions}}<button type="button" data-action="carry" data-carry-type="{{type}}" {{#if hands}}data-hands-held="{{hands}}"{{/if}} {{#if inSlot}}data-in-slot{{/if}} title="{{text}}">{{text}}</button>{{/each}}</span>{{/if}}
         </span>
         <span class="item-controls">
-            {{#if editable}}{{#if item.isContainer}}<button type="button" data-action="toggleContainer" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.ToggleContainer'}}"><i class="fa-solid fa-box{{#unless item.collapsed}}-open{{/unless}}"></i></button>{{/if}}
-            {{#if item.isInvestable}}<button type="button" data-action="invest" class="{{#if item.isInvested}}active{{/if}}" title="{{localize 'PF2E.InvestedLabel'}}"><i class="fa-solid fa-gem"></i></button>{{/if}}
-            {{#if item.canConsume}}<button type="button" data-action="consume" title="{{localize 'PF2E.Item.Consumable.Uses.Use'}}"><i class="fa-solid fa-flask"></i></button>{{/if}}
-            {{#if item.canIdentify}}<button type="button" data-action="identification" data-status="identified" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.Identify'}}"><i class="fa-solid fa-eye"></i></button>{{/if}}
-            {{#if item.canMystify}}<button type="button" data-action="identification" data-status="unidentified" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.Mystify'}}"><i class="fa-solid fa-eye-slash"></i></button>{{/if}}{{/if}}
-            <button type="button" data-action="itemToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button>
-            <button type="button" data-action="openItem" title="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-edit"></i></button>
-            {{#if editable}}<button type="button" data-action="deleteItem" title="{{localize 'PF2E.DeleteItemTitle'}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
+            {{#if editable}}{{#if item.isContainer}}<button type="button" data-action="toggleContainer" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.ToggleContainer'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.ToggleContainer'}}"><i class="fa-solid fa-box{{#unless item.collapsed}}-open{{/unless}}"></i></button>{{/if}}
+            {{#if item.isInvestable}}<button type="button" data-action="invest" class="{{#if item.isInvested}}active{{/if}}" title="{{localize 'PF2E.InvestedLabel'}}" aria-label="{{localize 'PF2E.InvestedLabel'}}"><i class="fa-solid fa-gem"></i></button>{{/if}}
+            {{#if item.canConsume}}<button type="button" data-action="consume" title="{{localize 'PF2E.Item.Consumable.Uses.Use'}}" aria-label="{{localize 'PF2E.Item.Consumable.Uses.Use'}}"><i class="fa-solid fa-flask"></i></button>{{/if}}
+            {{#if item.canIdentify}}<button type="button" data-action="identification" data-status="identified" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.Identify'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.Identify'}}"><i class="fa-solid fa-eye"></i></button>{{/if}}
+            {{#if item.canMystify}}<button type="button" data-action="identification" data-status="unidentified" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.Mystify'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.Mystify'}}"><i class="fa-solid fa-eye-slash"></i></button>{{/if}}{{/if}}
+            <button type="button" data-action="itemToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button>
+            <button type="button" data-action="openItem" title="{{localize 'PF2E.EditItemTitle'}}" aria-label="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-edit"></i></button>
+            {{#if editable}}<button type="button" data-action="deleteItem" title="{{localize 'PF2E.DeleteItemTitle'}}" aria-label="{{localize 'PF2E.DeleteItemTitle'}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
         </span>
     </div>
     <div class="item-summary" hidden></div>
