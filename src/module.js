@@ -1,6 +1,7 @@
 import { HANDLEBARS_PARTIALS, LOG_PREFIX, MODULE_ID } from "./constants.js";
 import { PF2eCharacterSheetV2 } from "./app/character-sheet/character-sheet-v2.js";
 import { CharacterAdapter } from "./pf2e/character-adapter.js";
+import { registerSettings } from "./settings.js";
 
 const applications = new Map();
 let partialsPromise;
@@ -37,6 +38,11 @@ export function openCharacterSheet(actor) {
 }
 
 Hooks.once("init", () => {
+    registerSettings(() => {
+        for (const application of applications.values()) {
+            if (application.rendered) void application.render();
+        }
+    });
     game.modules.get(MODULE_ID).api = { openCharacterSheet, PF2eCharacterSheetV2 };
     void preloadHandlebarsPartials().catch(() => undefined);
     console.info(`${LOG_PREFIX} Initialised`);

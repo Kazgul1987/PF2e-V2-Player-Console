@@ -113,6 +113,21 @@
     },
     "PFS": {
       "Empty": "No PFS boons"
+    },
+    "Settings": {
+      "Theme": {
+        "Name": "Sheet theme",
+        "Hint": "Choose the visual theme used by PF2e V2 Player Console sheets.",
+        "Remaster": "Remaster (green and parchment)",
+        "Classic": "Classic (burgundy and parchment)",
+        "Dark": "Dark (charcoal)"
+      },
+      "Density": {
+        "Name": "Sheet density",
+        "Hint": "Choose the spacing and control density used by PF2e V2 Player Console sheets.",
+        "Comfortable": "Comfortable",
+        "Compact": "Compact"
+      }
     }
   }
 }

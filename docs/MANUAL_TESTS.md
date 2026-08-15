@@ -888,3 +888,24 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M11-FIX-04 – PFS Boon summary:** Expand a PFS Boon and compare the description with the official PF2e Item summary.
 - **M11-FIX-05 – Effects summary:** Expand Effects, Conditions, and Afflictions and confirm no summary regression.
 - **M11-FIX-06 – Alterations/addenda:** Use an Item whose description is changed by a PF2e description alteration or addendum. Confirm the summary shows the final Core-rendered text rather than only `system.description.value`, with Owner/Observer secrets and GM notes matching Core.
+
+## Milestone 12 – UI / Layout / Theme System
+
+- **M12-UI-01 Remaster:** Select Remaster, open every tab, and verify readable controls and intact layouts.
+- **M12-UI-02 Classic:** Select Classic and repeat the all-tab readability/layout pass.
+- **M12-UI-03 Dark:** Select Dark and verify contrast, disabled states, summaries, and editor surfaces in every tab.
+- **M12-UI-04 Compact:** Select Compact; verify shorter rows/gaps/controls and that every control remains reachable.
+- **M12-UI-05 Comfortable:** Select Comfortable and verify the default spacing across every tab.
+- **M12-UI-06 Narrow:** Resize to roughly 520–600px; verify usable scrolling navigation, collapsed grids, wrapping controls, and no horizontal layout explosion.
+- **M12-UI-07 Medium:** Resize to roughly 720–900px and verify appropriate one/two-column grids.
+- **M12-UI-08 Wide:** Resize to 1000px or wider and verify balanced multi-column layouts.
+- **M12-UI-09 Detached:** Detach the sheet, change theme and density, and verify scoped live updates and responsive layout.
+- **M12-UI-10 Tabs:** Visit Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, Effects, Biography, and PFS via native tabs.
+- **M12-UI-11 Inventory:** Recheck quantity, carry state, invested state, drag/drop, and item summaries.
+- **M12-UI-12 Actions:** Recheck strikes, all MAP buttons, damage, critical damage, auxiliary actions, and ammunition.
+- **M12-UI-13 Spellcasting:** Recheck casting, slot value/max edits, preparation, expenditure, and drag/drop.
+- **M12-UI-14 Crafting:** Recheck formula quantity, daily crafting, reset, preparation, and crafting actions.
+- **M12-UI-15 Proficiencies:** Change Intimidation from Expert to Master and verify source rank, modifier, and DC update.
+- **M12-UI-16 Biography:** Recheck rich-text Edit, Save, Cancel, and visibility without editor clipping.
+- **M12-UI-17 Effects:** Recheck condition +/- controls, counters, persistent-damage recovery, affliction stages, and drops.
+- **M12-UI-18 PFS:** Recheck player/character numbers, level bump, faction, reputation, boon browser, summaries, and boon controls.
