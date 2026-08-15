@@ -852,3 +852,30 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M10-REG-03 Spell slots:** edit value/max and verify persistence.
 - **M10-REG-04 Crafting:** test formula quantity and daily crafting/reset.
 - **M10-REG-05 Effects:** test Condition +/-, Effect counter, Affliction stage, persistent recovery, and supported drops.
+
+## Milestone 11 – PFS / Organized Play
+
+- **M11-PFS-01 Empty:** open a character without PFS numbers/boons; verify fields, clean boon empty state, and no console error.
+- **M11-PFS-02 Player Number:** enter a valid Player Number, reload, and verify persistence.
+- **M11-PFS-03 Character Number:** enter a valid Character Number and verify persistence.
+- **M11-PFS-04 Invalid Number:** try below/above range and non-numeric values; verify restore/no mutation; clear each field and verify persisted `null`.
+- **M11-PFS-05 Level Bump:** toggle on/off; verify only source flag changes directly and Core preparation changes/restores relevant modifiers and HP.
+- **M11-PFS-06 Current Faction:** change faction and reload.
+- **M11-PFS-07 Reputation:** edit two factions, reload, then clear one and verify `null`.
+- **M11-PFS-08 Boon Rendering:** verify a PFS Boon appears in PFS from `actor.pfsBoons` and is not incorrectly grouped as a normal feat.
+- **M11-PFS-09 Open Boon:** open its real embedded Feat sheet.
+- **M11-PFS-10 Chat Boon:** send through PF2e Item chat.
+- **M11-PFS-11 Delete Boon:** delete a free boon and verify embedded deletion/prepared-list refresh; verify a granted boon has no delete control.
+- **M11-PFS-12 Browse:** verify PF2e Feat Browser category `pfsboon` and max level equal to Actor level.
+- **M11-PFS-13 PFS Boon Drop:** drop a Compendium, world, and other-Actor genuine PFS Boon and verify correct embedding.
+- **M11-PFS-14 Wrong Feat Drop:** drop normal Skill/Class/General Feats; verify no-op and no category rewrite.
+- **M11-PFS-15 Same Actor Drop:** drag an existing boon back onto its own PFS tab; verify no duplicate.
+- **M11-PFS-16 Observer:** verify data remains visible but inputs and mutation/delete/add controls are absent or disabled; test permitted Open/Chat.
+- **M11-PFS-17 Detached:** detach, then edit numbers/faction/reputation, toggle level bump, open/chat a boon, browse, and drop; verify no cross-window errors.
+- **M11-PFS-18 Tab Root:** inspect the PFS listener root; it is `SECTION.tab-panel`, not `BUTTON[data-action="tab"]`, including when initially inactive.
+- **M11-REG-01 Biography:** edit/save/cancel rich text and verify the local ProseMirror lifecycle.
+- **M11-REG-02 Proficiencies:** change Intimidation Expert→Master and verify prepared rank, modifier, DC, and a subsequent roll.
+- **M11-REG-03 Spellcasting:** edit slot value/max and verify persistence.
+- **M11-REG-04 Crafting:** edit formula quantity and exercise daily crafting/reset.
+- **M11-REG-05 Effects:** exercise Condition +/-, Effect counter, Persistent Damage recovery, and supported drop.
+- **M11-REG-06 Native tabs:** navigate all primary tabs before/after Actor updates and in a detached window.

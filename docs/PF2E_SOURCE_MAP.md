@@ -363,3 +363,24 @@ Core sources: `src/module/actor/character/data.ts` (`CharacterBiography`), `src/
 The official template uses the legacy `{{editor ... button=true engine="prosemirror"}}` activation path, while its sheet enriches the six HTML fields with `TextEditorPF2e.enrichHTML({rollData, secrets: actor.isOwner, async:true})`. PF2e exposes that implementation as `game.pf2e.TextEditor` in `src/scripts/set-game-pf2e.ts`, so the adapter calls its public runtime namespace with the same options plus `relativeTo: actor`; Foundry V14 `foundry.applications.ux.TextEditor` is the defensive fallback. This covers PF2e `@Check`, `@Damage`, configured syntax, UUID links, inline rolls, and `processUserVisibility`; exact interactive and Owner/Limited behavior remains a manual Foundry comparison.
 
 V14 editing deliberately does **not** use legacy editor-helper activation or the V1 `activateEditor`/`saveEditor` lifecycle. Explicit Application V2 actions create `foundry.applications.elements.HTMLProseMirrorElement` in the selected field's application-local host. This V14 form-associated element wraps `foundry.applications.ux.ProseMirrorEditor.create(target, content, options)`, exposes canonical content through `save()` and `value`, and destroys its internal editor from `disconnectedCallback`. Raw source is fetched from the controller only after an authorized edit action; enriched HTML alone is rendered in view mode. One editor is allowed at a time, document/item hook renders are deferred while it is open, and save/cancel/close disconnect it before persistence or teardown. Owner sees every section; a non-owner receives only visible sections, without raw content or editor hosts in the DOM.
+
+## Milestone 11 – PFS / Organized Play
+
+Audit target: pinned PF2e V14 commit `73c870286aeba87c25ccc0258028afedfc888d05`. The official view is `static/templates/actors/character/tabs/pfs.hbs`; source types, preparation, update sanitation, and browser flow are in `src/module/actor/character/{data.ts,document.ts,sheet.ts}`.
+
+| Feature | PF2e source path | Runtime property/API | Persisted field | Editable? | Module usage |
+|---|---|---|---|---|---|
+| Player Number | `pfs.hbs`; `document.ts:_preUpdate` | `actor.system.pfs.playerNumber` | `system.pfs.playerNumber` | owner | Focused nullable integer update; UI range 10000–99999 exactly matches the current template. |
+| Character Number | same | `actor.system.pfs.characterNumber` | `system.pfs.characterNumber` | owner | Focused nullable integer update; range 2001–9999. |
+| Level Bump | `document.ts:prepareDerivedData` | `actor.system.pfs.levelBump` | `system.pfs.levelBump` | owner | Toggles only the boolean. Core adds check/damage modifiers and HP during preparation. |
+| Current Faction | `creature/sheet.ts`; `scripts/config/index.ts` | `CONFIG.PF2E.pfsFactions` | `system.pfs.currentFaction` | owner | Runtime-config keys whitelist options and updates; labels are Core localization keys. |
+| Reputation | `pfs.hbs`; `data.ts` | `actor.system.pfs.reputation` | `system.pfs.reputation.<validated faction>` | owner | Nullable integer per runtime-configured faction; no rank calculation. |
+| School | `data.ts`; `scripts/config/index.ts` | source field/config remain | `system.pfs.school` | safe omission | Current official PFS template and active character-sheet flow do not render or mutate it; legacy UI is not restored. |
+| PFS Boons | `document.ts:prepareFeats`; `pfs.hbs` | `actor.pfsBoons` | embedded Feat Items (`category === "pfsboon"`) | display | Adapter consumes the prepared, sorted runtime collection directly. |
+| PFS Boon browser | `sheet.ts:#onClickBrowseFeats` | `game.pf2e.compendiumBrowser.tabs.feat.getFilterData/open` | none | owner discovery | Category `pfsboon`, maximum level `actor.level`; selection remains Core browser drag/drop discovery. |
+| Boon open | `pfs.hbs` generic item action | `item.sheet.render(true)` | none | document permission | Live embedded Item is resolved by ID. |
+| Boon chat | same | `item.toMessage(event)` | ChatMessage | normal Item permission | No custom card. |
+| Boon delete | same / grant lifecycle | `item.deleteDialog()` or `item.delete()` | embedded Item deletion | owner, non-granted | Runtime permission, type/category, and `grantedBy` guards. |
+| Boon D&D | Actor sheet drop conventions | `Item.implementation.fromDropData`; `actor.createEmbeddedDocuments` | embedded Item creation | owner | Only actual Feat `pfsboon`; same-Actor no-op; external source keeps flags/rules and drops `_id`. |
+
+Core's `_preUpdate` accepts a broader player-number source range (1–9,999,999), but its current UI deliberately constrains input to 10000–99999; this module mirrors current sheet parity rather than silently broadening its control. Empty number and reputation inputs persist `null`, never `0`, `NaN`, or an empty string.

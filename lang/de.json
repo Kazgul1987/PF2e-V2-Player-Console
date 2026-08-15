@@ -110,6 +110,9 @@
     },
     "Biography": {
       "Edit": "Rich-Text bearbeiten"
+    },
+    "PFS": {
+      "Empty": "Keine PFS-Vorteile"
     }
   }
 }

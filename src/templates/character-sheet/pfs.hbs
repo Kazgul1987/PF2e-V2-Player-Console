@@ -1,4 +1,27 @@
-<section class="tab-panel tab {{tab.cssClass}} placeholder" data-group="primary" data-tab="pfs">
-    <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.pfs"}}</h2>
-    <p>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.NotImplemented"}}</p>
+<section class="tab-panel tab {{tab.cssClass}} pfs-tab" data-group="primary" data-tab="pfs">
+    <section class="pfs-organized-play">
+        <h2>{{localize "PF2E.PFS.OrganizedPlayNumber"}}</h2>
+        <div class="pfs-number">
+            <label>{{localize "PF2E.PFS.OrganizedPlayNumber"}}<input type="number" min="10000" max="99999" placeholder="10000" value="{{pfs.playerNumber}}" data-pfs-number="playerNumber" {{disabled (not editable)}}></label>
+            <span aria-hidden="true">&ndash;</span>
+            <label>{{localize "PF2E.PFS.CharacterNumber"}}<input type="number" min="2001" max="9999" placeholder="2001" value="{{pfs.characterNumber}}" data-pfs-number="characterNumber" {{disabled (not editable)}}></label>
+        </div>
+        <label class="pfs-level-bump"><input type="checkbox" data-pfs-level-bump {{checked pfs.levelBump}} {{disabled (not editable)}}> {{localize "PF2E.PFS.LevelBump"}}</label>
+        <label class="pfs-faction">{{localize "PF2E.PFS.CurrentFaction"}}
+            <select data-pfs-faction {{disabled (not editable)}}>{{#each pfs.factions as |faction|}}<option value="{{faction.slug}}" {{#if faction.selected}}selected{{/if}}>{{faction.label}}</option>{{/each}}</select>
+        </label>
+    </section>
+    <section class="pfs-reputation">
+        <h3>{{localize "PF2E.PFS.Reputation"}}</h3>
+        <div class="pfs-reputation-grid">{{#each pfs.factions as |faction|}}<label class="pfs-reputation-row"><span>{{faction.label}}</span><input type="number" value="{{faction.reputation}}" placeholder="0" data-pfs-reputation="{{faction.slug}}" {{disabled (not @root.editable)}}></label>{{/each}}</div>
+    </section>
+    <section class="pfs-boons" data-group-id="pfs">
+        <header><h3>{{localize "PF2E.FeatPFSBoonHeader"}}</h3>{{#if editable}}<button type="button" data-action="browsePFSBoons"><i class="fa-solid fa-search"></i> {{localize "PF2E.BrowseLabel"}}</button>{{/if}}</header>
+        <ol>{{#each pfs.boons as |boon|}}<li class="pfs-boon-row" data-item-id="{{boon.id}}" {{#if @root.editable}}{{#if boon.movable}}draggable="true"{{/if}}{{/if}}>
+            <button type="button" class="pfs-boon-name" data-action="pfsBoonSummary"><img src="{{boon.img}}" alt=""><strong>{{boon.name}}</strong></button>
+            {{#if boon.level}}<span>{{localize "PF2E.LevelLabel"}} {{boon.level}}</span>{{/if}}
+            <span class="item-controls"><button type="button" data-action="pfsBoonToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button><button type="button" data-action="openPFSBoon" title="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-up-right-from-square"></i></button>{{#if @root.editable}}{{#if boon.movable}}<button type="button" data-action="deletePFSBoon" title="{{localize 'PF2E.DeleteItemTitle'}}"><i class="fa-solid fa-trash"></i></button>{{/if}}{{/if}}</span>
+            <div class="item-summary" hidden></div>
+        </li>{{else}}<li class="pfs-boons-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.PFS.Empty"}}</li>{{/each}}</ol>
+    </section>
 </section>
