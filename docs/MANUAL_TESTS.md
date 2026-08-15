@@ -815,3 +815,35 @@ Detach the sheet and repeat Effect counter +/-, Condition +/-, persistent recove
 For Actions, Inventory, Feats, Spellcasting, Crafting, Proficiencies, and Effects, inspect the listener-bound root: it must resolve to `SECTION.tab-panel`, not `BUTTON[data-action="tab"]`. Repeat the checks while the relevant tab is initially inactive and in a detached sheet.
 
 Change Intimidation from Expert to Master and confirm the controller update completes with source/prepared rank 3, refreshed PF2e modifier/DC, and the new modifier on a real roll. Also test an Untrained-to-Trained Core skill. Verify spell-slot value/max edits; prepared-formula quantity, daily crafting, and daily reset; Condition and Effect counters and persistent recovery; Inventory, Feat, Spellcasting, Crafting, and Effect/Affliction drops; Strike/MAP/damage/critical actions; and every native primary-tab navigation button without `No matching tab element found` errors.
+
+### M9-FINAL-01 – Spell-Origin Effect Drop
+Create an Effect with Spell origin and no effect traits, drop it on Effects, and compare with Core: only origin Spell traits present in `CONFIG.PF2E.effectTraits` propagate, while Rule Elements remain intact.
+
+## Milestone 10 – Biography
+
+- **M10-BIO-01 Empty:** open an empty biography; verify four clean sections and no console error.
+- **M10-BIO-02 Appearance:** edit/save/reload Appearance.
+- **M10-BIO-03 Height/Weight:** edit both; verify persistence and no global submit.
+- **M10-BIO-04 Backstory:** edit formatted rich text, save, and reload.
+- **M10-BIO-05 Birth Place:** edit and verify persistence.
+- **M10-BIO-06 Personality:** edit Attitude, Beliefs, Likes, Dislikes, and Catchphrases.
+- **M10-BIO-07 Add Edict:** add an empty entry, edit it, and reload.
+- **M10-BIO-08 Delete Edict:** delete one entry only.
+- **M10-BIO-09 Multiple Edicts:** create 3+, delete the middle, and verify order.
+- **M10-BIO-10 Anathema:** add, edit, and delete entries.
+- **M10-BIO-11 Campaign Notes:** edit rich text and save.
+- **M10-BIO-12 Campaign people:** edit/save Allies, Enemies, and Organizations.
+- **M10-BIO-13..16 Visibility:** toggle each of Appearance, Backstory, Personality, Campaign off; owner still sees it and Limited user does not.
+- **M10-BIO-17 Persistence:** reload after each visibility toggle.
+- **M10-BIO-18 Observer controls:** verify no inputs, editors, toggles, add, or delete controls.
+- **M10-BIO-19 Inline enrichment:** test UUID links, inline rolls, and applicable PF2e inline syntax.
+- **M10-BIO-20 Secrets:** compare owner and Limited rendering of a secret block with Core.
+- **M10-BIO-21 Detached rich text:** detach; open, edit, save, cancel, follow links, and use inline rolls without cross-window errors.
+- **M10-BIO-22 Enter:** change a simple field and press Enter; commit occurs without navigation/reload.
+- **M10-BIO-23 Escape:** change a simple field and press Escape; persisted value is restored.
+- **M10-BIO-24 Listener root:** inspect Biography listener root; it is `SECTION.tab-panel`, never the navigation button.
+- **M10-REG-01 Tabs:** click Character through PFS and verify native tabs have no errors and PFS remains a placeholder.
+- **M10-REG-02 Proficiencies:** Intimidation Expert→Master updates source rank, prepared modifier/DC, and subsequent roll.
+- **M10-REG-03 Spell slots:** edit value/max and verify persistence.
+- **M10-REG-04 Crafting:** test formula quantity and daily crafting/reset.
+- **M10-REG-05 Effects:** test Condition +/-, Effect counter, Affliction stage, persistent recovery, and supported drops.

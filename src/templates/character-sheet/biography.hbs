@@ -1,4 +1,73 @@
-<section class="tab-panel tab {{tab.cssClass}} placeholder" data-group="primary" data-tab="biography">
-    <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.biography"}}</h2>
-    <p>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.NotImplemented"}}</p>
+<section class="tab-panel tab {{tab.cssClass}} biography-tab" data-group="primary" data-tab="biography">
+    {{#if biography.visible.appearance}}
+        <article class="biography-section">
+            <header class="biography-header">
+                <h2>{{localize "PF2E.BiographyAppearance"}}</h2>
+                {{#if biography.editable}}<button type="button" class="visibility-toggle" data-action="toggleBiographyVisibility" data-section="appearance" data-tooltip="PF2E.Actor.Character.Biography.ToggleVisibility"><i class="fa-solid fa-fw fa-eye{{#unless biography.visibility.appearance}}-slash{{/unless}}"></i></button>{{/if}}
+            </header>
+            <div class="biography-content">
+                {{editor biography.appearance.enriched target="system.details.biography.appearance" button=true owner=biography.owner editable=biography.editable engine="prosemirror"}}
+            </div>
+            <div class="biography-fields">
+                <label>{{localize "PF2E.Height"}}{{#if biography.editable}}<input type="text" value="{{biography.appearance.height}}" data-biography-field="height">{{else}}<span>{{biography.appearance.height}}</span>{{/if}}</label>
+                <label>{{localize "PF2E.Weight"}}{{#if biography.editable}}<input type="text" value="{{biography.appearance.weight}}" data-biography-field="weight">{{else}}<span>{{biography.appearance.weight}}</span>{{/if}}</label>
+            </div>
+        </article>
+    {{/if}}
+
+    {{#if biography.visible.backstory}}
+        <article class="biography-section">
+            <header class="biography-header">
+                <h2>{{localize "PF2E.BiographyBackStory"}}</h2>
+                {{#if biography.editable}}<button type="button" class="visibility-toggle" data-action="toggleBiographyVisibility" data-section="backstory" data-tooltip="PF2E.Actor.Character.Biography.ToggleVisibility"><i class="fa-solid fa-fw fa-eye{{#unless biography.visibility.backstory}}-slash{{/unless}}"></i></button>{{/if}}
+            </header>
+            <div class="biography-content">
+                {{editor biography.backstory.enriched target="system.details.biography.backstory" button=true owner=biography.owner editable=biography.editable engine="prosemirror"}}
+            </div>
+            <div class="biography-fields one-column">
+                <label>{{localize "PF2E.BiographyBirthPlace"}}{{#if biography.editable}}<input type="text" value="{{biography.backstory.birthPlace}}" data-biography-field="birthPlace">{{else}}<span>{{biography.backstory.birthPlace}}</span>{{/if}}</label>
+            </div>
+        </article>
+    {{/if}}
+
+    {{#if biography.visible.personality}}
+        <article class="biography-section">
+            <header class="biography-header">
+                <h2>{{localize "PF2E.BiographyPersonalityHeader"}}</h2>
+                {{#if biography.editable}}<button type="button" class="visibility-toggle" data-action="toggleBiographyVisibility" data-section="personality" data-tooltip="PF2E.Actor.Character.Biography.ToggleVisibility"><i class="fa-solid fa-fw fa-eye{{#unless biography.visibility.personality}}-slash{{/unless}}"></i></button>{{/if}}
+            </header>
+            <div class="biography-fields">
+                <label>{{localize "PF2E.BiographyAttitude"}}{{#if biography.editable}}<input type="text" value="{{biography.personality.attitude}}" data-biography-field="attitude">{{else}}<span>{{biography.personality.attitude}}</span>{{/if}}</label>
+                <label>{{localize "PF2E.BiographyBeliefs"}}{{#if biography.editable}}<input type="text" value="{{biography.personality.beliefs}}" data-biography-field="beliefs">{{else}}<span>{{biography.personality.beliefs}}</span>{{/if}}</label>
+                <label>{{localize "PF2E.BiographyLikes"}}{{#if biography.editable}}<input type="text" value="{{biography.personality.likes}}" data-biography-field="likes">{{else}}<span>{{biography.personality.likes}}</span>{{/if}}</label>
+                <label>{{localize "PF2E.BiographyDislikes"}}{{#if biography.editable}}<input type="text" value="{{biography.personality.dislikes}}" data-biography-field="dislikes">{{else}}<span>{{biography.personality.dislikes}}</span>{{/if}}</label>
+                <label class="wide">{{localize "PF2E.BiographyCatchphrases"}}{{#if biography.editable}}<input type="text" value="{{biography.personality.catchphrases}}" data-biography-field="catchphrases">{{else}}<span>{{biography.personality.catchphrases}}</span>{{/if}}</label>
+            </div>
+            <div class="biography-lists">
+                <div class="biography-list" data-biography-list="edicts">
+                    <h3>{{localize "PF2E.BiographyEdicts"}}</h3>
+                    {{#each biography.personality.edicts as |line index|}}<div class="biography-list-row">{{#if ../biography.editable}}<input type="text" value="{{line}}" data-biography-list-input data-index="{{index}}"><button type="button" data-action="deleteBiographyListEntry" data-index="{{index}}" data-tooltip="PF2E.Actor.Character.Biography.Edicts.Delete"><i class="fa-solid fa-trash"></i></button>{{else}}<span>{{line}}</span>{{/if}}</div>{{/each}}
+                    {{#if biography.editable}}<button type="button" data-action="addBiographyListEntry"><i class="fa-solid fa-plus"></i> {{localize "PF2E.Actor.Character.Biography.Edicts.Add"}}</button>{{/if}}
+                </div>
+                <div class="biography-list" data-biography-list="anathema">
+                    <h3>{{localize "PF2E.BiographyAnathema"}}</h3>
+                    {{#each biography.personality.anathema as |line index|}}<div class="biography-list-row">{{#if ../biography.editable}}<input type="text" value="{{line}}" data-biography-list-input data-index="{{index}}"><button type="button" data-action="deleteBiographyListEntry" data-index="{{index}}" data-tooltip="PF2E.Actor.Character.Biography.Anathema.Delete"><i class="fa-solid fa-trash"></i></button>{{else}}<span>{{line}}</span>{{/if}}</div>{{/each}}
+                    {{#if biography.editable}}<button type="button" data-action="addBiographyListEntry"><i class="fa-solid fa-plus"></i> {{localize "PF2E.Actor.Character.Biography.Anathema.Add"}}</button>{{/if}}
+                </div>
+            </div>
+        </article>
+    {{/if}}
+
+    {{#if biography.visible.campaign}}
+        <article class="biography-section">
+            <header class="biography-header">
+                <h2>{{localize "PF2E.BiographyCampaignNotesHeader"}}</h2>
+                {{#if biography.editable}}<button type="button" class="visibility-toggle" data-action="toggleBiographyVisibility" data-section="campaign" data-tooltip="PF2E.Actor.Character.Biography.ToggleVisibility"><i class="fa-solid fa-fw fa-eye{{#unless biography.visibility.campaign}}-slash{{/unless}}"></i></button>{{/if}}
+            </header>
+            <h3>{{localize "PF2E.BiographyCampaignNotes"}}</h3><div class="biography-content">{{editor biography.campaign.campaignNotes.enriched target="system.details.biography.campaignNotes" button=true owner=biography.owner editable=biography.editable engine="prosemirror"}}</div>
+            <h3>{{localize "PF2E.BiographyAllies"}}</h3><div class="biography-content">{{editor biography.campaign.allies.enriched target="system.details.biography.allies" button=true owner=biography.owner editable=biography.editable engine="prosemirror"}}</div>
+            <h3>{{localize "PF2E.BiographyEnemies"}}</h3><div class="biography-content">{{editor biography.campaign.enemies.enriched target="system.details.biography.enemies" button=true owner=biography.owner editable=biography.editable engine="prosemirror"}}</div>
+            <h3>{{localize "PF2E.BiographyOrganizations"}}</h3><div class="biography-content">{{editor biography.campaign.organizations.enriched target="system.details.biography.organizations" button=true owner=biography.owner editable=biography.editable engine="prosemirror"}}</div>
+        </article>
+    {{/if}}
 </section>
