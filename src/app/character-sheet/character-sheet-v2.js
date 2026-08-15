@@ -79,6 +79,9 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             openEffect: PF2eCharacterSheetV2.#effectsAction,
             effectToChat: PF2eCharacterSheetV2.#effectsAction,
             deleteEffect: PF2eCharacterSheetV2.#effectsAction,
+            increaseEffect: PF2eCharacterSheetV2.#effectsAction,
+            decreaseEffect: PF2eCharacterSheetV2.#effectsAction,
+            recoverPersistentDamage: PF2eCharacterSheetV2.#effectsAction,
             increaseCondition: PF2eCharacterSheetV2.#effectsAction,
             decreaseCondition: PF2eCharacterSheetV2.#effectsAction,
             removeCondition: PF2eCharacterSheetV2.#effectsAction,
@@ -310,6 +313,9 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             case "openEffect": return EffectsController.open(this.actor, id);
             case "effectToChat": return EffectsController.chat(this.actor, id, event);
             case "deleteEffect": return EffectsController.removeEffect(this.actor, id, event);
+            case "increaseEffect": return EffectsController.changeEffect(this.actor, id, 1);
+            case "decreaseEffect": return EffectsController.changeEffect(this.actor, id, -1);
+            case "recoverPersistentDamage": return EffectsController.recoverPersistentDamage(this.actor, id);
             case "increaseCondition": return EffectsController.increaseCondition(this.actor, id);
             case "decreaseCondition": return EffectsController.decreaseCondition(this.actor, id);
             case "removeCondition": return EffectsController.removeCondition(this.actor, id);
@@ -405,10 +411,12 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         crafting?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         crafting?.addEventListener("drop", (event) => void CraftingController.drop(this.actor, event, event.target), listenerOptions);
         const proficiencies = this.element.querySelector('[data-tab="proficiencies"]');
-        proficiencies?.addEventListener("change", (event) => {
+        proficiencies?.addEventListener("change", async (event) => {
             const select = event.target;
             if (!select?.matches?.("[data-rank-control]")) return;
-            void ProficienciesController.updateRank(this.actor, { ...select.dataset, rank: select.value });
+            await ProficienciesController.updateRank(this.actor, { ...select.dataset, rank: Number(select.value) });
+            // The resolved document update has completed PF2e preparation: rebuild from the new Statistic objects.
+            await this.render();
         }, listenerOptions);
         const effects = this.element.querySelector('[data-tab="effects"]');
         effects?.addEventListener("dragstart", (event) => {
