@@ -93,3 +93,9 @@ The sheet presentation is a sheet-local design system. `src/settings.js` registe
 Density is likewise token-driven: comfortable and compact values alter row height, control height and padding, gaps, and section spacing without materially shrinking text. Shared shell, navigation, section framing, item rows and summaries, stat cards, badges, controls, inputs, focus states, and empty states apply across all tab templates.
 
 Responsive rules progressively collapse dashboard and tab grids at 64rem, 48rem, and 34rem. Navigation becomes horizontally scrollable rather than dropping controls, row controls wrap, and nested inventory uses only a subtle border and indentation. This detached-first strategy supports narrow pop-outs while retaining wide multi-column layouts. The design uses CSS, system fonts, Font Awesome, and existing runtime item images only; it adds no binary artwork or fonts.
+
+### M12.1 presentation and character data boundary
+
+After Application V2 finishes rendering, the console reads the client presentation settings and writes `data-theme` and `data-density` directly to `this.element`, the final sheet root. Settings changes call the same instance method on each rendered console, so neither a full world reload nor a main-window `document` lookup is involved; detached roots remain isolated.
+
+The Character dashboard is a read-only projection of PF2e prepared Actor data: ability modifiers, movement speeds, prepared languages, armor class, and the prepared held-shield record. It performs no attribute, speed, shield, language, AC, or DC rule calculation. PF2e's Attribute Builder and Language Selector remain safe partial omissions because Core does not publish them on its runtime API; the edit controls open the official sheet rather than importing private source modules or mutating granted data.

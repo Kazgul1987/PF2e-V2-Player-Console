@@ -40,7 +40,7 @@ export function openCharacterSheet(actor) {
 Hooks.once("init", () => {
     registerSettings(() => {
         for (const application of applications.values()) {
-            if (application.rendered) void application.render();
+            if (application.rendered) application.applyPresentationSettings();
         }
     });
     game.modules.get(MODULE_ID).api = { openCharacterSheet, PF2eCharacterSheetV2 };

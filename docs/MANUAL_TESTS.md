@@ -923,3 +923,27 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M12-POLISH-09 – Carry Controls:** Exercise Held 1H, Held 2H, Worn, Stowed, and Dropped; confirm labels remain readable, controls wrap without overlap, and state updates.
 - **M12-POLISH-10 – Compact Density:** Compare Comfortable and Compact. Confirm icon-only controls reduce sensibly while carry-state text buttons remain readable.
 - **M12-POLISH-11 – Detached:** In a detached window, repeat header checks at 520–600px and Inventory checks at narrow and 720–900px widths. Recheck quantity, carry, invest, summary, edit, delete, drag/drop, and coins; then verify Intimidation Expert→Master updates source rank/modifier/DC, Biography Edit/Save/Cancel still works, and Actions, Spellcasting, Crafting, Effects, and PFS show no obvious regression.
+
+## Milestone 12.1 – Runtime presentation and Character dashboard
+
+- **M12.1-THEME-01:** Set Dark and Compact, open the sheet for the first time, and verify the FORM root has `data-theme="dark"` and `data-density="compact"` and is visibly dark.
+- **M12.1-THEME-02:** With the sheet open, change Remaster→Classic→Dark and Comfortable→Compact; verify each is immediately visible without a world reload.
+- **M12.1-THEME-03:** Close the sheet, change both settings, reopen, and verify the new values are applied on first render.
+- **M12.1-THEME-04:** Detach, change theme/density, and verify the detached root updates without leaking attributes to `body` or `html`.
+- **M12.1-UI-01:** Open Character and verify Perception glyphs are fully visible while Saves and Skills remain unchanged.
+- **M12.1-INV-01:** Verify Weapons and Shields, Armor, Equipment, Consumables, Ammunition, Treasure, and Containers use the same localized labels as Core; no section heading is the generic Item column label.
+- **M12.1-ATTR-01:** Compare all six displayed modifiers with the official PF2e sheet.
+- **M12.1-ATTR-02:** As an owner, use Attributes Edit; verify the official Core sheet opens and its Attribute Builder remains the mutation owner (public direct integration is unavailable).
+- **M12.1-SPEED-01:** Compare land speed and all present fly/swim/climb/burrow speeds with Core prepared values.
+- **M12.1-SHIELD-01:** Without a held shield, verify AC remains correct and no shield-detail block appears.
+- **M12.1-SHIELD-02:** Hold a shield and compare Hardness, current/max HP, and BT with Core.
+- **M12.1-SHIELD-03:** Raise the held shield and verify Raised appears from prepared state.
+- **M12.1-SHIELD-04:** Break the held shield and verify Broken appears from prepared state.
+- **M12.1-LANG-01:** Compare every displayed language and localized label with Core.
+- **M12.1-LANG-02:** As an owner, use Languages Edit and verify the official sheet opens for its Core-owned selector.
+- **M12.1-LANG-03:** In Core's selector, change a freely selected language and verify source persistence while an item/rule-granted language remains protected.
+- **M12.1-RESP-01:** At wide, medium, and narrow detached widths verify attribute grids collapse 6→3→2 columns and combat/shield/language content remains reachable.
+- **M12.1-REG-01:** Change Intimidation Expert→Master and verify source rank, prepared modifier, DC, and roll.
+- **M12.1-REG-02:** Recheck Inventory quantity, carry, invest, summary, drag/drop, and coins.
+- **M12.1-REG-03:** Recheck Biography Rich Text Edit, Save, and Cancel.
+- **M12.1-REG-04:** Smoke-test Spellcasting, Crafting, Effects, and PFS, then navigate every native primary tab.
