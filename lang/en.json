@@ -60,6 +60,8 @@
       "DC": "DC",
       "RollAttack": "Roll spell attack",
       "Slots": "Slots",
+      "FocusPoints": "Focus Points",
+      "FocusPointsLabel": "Focus Points: {value} of {max}",
       "EmptySlot": "Empty slot",
       "Expended": "Expended",
       "Available": "Available",

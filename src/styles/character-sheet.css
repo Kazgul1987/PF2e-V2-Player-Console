@@ -181,6 +181,16 @@
 .spell-entry > header, .spell-rank > header { align-items: center; display: flex; gap: .75rem; justify-content: space-between; }
 .spell-entry h3, .spell-rank h4 { margin: .2rem 0; }
 .spell-entry-meta, .spell-statistics, .spell-meta { align-items: center; display: flex; flex-wrap: wrap; gap: .35rem .75rem; }
+.spellcasting-tab .spell-entry h3 { color: var(--pf2e-v2-heading); }
+.spellcasting-tab .spell-rank h4 { color: var(--pf2e-v2-heading-muted); }
+.spellcasting-tab :is(.spell-entry-meta, .spell-statistics) { color: var(--pf2e-v2-text-muted); }
+.spellcasting-tab .spell-statistics button { color: var(--pf2e-v2-accent-strong); font-weight: 700; }
+.focus-pool, .focus-points { align-items: center; display: inline-flex; gap: var(--pf2e-v2-gap-xs); }
+.focus-pool { color: var(--pf2e-v2-heading-muted); font-size: .875rem; font-weight: 600; }
+.focus-point { background: var(--pf2e-v2-bg-panel); border: 2px solid var(--pf2e-v2-border-strong); border-radius: 50%; box-sizing: border-box; display: inline-block; height: .8rem; width: .8rem; }
+.focus-point.filled { background: var(--pf2e-v2-accent); border-color: var(--pf2e-v2-accent-strong); }
+.focus-pool-value { color: var(--pf2e-v2-text-muted); font-variant-numeric: tabular-nums; }
+.pf2e-v2-character-sheet[data-density="compact"] .focus-point { height: .7rem; width: .7rem; }
 .spell-rank > header { border-bottom: 1px solid var(--color-border-light-primary); margin-top: .5rem; }
 .spell-rank ol { list-style: none; margin: 0; padding: 0; }
 .spell-row { align-items: center; border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); display: grid; gap: .5rem; grid-template-columns: minmax(13rem, 2fr) minmax(8rem, 1fr) auto auto; min-height: 2.6rem; padding: .35rem; }

@@ -60,6 +60,8 @@
       "DC": "SG",
       "RollAttack": "Zauberangriff würfeln",
       "Slots": "Plätze",
+      "FocusPoints": "Fokuspunkte",
+      "FocusPointsLabel": "Fokuspunkte: {value} von {max}",
       "EmptySlot": "Leerer Platz",
       "Expended": "Verbraucht",
       "Available": "Verfügbar",
