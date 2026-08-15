@@ -926,6 +926,15 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 
 ## Milestone 12.1 – Runtime presentation and Character dashboard
 
+- **M12.1-FINAL-01 – Initial Theme Application:** Set Theme to Dark and Density to Compact while the sheet is closed. Open it and verify the FORM root has `data-theme="dark"` and `data-density="compact"`, the Dark theme is visible immediately, and no world reload is needed.
+- **M12.1-FINAL-02 – Live Theme Change:** With the sheet open, change Dark→Remaster→Classic and verify the UI updates immediately after each change.
+- **M12.1-FINAL-03 – Live Density Change:** With the sheet open, change Comfortable→Compact and verify row heights and controls update immediately.
+- **M12.1-FINAL-04 – Reopen:** Set Theme to Classic, close the sheet, reopen it, and verify Classic remains active on first render.
+- **M12.1-FINAL-05 – Detached:** Detach the sheet, change Theme, and verify the detached sheet updates without a cross-window error.
+- **M12.1-FINAL-06 – Shield BT Label:** Open a character with a held shield and verify Hardness, HP, and the localized Shield Broken Threshold label appear; `PF2E.Item.Shield.BrokenThreshold.Label` must not be visible.
+- **M12.1-FINAL-07 – Perception:** Verify the Perception heading is fully visible and no glyphs are clipped.
+- **M12.1-FINAL-08 – Regression:** Smoke-test Inventory, Proficiencies, Biography, Spellcasting, Crafting, Effects, and PFS for obvious regressions.
+
 - **M12.1-THEME-01:** Set Dark and Compact, open the sheet for the first time, and verify the FORM root has `data-theme="dark"` and `data-density="compact"` and is visibly dark.
 - **M12.1-THEME-02:** With the sheet open, change Remaster→Classic→Dark and Comfortable→Compact; verify each is immediately visible without a world reload.
 - **M12.1-THEME-03:** Close the sheet, change both settings, reopen, and verify the new values are applied on first render.

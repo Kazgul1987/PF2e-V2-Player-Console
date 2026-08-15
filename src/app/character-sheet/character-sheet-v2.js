@@ -158,11 +158,6 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         };
     }
 
-    async _onRender(context, options) {
-        await super._onRender(context, options);
-        this.#applyPresentationSettings();
-    }
-
     #applyPresentationSettings() {
         const { theme, density } = getPresentationSettings();
         const element = this.element;
@@ -455,6 +450,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         // Document hooks are deferred while editing, but other render callers still get a clean cancellation.
         if (this.#biographyEditor && !this.#biographyEditor.editor.isConnected) this.#biographyEditor = null;
         await super._onRender(context, options);
+        this.#applyPresentationSettings();
         this.#renderListeners?.abort();
         this.#renderListeners = new AbortController();
         const listenerOptions = { signal: this.#renderListeners.signal };

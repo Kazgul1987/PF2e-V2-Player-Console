@@ -300,7 +300,10 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 
 | Capability | Status | Runtime boundary |
 | --- | --- | --- |
-| Theme/density root dataset | implemented | `_onRender` applies current client settings to the final Application V2 root; setting changes directly refresh every rendered console. |
+| Theme initial render | implemented | The single `_onRender` applies the current client theme to the final Application V2 root after the superclass render. |
+| Theme live change | implemented | Setting changes directly refresh every rendered console. |
+| Density initial render | implemented | The same `_onRender` application writes the current client density to the final Application V2 root. |
+| Density live change | implemented | Setting changes directly refresh every rendered console. |
 | Attributes | implemented; runtime sign-off | Six prepared `system.abilities.*.mod` values; no calculation. |
 | Attribute boost editing | partial / safe omission | Core `AttributeBuilder` is source-exported but not exposed through the public runtime API; edit opens the official sheet, without a private import. |
 | Speed | implemented; runtime sign-off | Prepared `system.movement.speeds` values. |
