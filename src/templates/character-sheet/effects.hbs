@@ -1,4 +1,69 @@
-<section class="tab-panel tab {{tab.cssClass}} placeholder" data-group="primary" data-tab="effects">
-    <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.effects"}}</h2>
-    <p>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.NotImplemented"}}</p>
+<section class="tab-panel tab {{tab.cssClass}} effects-tab" data-group="primary" data-tab="effects">
+    <header class="effects-overview"><h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Tabs.effects"}}</h2></header>
+
+    {{#if effects.conditions.length}}
+    <section class="effect-section conditions-section">
+        <h3>{{localize "PF2E.ConditionsLabel"}}</h3>
+        <ol class="effect-list">
+            {{#each effects.conditions as |condition|}}
+            <li class="effect-row condition-row {{#unless condition.active}}inactive{{/unless}}" data-item-id="{{condition.id}}" {{#if condition.mutable}}draggable="true"{{/if}}>
+                <button type="button" class="effect-name" data-action="effectSummary"><img src="{{condition.img}}" alt=""><span><strong>{{condition.name}}</strong>{{#if condition.breakdown}}<small>{{condition.breakdown}}</small>{{/if}}</span></button>
+                <span class="condition-details">
+                    {{#if condition.persistent}}<span class="persistent-damage"><strong>{{condition.persistent.formula}}</strong> {{condition.persistent.damageType}}{{#if condition.persistent.dc}} · {{localize "PF2E.DCLabel"}} {{condition.persistent.dc}}{{/if}}</span>{{/if}}
+                    {{#if condition.locked}}<span class="effect-badge" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Effects.Locked'}}"><i class="fa-solid fa-lock"></i></span>{{/if}}
+                </span>
+                <span class="condition-value">
+                    {{#if condition.valued}}
+                        {{#if condition.mutable}}<button type="button" data-action="decreaseCondition" title="{{localize 'PF2E.DecrementEffectTitle'}}"><i class="fa-solid fa-minus"></i></button>{{/if}}
+                        <strong>{{condition.value}}</strong>
+                        {{#if condition.mutable}}<button type="button" data-action="increaseCondition" title="{{localize 'PF2E.IncrementEffectTitle'}}"><i class="fa-solid fa-plus"></i></button>{{/if}}
+                    {{/if}}
+                </span>
+                <span class="item-controls">
+                    <button type="button" data-action="effectToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button>
+                    <button type="button" data-action="openEffect" title="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-up-right-from-square"></i></button>
+                    {{#if condition.mutable}}<button type="button" data-action="removeCondition" title="{{localize 'PF2E.DeleteItemTitle'}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
+                </span>
+                <div class="item-summary" hidden></div>
+            </li>
+            {{/each}}
+        </ol>
+    </section>
+    {{/if}}
+
+    {{#if effects.effects.length}}
+    <section class="effect-section">
+        <h3>{{localize "PF2E.EffectsLabel"}}</h3>
+        <ol class="effect-list">
+            {{#each effects.effects as |effect|}}
+            <li class="effect-row {{#if effect.expired}}expired{{/if}}" data-item-id="{{effect.id}}" {{#if effect.deletable}}draggable="true"{{/if}}>
+                <button type="button" class="effect-name" data-action="effectSummary"><img src="{{effect.img}}" alt=""><span><strong>{{effect.name}}</strong><small class="trait-list">{{#each effect.traits as |trait|}}<span class="trait">{{trait.label}}</span>{{/each}}</small></span></button>
+                <span class="effect-duration">{{#if effect.expired}}{{localize "PF2E.EffectPanel.Expired"}}{{else}}{{effect.duration.label}}{{#if effect.duration.hasRemaining}} · {{localize "PF2E_V2_PLAYER_CONSOLE.Effects.SecondsRemaining" seconds=effect.duration.remaining}}{{/if}}{{/if}}</span>
+                <span class="effect-badge">{{#if effect.badge}}{{effect.badge.value}}{{/if}}{{#if effect.granted}}<i class="fa-solid fa-link" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Effects.Granted'}}"></i>{{/if}}</span>
+                <span class="item-controls"><button type="button" data-action="effectToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button><button type="button" data-action="openEffect" title="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-up-right-from-square"></i></button>{{#if effect.deletable}}<button type="button" data-action="deleteEffect" title="{{localize 'PF2E.DeleteItemTitle'}}"><i class="fa-solid fa-trash"></i></button>{{/if}}</span>
+                <div class="item-summary" hidden></div>
+            </li>
+            {{/each}}
+        </ol>
+    </section>
+    {{/if}}
+
+    {{#if effects.afflictions.length}}
+    <section class="effect-section">
+        <h3>{{localize "PF2E.Item.Affliction.Plural"}}</h3>
+        <ol class="effect-list">
+            {{#each effects.afflictions as |affliction|}}
+            <li class="effect-row affliction-row" data-item-id="{{affliction.id}}" {{#if affliction.mutable}}draggable="true"{{/if}}>
+                <button type="button" class="effect-name" data-action="effectSummary"><img src="{{affliction.img}}" alt=""><span><strong>{{affliction.name}}</strong>{{#if affliction.onset}}<small>{{localize "PF2E.Item.Affliction.OnsetLabel"}}: {{affliction.onset}}</small>{{/if}}</span></button>
+                <span class="affliction-stage">{{localize "PF2E.Item.Affliction.Stage" stage=affliction.stage}} / {{affliction.maxStage}}</span>
+                <span class="condition-value">{{#if affliction.mutable}}<button type="button" data-action="decreaseAffliction" title="{{localize 'PF2E.DecrementEffectTitle'}}"><i class="fa-solid fa-minus"></i></button><button type="button" data-action="increaseAffliction" title="{{localize 'PF2E.IncrementEffectTitle'}}"><i class="fa-solid fa-plus"></i></button>{{/if}}</span>
+                <span class="item-controls"><button type="button" data-action="effectToChat" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Actions.SendToChat'}}"><i class="fa-solid fa-message"></i></button><button type="button" data-action="openEffect" title="{{localize 'PF2E.EditItemTitle'}}"><i class="fa-solid fa-up-right-from-square"></i></button></span>
+                <div class="item-summary" hidden></div>
+            </li>
+            {{/each}}
+        </ol>
+    </section>
+    {{/if}}
+
+    {{#if effects.empty}}<p class="effects-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Effects.Empty"}}</p>{{/if}}
 </section>

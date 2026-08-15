@@ -705,3 +705,62 @@ Find a Statistic with a genuine modifier of 0. Confirm the UI displays `+0` acco
 
 ### M8-FIX-11 – Tab Regression
 Open Character, Actions, Inventory, Feats, Spellcasting, Crafting, and Proficiencies. Confirm every tab works without errors.
+
+## Milestone 9 – Effects / Conditions / Afflictions
+
+### M9-EFFECT-01 – Empty State
+Open Effects on a character with none of the three document kinds; verify the localized empty state and no console errors.
+
+### M9-EFFECT-02 – Normal Effect
+Add a normal Effect; verify icon/name, Core duration/remaining value, summary, and embedded sheet open.
+
+### M9-EFFECT-03 – Effect Chat
+Send the Effect to chat and verify PF2e's Item chat output, not a module card.
+
+### M9-EFFECT-04 – Delete Effect
+Delete a free Effect and verify the embedded Item disappears and PF2e prepares the Actor again.
+
+### M9-EFFECT-05 – Granted Effect
+Compare a granted Effect with Core; verify the link marker and absence of delete/drag controls and that the grant remains intact.
+
+### M9-EFFECT-06 – Non-valued Condition
+Apply Prone; verify it has no +/- buttons and removal delegates to Core.
+
+### M9-EFFECT-07 – Valued Condition Increase
+Increase a valued Condition and compare its new prepared value with the official sheet.
+
+### M9-EFFECT-08 – Valued Condition Decrease
+Decrease a valued Condition and verify the Actor Core route determines its result.
+
+### M9-EFFECT-09 – Condition to zero
+Decrease a value-one Condition; compare removal/end state with the official sheet.
+
+### M9-EFFECT-10 – Overridden/Inactive Condition
+Create an overriding/reference combination; verify only Core-active conditions list and no hidden entry can be mutated.
+
+### M9-EFFECT-11 – Persistent Damage
+Apply persistent damage; verify formula, localized damage type, and DC where present. Verify no local recovery or flat-check behavior exists.
+
+### M9-EFFECT-12 – Affliction Render
+On a V14-dev build supporting Afflictions, verify icon/name, current/max stage and onset without console errors.
+
+### M9-EFFECT-13 – Affliction Stage
+Use +/- and verify `AfflictionPF2e.increase/decrease` produces the same linked conditions, damage message, and deletion behavior as Core.
+
+### M9-EFFECT-14 – Effect Drop
+Drop a world/compendium Effect and verify PF2e embeds and prepares it. Separately test a spell-origin Effect in the official sheet because context augmentation is partial here.
+
+### M9-EFFECT-15 – Invalid Drop
+Drop a weapon or feat and verify no mutation, notification, or crash.
+
+### M9-EFFECT-16 – Observer
+As Observer, verify rows, duration, summary and allowed sheets/chat remain visible while drop/delete/counter/stage controls are absent and runtime guards reject mutation.
+
+### M9-EFFECT-17 – Detached
+Detach, then test Effects tab, summary, item open/chat, condition +/-/remove, free Effect delete, all supported drops, and narrow-window wrapping; verify no cross-window error.
+
+### M9-EFFECT-18 – Duration Progression
+Advance combat/world time for a short Effect; verify Core hooks/preparation update remaining/expired display and the module runs no timer.
+
+### M9-EFFECT-19 – Tab Regression
+Click Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, and Effects; after each M9 mutation verify Effects remains active and native tabs show no errors.

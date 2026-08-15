@@ -132,3 +132,20 @@
     .proficiency-rank, .proficiency-rank-label { grid-column: 2 / span 2; justify-self: end; }
     .proficiency-row button { grid-column: 3; grid-row: 1; }
 }
+.effects-overview, .effect-row, .condition-value, .effect-name { align-items: center; display: flex; }
+.effect-section > h3 { border-bottom: 1px solid var(--color-border-light-primary); margin: .5rem 0; padding-bottom: .25rem; }
+.effect-list { list-style: none; margin: 0; padding: 0; }
+.effect-row { border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); display: grid; gap: .4rem .6rem; grid-template-columns: minmax(13rem, 2fr) minmax(8rem, 1fr) auto auto; padding: .45rem; }
+.effect-row[draggable="true"] { cursor: grab; }
+.effect-row.expired, .effect-row.inactive { opacity: .65; }
+.effect-name { background: none; border: 0; color: inherit; gap: .5rem; min-width: 0; padding: 0; text-align: left; }
+.effect-name img { height: 2rem; object-fit: cover; width: 2rem; }
+.effect-name > span { display: flex; flex-direction: column; min-width: 0; }
+.effect-name strong { overflow: hidden; text-overflow: ellipsis; }
+.effect-name small, .effect-duration, .effects-empty { opacity: .75; }
+.condition-details, .effect-badge { align-items: center; display: flex; flex-wrap: wrap; gap: .35rem; }
+.condition-value, .effects-tab .item-controls { gap: .25rem; justify-content: flex-end; }
+.condition-value button, .effects-tab .item-controls button { min-height: 1.7rem; min-width: 1.7rem; padding: .15rem .35rem; }
+.effect-row > .item-summary { grid-column: 1 / -1; width: 100%; }
+.effects-empty { padding: 2rem; text-align: center; }
+@media (max-width: 50rem) { .effect-row { grid-template-columns: minmax(10rem, 1fr) auto; } .effect-duration, .condition-details { grid-column: 1 / -1; } .effects-tab .item-controls { justify-self: end; } }
