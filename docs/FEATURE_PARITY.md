@@ -242,3 +242,25 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Add Condition UI | pending | No stable public selector application |
 | Permissions | implemented | Markup and runtime Actor permission guards |
 | Detached | implemented structurally | Application-local action/drop targets; runtime verification required |
+| Spell-origin effect trait propagation | implemented | Empty Effect/Affliction trait arrays inherit only origin Spell traits present in runtime `CONFIG.PF2E.effectTraits` |
+
+## Milestone 10 – Biography
+
+| Capability | Status | Notes |
+|---|---|---|
+| Appearance rendering/editing | implemented | Enriched display and Core ProseMirror editor helper |
+| Height / Weight | implemented | Focused source updates |
+| Appearance visibility | implemented | Owner toggle; private section omitted for non-owner |
+| Backstory rendering/editing | implemented | Enriched display and Core ProseMirror editor helper |
+| Birth place | implemented | Focused source update |
+| Backstory visibility | implemented | Persisted Core visibility field |
+| Attitude / Beliefs | implemented | Focused text updates |
+| Edicts / Anathema | implemented | Source arrays; add/edit/delete with validated indices |
+| Likes / Dislikes / Catchphrases | implemented | Focused text updates |
+| Personality visibility | implemented | Persisted Core visibility field |
+| Campaign notes / Allies / Enemies / Organizations | implemented | Six verified rich-text fields use the editor/enrichment pipeline |
+| Campaign visibility | implemented | Persisted Core visibility field |
+| Rich-text enrichment | implemented | Foundry `TextEditor.enrichHTML`, actor roll data, owner-only secrets, actor-relative UUIDs |
+| Limited-owner visibility | implemented | Non-visible sections are absent from the view model and DOM |
+| Permissions | implemented | Controls plus controller `canUserModify` guards; visibility also requires ownership |
+| Detached editor | implemented structurally | Application V2 part, standard ProseMirror helper, and application-local listeners; runtime sign-off required |

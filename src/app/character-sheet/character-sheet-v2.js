@@ -15,6 +15,8 @@ import { ProficienciesAdapter } from "../../pf2e/proficiencies-adapter.js";
 import { ProficienciesController } from "../../controllers/proficiencies-controller.js";
 import { EffectsAdapter } from "../../pf2e/effects-adapter.js";
 import { EffectsController } from "../../controllers/effects-controller.js";
+import { BiographyAdapter } from "../../pf2e/biography-adapter.js";
+import { BiographyController } from "../../controllers/biography-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -87,6 +89,9 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             removeCondition: PF2eCharacterSheetV2.#effectsAction,
             increaseAffliction: PF2eCharacterSheetV2.#effectsAction,
             decreaseAffliction: PF2eCharacterSheetV2.#effectsAction,
+            toggleBiographyVisibility: PF2eCharacterSheetV2.#biographyAction,
+            addBiographyListEntry: PF2eCharacterSheetV2.#biographyAction,
+            deleteBiographyListEntry: PF2eCharacterSheetV2.#biographyAction,
         },
     };
 
@@ -150,6 +155,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "crafting") partContext.crafting = await CraftingAdapter.prepare(this.actor);
         if (partId === "proficiencies") partContext.proficiencies = ProficienciesAdapter.prepare(this.actor, this.isEditable);
         if (partId === "effects") partContext.effects = EffectsAdapter.prepare(this.actor, this.isEditable);
+        if (partId === "biography") partContext.biography = await BiographyAdapter.prepare(this.actor, this.isEditable);
         return partContext;
     }
 
@@ -331,6 +337,15 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
     }
 
+    static async #biographyAction(_event, target) {
+        const row = target.closest("[data-biography-list]");
+        switch (target.dataset.action) {
+            case "toggleBiographyVisibility": return BiographyController.toggleVisibility(this.actor, target.dataset.section);
+            case "addBiographyListEntry": return BiographyController.addListEntry(this.actor, row?.dataset.biographyList);
+            case "deleteBiographyListEntry": return BiographyController.deleteListEntry(this.actor, row?.dataset.biographyList, Number(target.dataset.index));
+        }
+    }
+
     async _onRender(context, options) {
         await super._onRender(context, options);
         this.#renderListeners?.abort();
@@ -428,6 +443,28 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }, listenerOptions);
         effects?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         effects?.addEventListener("drop", (event) => void EffectsController.drop(this.actor, event), listenerOptions);
+        const biography = getTabPanel("biography");
+        biography?.addEventListener("change", (event) => {
+            const input = event.target;
+            if (input?.matches?.("[data-biography-field]")) {
+                void BiographyController.updateText(this.actor, input.dataset.biographyField, input.value);
+            } else if (input?.matches?.("[data-biography-list-input]")) {
+                const row = input.closest("[data-biography-list]");
+                void BiographyController.updateListEntry(this.actor, row?.dataset.biographyList, Number(input.dataset.index), input.value);
+            }
+        }, listenerOptions);
+        biography?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-biography-field], [data-biography-list-input]")) return;
+            if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+            if (event.key === "Escape") {
+                event.preventDefault();
+                input.value = input.matches("[data-biography-field]")
+                    ? BiographyController.value(this.actor, input.dataset.biographyField)
+                    : input.defaultValue;
+                input.blur();
+            }
+        }, listenerOptions);
     }
 
     async #updateActorName(input) {

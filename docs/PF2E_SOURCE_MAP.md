@@ -331,3 +331,33 @@ Audit target: pinned PF2e V14 development commit `73c870286aeba87c25ccc0258028af
 | Delete | `actor/base.ts`; effect Item document/grant lifecycle | Effect `delete`; condition `decreaseCondition(...,{forceRemove:true})` | embedded Item | owner | Core document lifecycle | used; granted Effects and locked/readonly Conditions have no delete control |
 
 The original character tab is `static/templates/actors/character/tabs/effects.hbs`, its rows are `static/templates/actors/partials/effects.hbs`, and the current Application V2 reference is `src/module/apps/effects-panel.ts`. Both the character tab and effects panel use Core effect increment/decrement; the panel calls `ConditionPF2e.rollRecovery()` for persistent damage. The character tab passes only `actor.conditions.active`, so stored inactive/overridden conditions remain a documented safe omission. The protected actor drop method cannot be invoked externally, but its public-document sequence is mirrored narrowly: resolve, obtain the source, apply drop context/counter value, clone to clear `_id`, and embed. Add Condition UI and the persistent-damage editor remain pending. `EffectPF2e.remainingDuration` is used as prepared output; the module never reads start time, combat round, turn, rule elements, synthetics, or roll options to derive state.
+
+## Milestone 9 final – Spell-origin drop traits
+
+`src/module/actor/sheet/base.ts#_handleDroppedItem` (pinned V14 commit `73c870286aeba87c25ccc0258028afedfc888d05`) resolves `context.origin.item` with `fromUuidSync`, requires an empty Effect/Affliction trait array and a `SpellPF2e`, filters the Spell's traits by membership in runtime `CONFIG.PF2E.effectTraits`, then continues through clone/source creation and `createEmbeddedDocuments`. The module mirrors that exact boundary without a private whitelist.
+
+## Milestone 10 – Biography
+
+Core sources: `src/module/actor/character/data.ts` (`CharacterBiography`), `src/module/actor/character/sheet.ts` (lines 346–360 enrichment and handlers `toggle-bio-visibility`, `add-edict-anathema`, `delete-edict-anathema`), and `static/templates/actors/character/tabs/biography.hbs` (layout, editor targets, and owner-or-visible semantics).
+
+| UI field | PF2e source path | Raw/persisted? | Rich text? | Editable? | Visibility controlled? | Mutation API |
+|---|---|---|---|---|---|---|
+| Height | `system.details.height.value` | yes | no | owner | appearance | focused `actor.update` |
+| Weight | `system.details.weight.value` | yes | no | owner | appearance | focused `actor.update` |
+| Appearance | `system.details.biography.appearance` | yes | yes | owner | appearance | ProseMirror editor target |
+| Backstory | `system.details.biography.backstory` | yes | yes | owner | backstory | ProseMirror editor target |
+| Birth place | `system.details.biography.birthPlace` | yes | no | owner | backstory | focused `actor.update` |
+| Attitude | `system.details.biography.attitude` | yes | no | owner | personality | focused `actor.update` |
+| Beliefs | `system.details.biography.beliefs` | yes | no | owner | personality | focused `actor.update` |
+| Edicts | `system.details.biography.edicts` | yes, string array | no | owner | personality | copied array + `actor.update` |
+| Anathema | `system.details.biography.anathema` | yes, string array | no | owner | personality | copied array + `actor.update` |
+| Likes | `system.details.biography.likes` | yes | no | owner | personality | focused `actor.update` |
+| Dislikes | `system.details.biography.dislikes` | yes | no | owner | personality | focused `actor.update` |
+| Catchphrases | `system.details.biography.catchphrases` | yes | no | owner | personality | focused `actor.update` |
+| Campaign notes | `system.details.biography.campaignNotes` | yes | yes | owner | campaign | ProseMirror editor target |
+| Allies | `system.details.biography.allies` | yes | yes | owner | campaign | ProseMirror editor target |
+| Enemies | `system.details.biography.enemies` | yes | yes | owner | campaign | ProseMirror editor target |
+| Organizations | `system.details.biography.organizations` | yes | yes | owner | campaign | ProseMirror editor target |
+| Section visibility | `system.details.biography.visibility.{appearance,backstory,personality,campaign}` | yes | no | owner | n/a | explicit whitelisted toggle |
+
+The official sheet enriches the six HTML fields with `TextEditorPF2e.enrichHTML({rollData, secrets: actor.isOwner, async:true})`. That PF2e class is not a documented module API, so the module uses public Foundry `TextEditor.enrichHTML` with the same options plus `relativeTo: actor`; PF2e's registered enrichers remain active at runtime. Editing uses the same `{{editor ... engine="prosemirror"}}` helper and fixed source targets as Core. Owner sees every section; a non-owner receives only sections whose persisted visibility is true. Filtering occurs before template rendering, so private raw or enriched content is not inserted into the DOM.

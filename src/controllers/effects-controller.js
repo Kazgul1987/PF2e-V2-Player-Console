@@ -90,6 +90,11 @@ export class EffectsController {
             itemSource.system.badge.value = value;
         }
         itemSource.system.context = context ?? null;
+        const originItem = fromUuidSync(context?.origin?.item ?? "");
+        if (itemSource.system.traits?.value.length === 0 && originItem?.isOfType?.("spell")) {
+            const effectTraits = originItem.system.traits.value.filter((trait) => trait in CONFIG.PF2E.effectTraits);
+            itemSource.system.traits.value.push(...effectTraits);
+        }
         // Match PF2e's actor-sheet creation boundary: cloning clears the source ID.
         const source = new Item.implementation(itemSource).clone().toObject();
         return actor.createEmbeddedDocuments("Item", [source]);
