@@ -842,6 +842,11 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M10-BIO-22 Enter:** change a simple field and press Enter; commit occurs without navigation/reload.
 - **M10-BIO-23 Escape:** change a simple field and press Escape; persisted value is restored.
 - **M10-BIO-24 Listener root:** inspect Biography listener root; it is `SECTION.tab-panel`, never the navigation button.
+- **M10-RICH-01..06 Local lifecycle:** for Appearance, Backstory, Campaign Notes, Allies, Enemies, and Organizations, open the local editor, save/reload a change, reopen to verify raw source, then cancel a second change and verify no mutation.
+- **M10-RICH-07..09 Enrichment:** save `@Check`, `@Damage`, a UUID link, an inline roll, and a secret block; compare links and Owner/Limited visibility with the official sheet.
+- **M10-RICH-10 Detached:** repeat Appearance open/edit/save/cancel in a detached window and verify no cross-window exception.
+- **M10-RICH-11 Render protection:** while dirty, trigger unrelated Actor and embedded Item updates; verify the editor and unsaved content remain. Save or cancel, then verify normal hook rendering resumes.
+- **M10-RICH-12..14 State/permissions:** reopen after save, try opening a second field while one is active (it must remain closed), and verify Limited users have no controls and a synthetic invalid action cannot update the Actor.
 - **M10-REG-01 Tabs:** click Character through PFS and verify native tabs have no errors and PFS remains a placeholder.
 - **M10-REG-02 Proficiencies:** Intimidation Expert→Master updates source rank, prepared modifier/DC, and subsequent roll.
 - **M10-REG-03 Spell slots:** edit value/max and verify persistence.

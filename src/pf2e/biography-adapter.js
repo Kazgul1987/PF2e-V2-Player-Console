@@ -12,9 +12,12 @@ export class BiographyAdapter {
             secrets: owner,
             relativeTo: actor,
         };
+        const textEditor = game.pf2e?.TextEditor ?? foundry.applications.ux.TextEditor;
         const enriched = {};
         await Promise.all(RICH_TEXT_FIELDS.map(async (field) => {
-            enriched[field] = await TextEditor.enrichHTML(String(biography[field] ?? ""), enrichmentOptions);
+            enriched[field] = await textEditor.enrichHTML(
+                String(biography[field] ?? ""), enrichmentOptions,
+            );
         }));
 
         const visible = Object.fromEntries(SECTIONS.map((section) => [section, owner || biography.visibility?.[section] === true]));

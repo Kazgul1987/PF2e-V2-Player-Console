@@ -163,3 +163,9 @@
 .biography-list-row { align-items: center; display: grid; gap: .3rem; grid-template-columns: 1fr auto; margin-bottom: .3rem; }
 .biography-list-row button, .biography-list > button { min-height: 1.8rem; padding: .15rem .4rem; }
 @media (max-width: 50rem) { .biography-fields, .biography-lists { grid-template-columns: 1fr; } .biography-fields .wide { grid-column: auto; } }
+.biography-richtext { min-height: 4rem; position: relative; }
+.biography-richtext-display { min-height: 4rem; }
+.biography-richtext-edit { position: absolute; right: 0; top: 0; }
+.biography-richtext-editor-host { min-height: 10rem; }
+.biography-richtext-editor-mount prose-mirror { min-height: 8rem; }
+.biography-richtext-controls { display: flex; gap: .5rem; justify-content: flex-end; margin-top: .5rem; }

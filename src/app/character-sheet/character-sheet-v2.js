@@ -92,6 +92,9 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             toggleBiographyVisibility: PF2eCharacterSheetV2.#biographyAction,
             addBiographyListEntry: PF2eCharacterSheetV2.#biographyAction,
             deleteBiographyListEntry: PF2eCharacterSheetV2.#biographyAction,
+            editBiographyRichText: PF2eCharacterSheetV2.#biographyAction,
+            saveBiographyRichText: PF2eCharacterSheetV2.#biographyAction,
+            cancelBiographyRichText: PF2eCharacterSheetV2.#biographyAction,
         },
     };
 
@@ -173,6 +176,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     async _onClose(options) {
+        this.#closeBiographyEditor();
         for (const [hook, id] of this.#hooks) Hooks.off(hook, id);
         this.#hooks.length = 0;
         await super._onClose(options);
@@ -343,10 +347,59 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             case "toggleBiographyVisibility": return BiographyController.toggleVisibility(this.actor, target.dataset.section);
             case "addBiographyListEntry": return BiographyController.addListEntry(this.actor, row?.dataset.biographyList);
             case "deleteBiographyListEntry": return BiographyController.deleteListEntry(this.actor, row?.dataset.biographyList, Number(target.dataset.index));
+            case "editBiographyRichText": return this.#openBiographyEditor(target);
+            case "saveBiographyRichText": return this.#saveBiographyEditor(target);
+            case "cancelBiographyRichText": return this.#closeBiographyEditor();
         }
     }
 
+    async #openBiographyEditor(target) {
+        if (this.#biographyEditor || !this.isEditable) return;
+        const container = target.closest("[data-richtext-field]");
+        const field = container?.dataset.richtextField;
+        const raw = BiographyController.richTextValue(this.actor, field);
+        const host = container?.querySelector("[data-richtext-editor-host]");
+        const mount = host?.querySelector("[data-richtext-editor-mount]");
+        const display = container?.querySelector("[data-richtext-display]");
+        if (raw === null || !host || !mount || !display) return;
+
+        const { HTMLProseMirrorElement } = foundry.applications.elements;
+        const editor = HTMLProseMirrorElement.create({
+            name: `system.details.biography.${field}`,
+            value: raw,
+            documentUUID: this.actor.uuid,
+            collaborate: false,
+            toggled: false,
+        });
+        this.#biographyEditor = { container, display, editor, field, host };
+        display.hidden = true;
+        host.hidden = false;
+        mount.replaceChildren(editor);
+        editor.focus();
+    }
+
+    async #saveBiographyEditor(target) {
+        const active = this.#biographyEditor;
+        if (!active || target.closest("[data-richtext-field]") !== active.container) return;
+        active.editor.save();
+        const value = active.editor.value;
+        this.#closeBiographyEditor();
+        await BiographyController.updateRichText(this.actor, active.field, value);
+    }
+
+    #closeBiographyEditor() {
+        const active = this.#biographyEditor;
+        if (!active) return;
+        active.editor.remove();
+        active.host.hidden = true;
+        active.display.hidden = false;
+        this.#biographyEditor = null;
+    }
+
     async _onRender(context, options) {
+        // An explicit Application render disconnects the V14 form element, whose callback destroys ProseMirror.
+        // Document hooks are deferred while editing, but other render callers still get a clean cancellation.
+        if (this.#biographyEditor && !this.#biographyEditor.editor.isConnected) this.#biographyEditor = null;
         await super._onRender(context, options);
         this.#renderListeners?.abort();
         this.#renderListeners = new AbortController();
@@ -487,10 +540,10 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     #registerDocumentHooks() {
         const renderActor = (actor) => {
-            if (actor.uuid === this.actor.uuid) void this.render();
+            if (actor.uuid === this.actor.uuid && !this.#biographyEditor) void this.render();
         };
         const renderItem = (item) => {
-            if (item.actor?.uuid === this.actor.uuid) void this.render();
+            if (item.actor?.uuid === this.actor.uuid && !this.#biographyEditor) void this.render();
         };
         for (const [hook, callback] of [
             ["updateActor", renderActor],
@@ -502,4 +555,5 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     #hooks = [];
     #renderListeners = null;
+    #biographyEditor = null;
 }

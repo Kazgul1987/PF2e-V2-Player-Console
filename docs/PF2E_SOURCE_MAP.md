@@ -344,8 +344,8 @@ Core sources: `src/module/actor/character/data.ts` (`CharacterBiography`), `src/
 |---|---|---|---|---|---|---|
 | Height | `system.details.height.value` | yes | no | owner | appearance | focused `actor.update` |
 | Weight | `system.details.weight.value` | yes | no | owner | appearance | focused `actor.update` |
-| Appearance | `system.details.biography.appearance` | yes | yes | owner | appearance | ProseMirror editor target |
-| Backstory | `system.details.biography.backstory` | yes | yes | owner | backstory | ProseMirror editor target |
+| Appearance | `system.details.biography.appearance` | yes | yes | owner | appearance | whitelisted controller update |
+| Backstory | `system.details.biography.backstory` | yes | yes | owner | backstory | whitelisted controller update |
 | Birth place | `system.details.biography.birthPlace` | yes | no | owner | backstory | focused `actor.update` |
 | Attitude | `system.details.biography.attitude` | yes | no | owner | personality | focused `actor.update` |
 | Beliefs | `system.details.biography.beliefs` | yes | no | owner | personality | focused `actor.update` |
@@ -354,10 +354,12 @@ Core sources: `src/module/actor/character/data.ts` (`CharacterBiography`), `src/
 | Likes | `system.details.biography.likes` | yes | no | owner | personality | focused `actor.update` |
 | Dislikes | `system.details.biography.dislikes` | yes | no | owner | personality | focused `actor.update` |
 | Catchphrases | `system.details.biography.catchphrases` | yes | no | owner | personality | focused `actor.update` |
-| Campaign notes | `system.details.biography.campaignNotes` | yes | yes | owner | campaign | ProseMirror editor target |
-| Allies | `system.details.biography.allies` | yes | yes | owner | campaign | ProseMirror editor target |
-| Enemies | `system.details.biography.enemies` | yes | yes | owner | campaign | ProseMirror editor target |
-| Organizations | `system.details.biography.organizations` | yes | yes | owner | campaign | ProseMirror editor target |
+| Campaign notes | `system.details.biography.campaignNotes` | yes | yes | owner | campaign | whitelisted controller update |
+| Allies | `system.details.biography.allies` | yes | yes | owner | campaign | whitelisted controller update |
+| Enemies | `system.details.biography.enemies` | yes | yes | owner | campaign | whitelisted controller update |
+| Organizations | `system.details.biography.organizations` | yes | yes | owner | campaign | whitelisted controller update |
 | Section visibility | `system.details.biography.visibility.{appearance,backstory,personality,campaign}` | yes | no | owner | n/a | explicit whitelisted toggle |
 
-The official sheet enriches the six HTML fields with `TextEditorPF2e.enrichHTML({rollData, secrets: actor.isOwner, async:true})`. That PF2e class is not a documented module API, so the module uses public Foundry `TextEditor.enrichHTML` with the same options plus `relativeTo: actor`; PF2e's registered enrichers remain active at runtime. Editing uses the same `{{editor ... engine="prosemirror"}}` helper and fixed source targets as Core. Owner sees every section; a non-owner receives only sections whose persisted visibility is true. Filtering occurs before template rendering, so private raw or enriched content is not inserted into the DOM.
+The official template uses the legacy `{{editor ... button=true engine="prosemirror"}}` activation path, while its sheet enriches the six HTML fields with `TextEditorPF2e.enrichHTML({rollData, secrets: actor.isOwner, async:true})`. PF2e exposes that implementation as `game.pf2e.TextEditor` in `src/scripts/set-game-pf2e.ts`, so the adapter calls its public runtime namespace with the same options plus `relativeTo: actor`; Foundry V14 `foundry.applications.ux.TextEditor` is the defensive fallback. This covers PF2e `@Check`, `@Damage`, configured syntax, UUID links, inline rolls, and `processUserVisibility`; exact interactive and Owner/Limited behavior remains a manual Foundry comparison.
+
+V14 editing deliberately does **not** use legacy editor-helper activation or the V1 `activateEditor`/`saveEditor` lifecycle. Explicit Application V2 actions create `foundry.applications.elements.HTMLProseMirrorElement` in the selected field's application-local host. This V14 form-associated element wraps `foundry.applications.ux.ProseMirrorEditor.create(target, content, options)`, exposes canonical content through `save()` and `value`, and destroys its internal editor from `disconnectedCallback`. Raw source is fetched from the controller only after an authorized edit action; enriched HTML alone is rendered in view mode. One editor is allowed at a time, document/item hook renders are deferred while it is open, and save/cancel/close disconnect it before persistence or teardown. Owner sees every section; a non-owner receives only visible sections, without raw content or editor hosts in the DOM.
