@@ -336,6 +336,9 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         this.#renderListeners?.abort();
         this.#renderListeners = new AbortController();
         const listenerOptions = { signal: this.#renderListeners.signal };
+        const getTabPanel = (tab) => this.element.querySelector(
+            `.tab-panel[data-group="primary"][data-tab="${tab}"]`,
+        );
         const nameInput = this.element.querySelector('[data-actor-name]');
         nameInput?.addEventListener("change", (event) => void this.#updateActorName(event.currentTarget), listenerOptions);
         nameInput?.addEventListener("keydown", (event) => {
@@ -348,7 +351,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
                 event.currentTarget.blur();
             }
         }, listenerOptions);
-        const actions = this.element.querySelector('[data-tab="actions"]');
+        const actions = getTabPanel("actions");
         actions?.addEventListener("change", (event) => {
             const target = event.target;
             if (!target?.matches?.("input, select")) return;
@@ -363,21 +366,21 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
                 void ActionController.ammo(this.actor, target.closest("[data-strike-index]")?.dataset ?? {}, target.value);
             }
         }, listenerOptions);
-        const inventory = this.element.querySelector('[data-tab="inventory"]');
+        const inventory = getTabPanel("inventory");
         inventory?.addEventListener("dragstart", (event) => {
             const target = event.target.closest("[draggable][data-item-id]");
             if (target) InventoryController.dragStart(this.actor, event, target);
         }, listenerOptions);
         inventory?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         inventory?.addEventListener("drop", (event) => void InventoryController.drop(this.actor, event, event.target), listenerOptions);
-        const feats = this.element.querySelector('[data-tab="feats"]');
+        const feats = getTabPanel("feats");
         feats?.addEventListener("dragstart", (event) => {
             const target = event.target.closest("[draggable][data-item-id]");
             if (target) FeatController.dragStart(this.actor, event, target);
         }, listenerOptions);
         feats?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         feats?.addEventListener("drop", (event) => void FeatController.drop(this.actor, event, event.target), listenerOptions);
-        const spellcasting = this.element.querySelector('[data-tab="spellcasting"]');
+        const spellcasting = getTabPanel("spellcasting");
         spellcasting?.addEventListener("dragstart", (event) => {
             const target = event.target?.closest?.("[draggable][data-spell-id]");
             if (target) SpellcastingController.dragStart(this.actor, event, target);
@@ -395,7 +398,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             if (event.key === "Enter") { event.preventDefault(); input.blur(); }
             if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
         }, listenerOptions);
-        const crafting = this.element.querySelector('[data-tab="crafting"]');
+        const crafting = getTabPanel("crafting");
         crafting?.addEventListener("change", (event) => {
             const input = event.target;
             if (!input?.matches?.("[data-formula-quantity]")) return;
@@ -410,7 +413,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }, listenerOptions);
         crafting?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         crafting?.addEventListener("drop", (event) => void CraftingController.drop(this.actor, event, event.target), listenerOptions);
-        const proficiencies = this.element.querySelector('[data-tab="proficiencies"]');
+        const proficiencies = getTabPanel("proficiencies");
         proficiencies?.addEventListener("change", async (event) => {
             const select = event.target;
             if (!select?.matches?.("[data-rank-control]")) return;
@@ -418,7 +421,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             // The resolved document update has completed PF2e preparation: rebuild from the new Statistic objects.
             await this.render();
         }, listenerOptions);
-        const effects = this.element.querySelector('[data-tab="effects"]');
+        const effects = getTabPanel("effects");
         effects?.addEventListener("dragstart", (event) => {
             const target = event.target?.closest?.("[draggable][data-item-id]");
             if (target) EffectsController.dragStart(this.actor, event, target);

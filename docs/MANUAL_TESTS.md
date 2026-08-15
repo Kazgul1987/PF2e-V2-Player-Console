@@ -809,3 +809,9 @@ Drop Compendium and world Effects, an Effect from another Actor, and a Compendiu
 
 ### M9-FIX-13 – Detached Fixup
 Detach the sheet and repeat Effect counter +/-, Condition +/-, persistent recovery, and each supported drop. Confirm local-window event targets work without cross-window errors or stale values.
+
+### ROOT-FIX-01..12 – Tab Listener Roots and M8/M9 Regression
+
+For Actions, Inventory, Feats, Spellcasting, Crafting, Proficiencies, and Effects, inspect the listener-bound root: it must resolve to `SECTION.tab-panel`, not `BUTTON[data-action="tab"]`. Repeat the checks while the relevant tab is initially inactive and in a detached sheet.
+
+Change Intimidation from Expert to Master and confirm the controller update completes with source/prepared rank 3, refreshed PF2e modifier/DC, and the new modifier on a real roll. Also test an Untrained-to-Trained Core skill. Verify spell-slot value/max edits; prepared-formula quantity, daily crafting, and daily reset; Condition and Effect counters and persistent recovery; Inventory, Feat, Spellcasting, Crafting, and Effect/Affliction drops; Strike/MAP/damage/critical actions; and every native primary-tab navigation button without `No matching tab element found` errors.
