@@ -37,6 +37,8 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         actions: {
             detach: PF2eCharacterSheetV2.#detach,
             rollStatistic: PF2eCharacterSheetV2.#rollStatistic,
+            editAttributeBoosts: PF2eCharacterSheetV2.#openCoreCharacterSheet,
+            editLanguages: PF2eCharacterSheetV2.#openCoreCharacterSheet,
             openItem: PF2eCharacterSheetV2.#inventoryAction,
             deleteItem: PF2eCharacterSheetV2.#inventoryAction,
             createItem: PF2eCharacterSheetV2.#inventoryAction,
@@ -158,9 +160,20 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     async _onRender(context, options) {
         await super._onRender(context, options);
+        this.#applyPresentationSettings();
+    }
+
+    #applyPresentationSettings() {
         const { theme, density } = getPresentationSettings();
-        this.element.dataset.theme = theme;
-        this.element.dataset.density = density;
+        const element = this.element;
+        if (!element) return;
+        element.dataset.theme = theme;
+        element.dataset.density = density;
+    }
+
+    /** Refresh client presentation without querying either the main or detached document. */
+    applyPresentationSettings() {
+        this.#applyPresentationSettings();
     }
 
     async _preparePartContext(partId, context, options) {
@@ -210,6 +223,11 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         await RollController.rollStatistic(this.actor, target.dataset.statistic, event, {
             secret: Object.hasOwn(target.dataset, "secret"),
         });
+    }
+
+    static #openCoreCharacterSheet() {
+        ui.notifications.info(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Character.CoreEditorNotice"));
+        return this.actor.sheet?.render(true, { tab: "character" });
     }
 
     static async #inventoryAction(event, target) {

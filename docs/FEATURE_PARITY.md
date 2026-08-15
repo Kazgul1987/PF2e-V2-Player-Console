@@ -295,3 +295,17 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 - [x] Comfortable and compact density
 - [x] Responsive layouts for narrow, medium, and wide sheets
 - [x] Sheet-local theming that remains scoped in detached windows
+
+## Milestone 12.1 – Character dashboard and presentation runtime
+
+| Capability | Status | Runtime boundary |
+| --- | --- | --- |
+| Theme/density root dataset | implemented | `_onRender` applies current client settings to the final Application V2 root; setting changes directly refresh every rendered console. |
+| Attributes | implemented; runtime sign-off | Six prepared `system.abilities.*.mod` values; no calculation. |
+| Attribute boost editing | partial / safe omission | Core `AttributeBuilder` is source-exported but not exposed through the public runtime API; edit opens the official sheet, without a private import. |
+| Speed | implemented; runtime sign-off | Prepared `system.movement.speeds` values. |
+| Languages | implemented; runtime sign-off | Prepared language slugs and Core configuration labels. |
+| Language editing | partial / safe omission | Core `LanguageSelector` is not publicly exposed; official sheet fallback preserves campaign rarity, limits, and granted languages. |
+| Shield stats/state | implemented; runtime sign-off | Held-shield identity and prepared shield hardness, HP, BT, raised, broken, and destroyed state. |
+| Inventory section labels | implemented | Same seven Core-owned labels used by `prepareInventory()`. |
+| Perception heading clipping | implemented; runtime sign-off | Character panel top padding, zero first-child margin, and explicit heading line height. |

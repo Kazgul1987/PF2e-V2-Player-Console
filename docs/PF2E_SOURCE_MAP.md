@@ -390,3 +390,16 @@ Core's `_preUpdate` accepts a broader player-number source range (1–9,999,999)
 The pinned Core implementation is `src/module/item/base/document.ts#getDescription(htmlOptions = {})`. It lazily applies Actor description alterations, evaluates predicate-based overrides and addenda against Actor/Item roll options, merges Item roll data, and returns already PF2e-enriched `{ value, gm }` HTML; GM notes are empty for non-GMs. Core's own `item-summary-renderer.ts` requests owner secrets when it obtains chat data. The module's `src/pf2e/item-summary.js` therefore calls `item.getDescription({ secrets: item.isOwner })` on every expansion and renders the returned value plus permitted GM notes without caching or persistence. Inventory, actions, feats, spells, crafting formulas, effects/conditions/afflictions, and PFS Boons all use this one helper.
 
 For a non-PF2e-compatible Item lacking `getDescription`, the helper falls back in order to the public `game.pf2e.TextEditor`, Foundry V14's `foundry.applications.ux.TextEditor`, and the legacy global `TextEditor`, with Item roll data, relative UUID context, and owner-secret visibility. This fallback enriches the available prepared/raw description only; it does not attempt to reconstruct PF2e alterations, addenda, predicates, traits, or rule text, and no private system module is imported.
+
+## Milestone 12.1 character dashboard
+
+| Dashboard value | PF2e 8.4 prepared/runtime source | Boundary |
+| --- | --- | --- |
+| Attributes | `actor.system.abilities.<str|dex|con|int|wis|cha>.mod`, with Core `shortLabel` | Display only; no score conversion or modifier calculation. |
+| Attribute Builder | Core `actor/character/sheet.ts` constructs source-private `AttributeBuilder` for `edit-attribute-boosts` | Not present on `game.pf2e` or `CONFIG.PF2E`; V2 opens the official sheet instead of deep-importing it. |
+| Speed | `actor.system.movement.speeds.<land|swim|climb|fly|burrow>.value` | Only non-zero prepared movement modes are displayed. |
+| Languages | `actor.system.details.languages.value`; labels from `CONFIG.PF2E.languages` | Includes prepared/granted languages; no slug humanization. |
+| Language Selector | Core `ActorSheetPF2e#tagSelector("languages")` constructs source-private `LanguageSelector` | No public runtime constructor/action; V2 opens Core and does not mutate `system.details.languages`, protecting granted entries and campaign rarity rules. |
+| Held Shield | `actor.heldShield`, correlated with `actor.system.attributes.shield.itemId` | No inventory trait search. |
+| Shield values/state | `actor.system.attributes.shield.{hardness,hp,brokenThreshold,raised,broken,destroyed}` | Core's shield preparation owns all values and states; V2 performs no BT, AC, or status calculation. |
+| Inventory section labels | The exact localization keys used by `ActorSheetPF2e#prepareInventory()` in `actor/sheet/base.ts` | `InventoryAdapter` localizes those Core-owned section labels once; it does not derive labels from item-type slugs. |
