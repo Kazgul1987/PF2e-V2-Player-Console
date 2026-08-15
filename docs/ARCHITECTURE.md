@@ -83,3 +83,13 @@ Item-based summary rendering is centralized in `src/pf2e/item-summary.js`. It de
 Boon discovery delegates to `game.pf2e.compendiumBrowser.tabs.feat`, cloning Core's public filter-data/open sequence with category `pfsboon` and maximum `actor.level`. Like Core, the discovery-only Browse button is not edit-gated and performs no Actor mutation. Addition remains the edit-gated browser-to-sheet drag/drop interaction: drop data is resolved by Foundry/PF2e, only a real Feat whose existing category is `pfsboon` is accepted, same-Actor drops are ignored, and external sources are embedded without their `_id` while rules, flags, and grants remain intact.
 
 All PFS change, keyboard, and drag/drop listeners attach through the established `.tab-panel[data-group="primary"][data-tab="pfs"]` helper without `.active`. Targets use optional `closest`, listeners share the render `AbortController`, and there are no global or realm-sensitive DOM accesses, preserving native tabs and detached-window safety.
+
+## Theme and UI Architecture
+
+The sheet presentation is a sheet-local design system. `src/settings.js` registers the client-scoped `theme` and `density` preferences and rerenders open consoles when either changes. The Application root receives `data-theme` and `data-density`; no class or data attribute is written to `html` or `body`, so normal and detached windows remain isolated.
+
+`character-sheet.css` defines semantic color tokens for application, panel and alternate surfaces, borders, text, accent, status, highlight, and focus colors. Remaster is the default green/parchment palette, Classic substitutes burgundy/parchment/brass values, and Dark uses low-glare charcoal/slate surfaces with readable desaturated accents. Components consume these tokens rather than maintaining tab-specific palettes.
+
+Density is likewise token-driven: comfortable and compact values alter row height, control height and padding, gaps, and section spacing without materially shrinking text. Shared shell, navigation, section framing, item rows and summaries, stat cards, badges, controls, inputs, focus states, and empty states apply across all tab templates.
+
+Responsive rules progressively collapse dashboard and tab grids at 64rem, 48rem, and 34rem. Navigation becomes horizontally scrollable rather than dropping controls, row controls wrap, and nested inventory uses only a subtle border and indentation. This detached-first strategy supports narrow pop-outs while retaining wide multi-column layouts. The design uses CSS, system fonts, Font Awesome, and existing runtime item images only; it adds no binary artwork or fonts.

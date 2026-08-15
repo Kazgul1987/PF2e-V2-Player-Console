@@ -113,6 +113,21 @@
     },
     "PFS": {
       "Empty": "Keine PFS-Vorteile"
+    },
+    "Settings": {
+      "Theme": {
+        "Name": "Sheet-Theme",
+        "Hint": "Wählt das visuelle Theme der PF2e V2 Player Console Sheets.",
+        "Remaster": "Remaster (Grün und Pergament)",
+        "Classic": "Klassisch (Burgunderrot und Pergament)",
+        "Dark": "Dunkel (Anthrazit)"
+      },
+      "Density": {
+        "Name": "Sheet-Dichte",
+        "Hint": "Wählt Abstände und Bedienelement-Dichte der PF2e V2 Player Console Sheets.",
+        "Comfortable": "Komfortabel",
+        "Compact": "Kompakt"
+      }
     }
   }
 }

@@ -19,6 +19,7 @@ import { BiographyAdapter } from "../../pf2e/biography-adapter.js";
 import { BiographyController } from "../../controllers/biography-controller.js";
 import { PFSAdapter } from "../../pf2e/pfs-adapter.js";
 import { PFSController } from "../../controllers/pfs-controller.js";
+import { getPresentationSettings } from "../../settings.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -145,12 +146,21 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     async _prepareContext(options) {
+        const presentation = getPresentationSettings();
         return {
             ...(await super._prepareContext(options)),
             actor: CharacterAdapter.prepare(this.actor),
             tabs: this._prepareTabs("primary"),
             editable: this.isEditable,
+            ...presentation,
         };
+    }
+
+    async _onRender(context, options) {
+        await super._onRender(context, options);
+        const { theme, density } = getPresentationSettings();
+        this.element.dataset.theme = theme;
+        this.element.dataset.density = density;
     }
 
     async _preparePartContext(partId, context, options) {

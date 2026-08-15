@@ -286,3 +286,12 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Boon D&D | implemented | External genuine boons embed; normal feats and same-Actor drops are no-ops |
 | Permissions | implemented | Read-only markup plus mutation guards |
 | Detached | implemented structurally | Local tab-panel events and realm-safe `closest`; Foundry runtime verification required |
+
+## UI / Theme
+
+- [x] Classic burgundy/parchment theme
+- [x] Remaster green/beige theme (default)
+- [x] Low-glare dark theme
+- [x] Comfortable and compact density
+- [x] Responsive layouts for narrow, medium, and wide sheets
+- [x] Sheet-local theming that remains scoped in detached windows
