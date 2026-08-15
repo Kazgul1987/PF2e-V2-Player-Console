@@ -1,4 +1,5 @@
 import { PF2E_ITEM_CARRY_TYPES } from "../constants.js";
+import { renderItemSummary } from "../pf2e/item-summary.js";
 
 const CARRY_TYPES = new Set(PF2E_ITEM_CARRY_TYPES);
 
@@ -57,10 +58,7 @@ export class InventoryController {
         return this.item(actor, id)?.toMessage?.(event);
     }
     static async summary(actor, id) {
-        const item = this.item(actor, id);
-        if (!item) return "";
-        const description = item.description ?? item.system?.description?.value ?? "";
-        return TextEditor.enrichHTML(String(description), { async: true, relativeTo: item, secrets: item.isOwner });
+        return renderItemSummary(this.item(actor, id));
     }
     static async identify(actor, id, status) {
         if (!this.#editable(actor) || !game.user.isGM || !["identified", "unidentified"].includes(status)) return;

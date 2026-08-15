@@ -1,3 +1,5 @@
+import { renderItemSummary } from "../pf2e/item-summary.js";
+
 export class CraftingController {
     static #ability(actor, id) { return actor?.crafting?.abilities?.get?.(id) ?? null; }
     static #hasDailyCrafting(crafting) {
@@ -12,11 +14,7 @@ export class CraftingController {
     static async open(uuid) { return (await this.#item(uuid))?.sheet?.render(true); }
     static async chat(uuid, event) { return (await this.#item(uuid))?.toMessage?.(event); }
     static async summary(uuid) {
-        const item = await this.#item(uuid);
-        if (!item) return "";
-        return TextEditor.enrichHTML(String(item.description ?? item.system?.description?.value ?? ""), {
-            async: true, relativeTo: item, secrets: item.isOwner,
-        });
+        return renderItemSummary(await this.#item(uuid));
     }
     static prepare(actor, abilityId, uuid) {
         if (!this.#editable(actor)) return;

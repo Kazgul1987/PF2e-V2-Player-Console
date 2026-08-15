@@ -16,7 +16,7 @@
         <div class="pfs-reputation-grid">{{#each pfs.factions as |faction|}}<label class="pfs-reputation-row"><span>{{faction.label}}</span><input type="number" value="{{faction.reputation}}" placeholder="0" data-pfs-reputation="{{faction.slug}}" {{disabled (not @root.editable)}}></label>{{/each}}</div>
     </section>
     <section class="pfs-boons" data-group-id="pfs">
-        <header><h3>{{localize "PF2E.FeatPFSBoonHeader"}}</h3>{{#if editable}}<button type="button" data-action="browsePFSBoons"><i class="fa-solid fa-search"></i> {{localize "PF2E.BrowseLabel"}}</button>{{/if}}</header>
+        <header><h3>{{localize "PF2E.FeatPFSBoonHeader"}}</h3><button type="button" data-action="browsePFSBoons"><i class="fa-solid fa-search"></i> {{localize "PF2E.BrowseLabel"}}</button></header>
         <ol>{{#each pfs.boons as |boon|}}<li class="pfs-boon-row" data-item-id="{{boon.id}}" {{#if @root.editable}}{{#if boon.movable}}draggable="true"{{/if}}{{/if}}>
             <button type="button" class="pfs-boon-name" data-action="pfsBoonSummary"><img src="{{boon.img}}" alt=""><strong>{{boon.name}}</strong></button>
             {{#if boon.level}}<span>{{localize "PF2E.LevelLabel"}} {{boon.level}}</span>{{/if}}

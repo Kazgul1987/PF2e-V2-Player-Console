@@ -1,3 +1,5 @@
+import { renderItemSummary } from "../pf2e/item-summary.js";
+
 export class ActionController {
     static #strike(actor, index, altUsageIndex = null) {
         const strike = actor.system.actions?.at(Number(index)) ?? null;
@@ -54,11 +56,7 @@ export class ActionController {
     }
 
     static async summary(actor, id) {
-        const item = actor.items.get(id);
-        if (!item) return "";
-        return TextEditor.enrichHTML(String(item.description ?? item.system?.description?.value ?? ""), {
-            async: true, relativeTo: item, secrets: item.isOwner,
-        });
+        return renderItemSummary(actor.items.get(id));
     }
 
     static async toggleExploration(actor, id) {
