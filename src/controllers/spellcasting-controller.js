@@ -1,4 +1,5 @@
 import { RollController } from "./roll-controller.js";
+import { renderItemSummary } from "../pf2e/item-summary.js";
 
 export class SpellcastingController {
     static #collection(actor, id) { return actor?.spellcasting?.collections?.get?.(id) ?? null; }
@@ -11,11 +12,7 @@ export class SpellcastingController {
     static open(actor, id) { return this.#spell(actor, id)?.sheet?.render(true); }
     static chat(actor, id, event) { return this.#spell(actor, id)?.toMessage?.(event); }
     static async summary(actor, id) {
-        const spell = this.#spell(actor, id);
-        if (!spell) return "";
-        return TextEditor.enrichHTML(String(spell.description ?? spell.system?.description?.value ?? ""), {
-            async: true, relativeTo: spell, secrets: spell.isOwner,
-        });
+        return renderItemSummary(this.#spell(actor, id));
     }
     static cast(actor, data) {
         if (!this.#editable(actor)) return;

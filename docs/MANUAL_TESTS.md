@@ -879,3 +879,12 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M11-REG-04 Crafting:** edit formula quantity and exercise daily crafting/reset.
 - **M11-REG-05 Effects:** exercise Condition +/-, Effect counter, Persistent Damage recovery, and supported drop.
 - **M11-REG-06 Native tabs:** navigate all primary tabs before/after Actor updates and in a detached window.
+
+## Milestone 11 final parity fix
+
+- **M11-FIX-01 – Read-only Browse:** Open PFS as an Observer/non-editable user. Confirm Browse PFS Boons is visible, opens the PF2e Feat Browser with category `pfsboon` and maximum level equal to Actor level, and causes no Actor mutation. Confirm number, level-bump, faction, reputation, Boon delete, and Boon drop/add controls remain unavailable or rejected.
+- **M11-FIX-02 – Inventory summary:** Expand an Inventory Item and confirm PF2e-enriched final description HTML, UUID links, applicable inline syntax, and no console errors.
+- **M11-FIX-03 – Feat summary:** Expand a Feat and confirm its PF2e-aware final description.
+- **M11-FIX-04 – PFS Boon summary:** Expand a PFS Boon and compare the description with the official PF2e Item summary.
+- **M11-FIX-05 – Effects summary:** Expand Effects, Conditions, and Afflictions and confirm no summary regression.
+- **M11-FIX-06 – Alterations/addenda:** Use an Item whose description is changed by a PF2e description alteration or addendum. Confirm the summary shows the final Core-rendered text rather than only `system.description.value`, with Owner/Observer secrets and GM notes matching Core.

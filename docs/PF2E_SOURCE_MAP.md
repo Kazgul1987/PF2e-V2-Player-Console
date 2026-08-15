@@ -103,7 +103,7 @@ The inventory client uses runtime Documents only; source-only helpers (`sizeItem
 | Identification | `item-line.hbs` | base `toggle-identified` | `item.setIdentificationStatus` | partial | V2 exposes GM/editable identify/mystify; core's source-only `IdentifyItemPopup` status selection remains unavailable |
 | Consumables | `item-line.hbs` | creature `consume-item` | `consumable.consume()`, `system.uses` | yes | PF2e owns chat, casting capability, charges, quantity, and auto-destroy |
 | Shields | `item-line.hbs` | prepared physical item | `system.hp`, `hardness`, `isBroken`, `isDestroyed`, carry API | yes | Raise Shield is an Actions milestone concern; no shield math is copied |
-| Item summary/chat | `item-summary.hbs`, `item-summary-renderer.ts` | `toggle-summary`, `item-to-chat` | internal renderer; `TextEditor.enrichHTML`; `item.toMessage()` | partial | V2 renders a local enriched description and delegates chat; core renderer's additional actions remain a declared gap |
+| Item summary/chat | `item/base/document.ts#getDescription`, `item-summary.hbs`, `item-summary-renderer.ts` | `toggle-summary`, `item-to-chat` | public Item description runtime API; `item.toMessage()` | partial | Shared helper delegates descriptions to Core (including alterations/addenda/visibility); core renderer's additional actions remain a declared gap |
 
 ### Carry, summary, identification, and currency boundaries
 
@@ -226,7 +226,7 @@ PF2e prepares `sheetData.feats = [...actor.feats, actor.feats.bonus]` in `src/mo
 | Groups, slots, features | `character/feats/collection.ts`, `group.ts`; `tabs/feats.hbs` | `actor.feats`, `.bonus`, group `feats/slots` | `FeatsAdapter.prepare` preserves runtime-created groups, empty slots and nested grants |
 | Name/icon/level/category/traits/cost | feat Item Document; `feat-slot.hbs`; `chat/feat-card.hbs` | prepared Item getters, `system.traits`, `actionCost`, `CONFIG.PF2E` labels; `actionGlyph` helper | Presentation-only row model and template; no name/category/action heuristics |
 | Open/chat/delete | actor base Item handlers | `item.sheet.render(true)`, `item.toMessage(event)`, `deleteDialog`/`delete` | `FeatController`; PF2e Document lifecycle owns grant handling |
-| Summary | internal `item-summary-renderer.ts` | `TextEditor.enrichHTML`, prepared description | shared inventory/action summary pattern, row-local target |
+| Summary | `item/base/document.ts#getDescription`; internal `item-summary-renderer.ts` | `item.getDescription({ secrets: item.isOwner })` | shared inventory/action summary pattern, row-local target |
 | Create | no stable public blank-Feat flow verified | — | intentionally pending; no artificial `category: "bonus"` Item is created |
 | External drop flow | `character/sheet.ts:_onDropItem`; `collection.ts:CharacterFeats.insertFeat` | `Item.implementation.fromDropData`, `actor.feats.insertFeat(item, slotData)` | compendium/world/other-Actor Feats are resolved as Documents and delegated to the collection; other Item types are ignored |
 | Internal group/slot move | `character/sheet.ts:_onSortItem` (lines 1542–1552); `collection.ts:CharacterFeats.insertFeat` | `actor.feats.insertFeat(item, {groupId,slotId})` | existing same-Actor Feats are updated without copying; an internal same-Actor drop whose target group is slotted and whose `slotId` is missing is a silent no-op before insertion, matching Core; otherwise the collection chooses validity, fallback, slot, or rejection |
@@ -377,10 +377,16 @@ Audit target: pinned PF2e V14 commit `73c870286aeba87c25ccc0258028afedfc888d05`.
 | Reputation | `pfs.hbs`; `data.ts` | `actor.system.pfs.reputation` | `system.pfs.reputation.<validated faction>` | owner | Nullable integer per runtime-configured faction; no rank calculation. |
 | School | `data.ts`; `scripts/config/index.ts` | source field/config remain | `system.pfs.school` | safe omission | Current official PFS template and active character-sheet flow do not render or mutate it; legacy UI is not restored. |
 | PFS Boons | `document.ts:prepareFeats`; `pfs.hbs` | `actor.pfsBoons` | embedded Feat Items (`category === "pfsboon"`) | display | Adapter consumes the prepared, sorted runtime collection directly. |
-| PFS Boon browser | `sheet.ts:#onClickBrowseFeats` | `game.pf2e.compendiumBrowser.tabs.feat.getFilterData/open` | none | owner discovery | Category `pfsboon`, maximum level `actor.level`; selection remains Core browser drag/drop discovery. |
+| PFS Boon browser | `sheet.ts:#onClickBrowseFeats`; `pfs.hbs` | `game.pf2e.compendiumBrowser.tabs.feat.getFilterData/open` | none | all viewers (discovery) | Category `pfsboon`, maximum level `actor.level`; the official button is outside editable markup, and selection remains Core browser drag/drop discovery. |
 | Boon open | `pfs.hbs` generic item action | `item.sheet.render(true)` | none | document permission | Live embedded Item is resolved by ID. |
 | Boon chat | same | `item.toMessage(event)` | ChatMessage | normal Item permission | No custom card. |
 | Boon delete | same / grant lifecycle | `item.deleteDialog()` or `item.delete()` | embedded Item deletion | owner, non-granted | Runtime permission, type/category, and `grantedBy` guards. |
 | Boon D&D | Actor sheet drop conventions | `Item.implementation.fromDropData`; `actor.createEmbeddedDocuments` | embedded Item creation | owner | Only actual Feat `pfsboon`; same-Actor no-op; external source keeps flags/rules and drops `_id`. |
 
 Core's `_preUpdate` accepts a broader player-number source range (1–9,999,999), but its current UI deliberately constrains input to 10000–99999; this module mirrors current sheet parity rather than silently broadening its control. Empty number and reputation inputs persist `null`, never `0`, `NaN`, or an empty string.
+
+### Shared Item-description runtime route
+
+The pinned Core implementation is `src/module/item/base/document.ts#getDescription(htmlOptions = {})`. It lazily applies Actor description alterations, evaluates predicate-based overrides and addenda against Actor/Item roll options, merges Item roll data, and returns already PF2e-enriched `{ value, gm }` HTML; GM notes are empty for non-GMs. Core's own `item-summary-renderer.ts` requests owner secrets when it obtains chat data. The module's `src/pf2e/item-summary.js` therefore calls `item.getDescription({ secrets: item.isOwner })` on every expansion and renders the returned value plus permitted GM notes without caching or persistence. Inventory, actions, feats, spells, crafting formulas, effects/conditions/afflictions, and PFS Boons all use this one helper.
+
+For a non-PF2e-compatible Item lacking `getDescription`, the helper falls back in order to the public `game.pf2e.TextEditor`, Foundry V14's `foundry.applications.ux.TextEditor`, and the legacy global `TextEditor`, with Item roll data, relative UUID context, and owner-secret visibility. This fallback enriches the available prepared/raw description only; it does not attempt to reconstruct PF2e alterations, addenda, predicates, traits, or rule text, and no private system module is imported.

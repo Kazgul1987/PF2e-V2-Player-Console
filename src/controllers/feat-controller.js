@@ -1,3 +1,5 @@
+import { renderItemSummary } from "../pf2e/item-summary.js";
+
 export class FeatController {
     static #editable(actor) {
         const allowed = actor?.canUserModify?.(game.user, "update") === true;
@@ -9,10 +11,7 @@ export class FeatController {
     static open(actor, id) { return this.item(actor, id)?.sheet?.render(true); }
     static toChat(actor, id, event) { return this.item(actor, id)?.toMessage?.(event); }
     static async summary(actor, id) {
-        const item = this.item(actor, id);
-        if (!item) return "";
-        const description = item.description ?? item.system?.description?.value ?? "";
-        return TextEditor.enrichHTML(String(description), { async: true, relativeTo: item, secrets: item.isOwner });
+        return renderItemSummary(this.item(actor, id));
     }
     static async remove(actor, id, event) {
         if (!this.#editable(actor)) return;

@@ -61,7 +61,7 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Consumables | ✓ | ✓ | implemented | creature `consume-item` | `consume()` | M3-INV-13 | PF2e owns effects, chat, charges, auto-destroy |
 | Shield state | ✓ | ✓ | inventory-complete | physical/shield documents | prepared HP/hardness/state | M3-INV-14 | Raise Shield deferred to Actions milestone |
 | Identification/mystify | ✓ | ✓* | partial | base `toggle-identified` | `setIdentificationStatus` | M3-FIX-04 | GM/editable only; direct identified/unidentified works, but core's internal status popup is not reproduced |
-| Inline item summary | ✓ | ✓* | partial | internal item-summary renderer | `TextEditor.enrichHTML`, prepared description | M3-FIX-06 | Sheet-scoped detached-safe disclosure; rich core summary actions remain pending |
+| Inline item summary | ✓ | ✓* | partial | `ItemPF2e.getDescription()` | shared PF2e-aware description helper | M11-FIX-02..05 | Core enrichment, alterations, addenda, GM visibility, and rule-generated description text; rich core summary actions remain pending |
 | Send item to chat | ✓ | ✓ | implemented; runtime sign-off | base `item-to-chat` | `item.toMessage(event)` | M3-FIX-07 | PF2e creates the chat card |
 
 ## Milestone 4 actions detail
@@ -277,11 +277,12 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Reputation | implemented | All runtime-configured factions; nullable integers; no local ranks |
 | School | safe omission | Source/config remain, but current official PFS tab has no School control or active flow |
 | PFS Boon rendering | implemented | Prepared `actor.pfsBoons` only |
-| Boon summary | implemented | Existing enriched Item-description pattern |
+| Boon summary | implemented | Shared PF2e-aware `ItemPF2e.getDescription()` route |
 | Boon open | implemented | Embedded Item sheet |
 | Boon chat | implemented | PF2e `toMessage` |
 | Boon delete | implemented | Owner and non-granted PFS Boons only |
-| Boon browser | implemented | Public runtime feat tab with `pfsboon` and actor-level filter; discovery/drop model |
+| Boon browser | implemented | Public runtime feat tab with `pfsboon` and actor-level filter; discovery-only Browse is visible read-only and is not edit-gated |
+| Read-only Browse parity | implemented | Observer/non-editable sheets retain Browse; every mutating PFS control remains disabled, hidden, and controller-guarded |
 | Boon D&D | implemented | External genuine boons embed; normal feats and same-Actor drops are no-ops |
 | Permissions | implemented | Read-only markup plus mutation guards |
 | Detached | implemented structurally | Local tab-panel events and realm-safe `closest`; Foundry runtime verification required |

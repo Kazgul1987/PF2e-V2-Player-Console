@@ -1,3 +1,5 @@
+import { renderItemSummary } from "../pf2e/item-summary.js";
+
 const NUMBER_LIMITS = Object.freeze({
     playerNumber: Object.freeze({ min: 10_000, max: 99_999 }),
     characterNumber: Object.freeze({ min: 2_001, max: 9_999 }),
@@ -48,10 +50,7 @@ export class PFSController {
     static open(actor, id) { return this.#item(actor, id)?.sheet?.render(true); }
     static toChat(actor, id, event) { return this.#item(actor, id)?.toMessage?.(event); }
     static async summary(actor, id) {
-        const item = this.#item(actor, id);
-        if (!item) return "";
-        const description = item.description ?? item.system?.description?.value ?? "";
-        return TextEditor.enrichHTML(String(description), { async: true, relativeTo: item, secrets: item.isOwner });
+        return renderItemSummary(this.#item(actor, id));
     }
     static async remove(actor, id, event) {
         if (!this.#editable(actor)) return;
