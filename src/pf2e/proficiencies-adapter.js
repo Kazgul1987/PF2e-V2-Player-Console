@@ -43,6 +43,24 @@ function statisticRow(statistic, { slug, label, editable = false, category = nul
     };
 }
 
+/** Mirror the prepared trace consumed by PF2e's character proficiencies sheet. */
+function coreSkillRow(actor, slug, statistic, editable) {
+    const trace = actor.system.skills?.[slug] ?? {};
+    const rawModifier = trace.value;
+    const hasModifier = Number.isFinite(rawModifier);
+    return {
+        slug,
+        itemId: null,
+        label: localize(trace.label ?? statistic?.label, CONFIG.PF2E.skills?.[slug]?.label ?? slug),
+        modifier: hasModifier ? modifier(rawModifier) : null,
+        hasModifier,
+        dc: Number.isFinite(trace.dc) ? trace.dc : null,
+        rank: rankView(trace.rank),
+        editable,
+        category: "skill",
+    };
+}
+
 function martialLabel(section, slug, proficiency) {
     if (proficiency?.label) return localize(proficiency.label, slug);
     if (section === "attacks") {
@@ -78,13 +96,15 @@ export class ProficienciesAdapter {
             const trace = actor.system.skills?.[slug] ?? {};
             const itemId = trace.itemId ?? null;
             const lore = Boolean(statistic?.lore || trace.lore || itemId);
-            const row = statisticRow(statistic ?? getStatistic(slug), {
-                slug,
-                itemId,
-                label: CONFIG.PF2E.skills?.[slug]?.label ?? slug,
-                editable: canEdit,
-                category: lore ? "lore" : "skill",
-            });
+            const row = lore
+                ? statisticRow(statistic ?? getStatistic(slug), {
+                    slug,
+                    itemId,
+                    label: CONFIG.PF2E.skills?.[slug]?.label ?? slug,
+                    editable: canEdit,
+                    category: "lore",
+                })
+                : coreSkillRow(actor, slug, statistic, canEdit);
             (lore ? lores : skills).push(row);
         }
         const byLabel = (a, b) => a.label.localeCompare(b.label, game.i18n.lang);
