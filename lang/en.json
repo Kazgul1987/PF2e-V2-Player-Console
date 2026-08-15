@@ -100,6 +100,12 @@
       "OtherMartial": "Other / Martial Proficiencies",
       "SameAs": "Based on:",
       "InvalidRank": "Invalid proficiency rank."
+    },
+    "Effects": {
+      "Empty": "No effects, conditions, or afflictions",
+      "SecondsRemaining": "{seconds} seconds remaining",
+      "Granted": "Granted by another item",
+      "Locked": "Locked or controlled by another condition"
     }
   }
 }

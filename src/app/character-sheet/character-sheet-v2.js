@@ -13,6 +13,8 @@ import { CraftingAdapter } from "../../pf2e/crafting-adapter.js";
 import { CraftingController } from "../../controllers/crafting-controller.js";
 import { ProficienciesAdapter } from "../../pf2e/proficiencies-adapter.js";
 import { ProficienciesController } from "../../controllers/proficiencies-controller.js";
+import { EffectsAdapter } from "../../pf2e/effects-adapter.js";
+import { EffectsController } from "../../controllers/effects-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -73,6 +75,15 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             performDailyCrafting: PF2eCharacterSheetV2.#craftingAction,
             resetDailyCrafting: PF2eCharacterSheetV2.#craftingAction,
             openLore: PF2eCharacterSheetV2.#proficiencyAction,
+            effectSummary: PF2eCharacterSheetV2.#effectsAction,
+            openEffect: PF2eCharacterSheetV2.#effectsAction,
+            effectToChat: PF2eCharacterSheetV2.#effectsAction,
+            deleteEffect: PF2eCharacterSheetV2.#effectsAction,
+            increaseCondition: PF2eCharacterSheetV2.#effectsAction,
+            decreaseCondition: PF2eCharacterSheetV2.#effectsAction,
+            removeCondition: PF2eCharacterSheetV2.#effectsAction,
+            increaseAffliction: PF2eCharacterSheetV2.#effectsAction,
+            decreaseAffliction: PF2eCharacterSheetV2.#effectsAction,
         },
     };
 
@@ -135,6 +146,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "spellcasting") partContext.spellcasting = await SpellcastingAdapter.prepare(this.actor);
         if (partId === "crafting") partContext.crafting = await CraftingAdapter.prepare(this.actor);
         if (partId === "proficiencies") partContext.proficiencies = ProficienciesAdapter.prepare(this.actor, this.isEditable);
+        if (partId === "effects") partContext.effects = EffectsAdapter.prepare(this.actor, this.isEditable);
         return partContext;
     }
 
@@ -291,6 +303,28 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }
     }
 
+    static async #effectsAction(event, target) {
+        const row = target.closest("[data-item-id]");
+        const id = row?.dataset.itemId;
+        switch (target.dataset.action) {
+            case "openEffect": return EffectsController.open(this.actor, id);
+            case "effectToChat": return EffectsController.chat(this.actor, id, event);
+            case "deleteEffect": return EffectsController.removeEffect(this.actor, id, event);
+            case "increaseCondition": return EffectsController.increaseCondition(this.actor, id);
+            case "decreaseCondition": return EffectsController.decreaseCondition(this.actor, id);
+            case "removeCondition": return EffectsController.removeCondition(this.actor, id);
+            case "increaseAffliction": return EffectsController.changeAffliction(this.actor, id, 1);
+            case "decreaseAffliction": return EffectsController.changeAffliction(this.actor, id, -1);
+            case "effectSummary": {
+                const summary = row?.querySelector(":scope > .item-summary");
+                if (!summary) return;
+                if (!summary.hidden) { summary.hidden = true; summary.replaceChildren(); return; }
+                summary.innerHTML = await EffectsController.summary(this.actor, id);
+                summary.hidden = false;
+            }
+        }
+    }
+
     async _onRender(context, options) {
         await super._onRender(context, options);
         this.#renderListeners?.abort();
@@ -376,6 +410,13 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             if (!select?.matches?.("[data-rank-control]")) return;
             void ProficienciesController.updateRank(this.actor, { ...select.dataset, rank: select.value });
         }, listenerOptions);
+        const effects = this.element.querySelector('[data-tab="effects"]');
+        effects?.addEventListener("dragstart", (event) => {
+            const target = event.target?.closest?.("[draggable][data-item-id]");
+            if (target) EffectsController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        effects?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        effects?.addEventListener("drop", (event) => void EffectsController.drop(this.actor, event), listenerOptions);
     }
 
     async #updateActorName(input) {

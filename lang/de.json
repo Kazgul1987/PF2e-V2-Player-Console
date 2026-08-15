@@ -100,6 +100,12 @@
       "OtherMartial": "Weitere / Kampf-Kompetenzen",
       "SameAs": "Basiert auf:",
       "InvalidRank": "Ungültiger Kompetenzgrad."
+    },
+    "Effects": {
+      "Empty": "Keine Effekte, Zustände oder Gebrechen",
+      "SecondsRemaining": "Noch {seconds} Sekunden",
+      "Granted": "Von einem anderen Gegenstand verliehen",
+      "Locked": "Durch einen anderen Zustand gesperrt oder gesteuert"
     }
   }
 }

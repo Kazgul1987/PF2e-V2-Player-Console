@@ -209,3 +209,31 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 Milestone 8 is complete for the listed scope. Perception and saves are an additional proficiency summary in this sheet rather than a one-to-one copy of Core's proficiency-tab layout.
 
 `definition`, `predicate`, `maxRank`, category aliases, auto changes, and Rule Element upgrades remain PF2e-owned. A synthetic or Rule-Element-only martial entry is display-only because editing additionally requires the raw source record and its explicit `custom` flag. Modifier and DC fields are never persisted. Rows without a numeric prepared modifier omit that field; a real zero remains visible as `+0`.
+
+## Milestone 9 – Effects
+
+| Capability | Status | Notes |
+|---|---|---|
+| Effect rendering | implemented | Real `actor.itemTypes.effect` documents |
+| Effect duration | implemented | Core duration source and localization |
+| Effect remaining duration | partial | Core `remainingDuration.remaining`, displayed in seconds; no local clock math |
+| Effect summary | implemented | Shared enriched-description approach |
+| Effect open | implemented | Embedded Item sheet |
+| Effect chat | implemented | `toMessage` |
+| Effect delete | implemented | Free Effect Items only; Core document lifecycle |
+| Granted effect protection | implemented | Delete/drag omitted when `grantedBy` exists |
+| Condition rendering | implemented | `actor.conditions.active` |
+| Valued condition rendering | implemented | `system.value.isValued`, not hardcoded slugs |
+| Condition increase | implemented | `actor.increaseCondition(condition)` |
+| Condition decrease | implemented | `actor.decreaseCondition(condition)` |
+| Condition remove | implemented | `decreaseCondition(condition,{forceRemove:true})` |
+| Overridden/inactive conditions | safe omission | Official character tab uses `conditions.active`; inactive entries are not independently mutated |
+| Persistent damage | partial | Core formula/type/DC shown and Core removal used; recovery/editor/increment omitted |
+| Affliction rendering | implemented | Prepared affliction Item stage/onset data |
+| Affliction stage | implemented | Core `increase()` / `decrease()` lifecycle methods |
+| Effect D&D | partial | Basic external Item cloning only; spell-context augmentation remains official-sheet-only |
+| Condition D&D | implemented | `fromDropData` then `actor.increaseCondition` |
+| Affliction D&D | partial | Basic external Item cloning; V14-dev production limitation applies |
+| Add Condition UI | pending | No stable public selector application |
+| Permissions | implemented | Markup and runtime Actor permission guards |
+| Detached | implemented structurally | Application-local action/drop targets; runtime verification required |
