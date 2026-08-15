@@ -709,6 +709,36 @@ Open Character, Actions, Inventory, Feats, Spellcasting, Crafting, and Proficien
 ### M8-RUNTIME-01..07 – Prepared Skill Refresh Matrix
 In order, test Untrained → Trained (including reload), Trained → Expert, Expert → Master, Master → Legendary, and Legendary → Untrained. After every update compare `_source.system.skills[slug].rank`, prepared `system.skills[slug].rank`, `actor.skills[slug].rank`, `.mod`, and `.check.mod` in devtools and confirm rank plus displayed modifier change together. Repeat with a synthetic/Rule Element bonus (the bonus must remain included) and repeat the edit in a detached sheet without stale UI. Also confirm Lore, custom Martial, class DCs, saves, and Perception still match Core.
 
+### M8-RUNTIME2-01 – Expert → Master
+On a level-6 Character, set Intimidation to Expert, note its modifier and DC, then select Master. Confirm rank, modifier, and DC are freshly PF2e-prepared; reload and confirm they persist. Do not assume concrete totals.
+
+### M8-RUNTIME2-02 – Immediate Roll
+Change Intimidation's rank and immediately roll its check. Confirm the chat roll modifier is the new PF2e runtime modifier and equals the V2 display.
+
+### M8-RUNTIME2-03 – Official Sheet Comparison
+Change a rank in V2, open Core's character sheet, and compare prepared rank, modifier, and DC between both sheets.
+
+### M8-RUNTIME2-04 – Untrained → Trained
+On a fresh skill, change Untrained to Trained and confirm rank, modifier, DC, and an immediate roll all update.
+
+### M8-RUNTIME2-05 – Master → Legendary
+Change Master to Legendary and confirm PF2e prepares a new modifier rather than retaining the prior value.
+
+### M8-RUNTIME2-06 – Legendary → Untrained
+Change Legendary to Untrained and confirm modifier and DC fall back according to the complete PF2e rules.
+
+### M8-RUNTIME2-07 – Rule Element Bonus
+Use a skill with an item, status, or Rule Element bonus; change its rank and confirm PF2e changes only what its rules require, preserves all applicable bonuses, and produces identical display and roll totals.
+
+### M8-RUNTIME2-08 – Detached Update and Roll
+Detach the sheet, change a skill rank, and confirm rank, modifier, DC, and an immediate roll update without reload or cross-window errors.
+
+### M8-RUNTIME2-09 – Lore Regression
+Change a Lore rank and confirm its Item-backed modifier and roll remain correct.
+
+### M8-RUNTIME2-10 – Custom Martial Regression
+Change a persistent custom Martial rank and confirm its existing source-backed flow is unchanged.
+
 ## Milestone 9 – Effects / Conditions / Afflictions
 
 ### M9-EFFECT-01 – Empty State

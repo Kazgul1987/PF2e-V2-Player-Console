@@ -54,11 +54,11 @@ The same compatibility rule applies to credits: PF2e deliberately keeps `transfe
 
 ## Milestone 8 proficiency slice
 
-`ProficienciesAdapter` maps prepared PF2e Statistics (`perception`, saves, skills, Lore, class DCs, and base spellcasting) plus prepared attack/defense proficiency records to primitive template rows. It formats only existing numeric totals and maps Core's 0–4 rank values to `PF2E.ProficiencyLevel*` localization; it performs no level, rank, modifier, attack, AC, or DC calculation.
+`ProficienciesAdapter` maps prepared PF2e Statistics (perception, saves, Lore, class DCs, and base spellcasting) plus prepared attack/defense proficiency records to primitive template rows. Core-skill display specifically mirrors PF2e's prepared `system.skills.<slug>` trace (`rank`, `value`, and `dc`), the same representation consumed by Core's proficiency template. It formats only existing numeric totals and maps Core's 0–4 rank values to `PF2E.ProficiencyLevel*` localization; it performs no level, rank, modifier, attack, AC, or DC calculation.
 
 `ProficienciesController` owns the narrow mutation boundary. It permits regular skill rank updates only for own keys of `CONFIG.PF2E.skills`, without requiring an entry in the partial raw `system.skills` source; Lore rank updates only on the resolved Lore Item; and attack rank updates only for source-backed `custom:true` entries. It validates permission and rank again at runtime and never accepts an arbitrary path from markup. Read-only and derived/synthetic rows are text. Application listeners are scoped to the Proficiencies part under `this.element`, so detached sheets do not depend on the main window DOM; shared Actor/Item hooks provide live prepared-data refresh.
 
-Rank controls await the PF2e Document update before requesting their final render. The adapter then reads the Actor's newly prepared Statistic objects; it retains no skill or modifier reference and performs no proficiency mathematics.
+Rank controls await the PF2e Document update before requesting their final render. The adapter then reads the Actor's newly prepared core-skill trace and retains no skill or modifier reference. Rolls independently resolve the current PF2e Statistic runtime API; display and rolls therefore remain PF2e-owned without local proficiency mathematics.
 
 ## Milestone 9 effects slice
 

@@ -186,9 +186,11 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 | Perception rank edit | safe omission | Official sheet does not expose it in the proficiency tab |
 | Saving Throws rendering | implemented | prepared `actor.saves` / `getStatistic` |
 | Saving Throw rank edit | safe omission | Class/rule-prepared; official proficiency tab has no save editor |
-| Skills rendering | implemented | prepared `actor.skills` rows |
+| Skills rendering | implemented | prepared `actor.system.skills.<slug>` trace rows, matching Core's proficiency template |
 | Skill rank edit | implemented | `CONFIG.PF2E.skills` whitelist → `system.skills.<slug>.rank` only; a missing partial source entry is valid and starts at rank 0 |
-| Skill modifier refresh after rank update | implemented | change listener awaits the Document update, then renders freshly prepared `actor.skills` Statistics |
+| Skill modifier refresh after rank update | implemented | change listener awaits the Document update, then reads the newly prepared trace `value` |
+| Skill DC refresh after rank update | implemented | newly prepared trace `dc`; no local `modifier + 10` calculation |
+| Skill roll after rank update | implemented | resolves a fresh `actor.getStatistic(slug)` and delegates to `Statistic.roll()` |
 | Lore rendering | implemented | prepared Lore statistic and embedded Item ID |
 | Lore rank edit | implemented | Lore Item `system.proficient.value` |
 | Lore open | implemented | embedded `item.sheet.render(true)` |
