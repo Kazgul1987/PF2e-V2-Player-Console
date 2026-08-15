@@ -956,3 +956,14 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M12.1-REG-02:** Recheck Inventory quantity, carry, invest, summary, drag/drop, and coins.
 - **M12.1-REG-03:** Recheck Biography Rich Text Edit, Save, and Cancel.
 - **M12.1-REG-04:** Smoke-test Spellcasting, Crafting, Effects, and PFS, then navigate every native primary tab.
+
+## Milestone 12.2 – Spellcasting contrast and Focus Pool parity
+
+- **M12.2-SPELL-01 – Remaster Contrast:** Open Spellcasting in Remaster and verify Vessel Spells, Focus Spells, Wand of Harm (Level 1), Attack +12, and DC 22 are clearly readable.
+- **M12.2-SPELL-02 – Classic Contrast:** Repeat the Spellcasting heading and Attack/DC readability check in Classic.
+- **M12.2-SPELL-03 – Dark Contrast:** Repeat the Spellcasting heading and Attack/DC readability check in Dark.
+- **M12.2-SPELL-04 – Focus Pool:** Open an Actor with a Focus Pool; verify its Focus section uses point pips rather than Slots and current/max matches PF2e Core.
+- **M12.2-SPELL-05 – Normal Slots:** Verify prepared, spontaneous, innate, and item Spellcasting entries retain their normal slot/uses presentation and behavior.
+- **M12.2-SPELL-06 – No Focus Pool:** Open an Actor with no Focus Pool or Focus Spells; verify no broken display and no Focus `Slots: 0 / 0` fallback.
+- **M12.2-SPELL-07 – Compact Density:** In Compact density, verify Focus pips and Spellcasting headers remain readable and do not overlap.
+- **M12.2-SPELL-08 – Detached:** In a detached Spellcasting tab, verify theme contrast, Focus Pool presentation, controls, and layout remain correct.
