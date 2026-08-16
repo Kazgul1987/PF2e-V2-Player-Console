@@ -81,13 +81,15 @@
 .dashboard-heading { align-items: center; display: flex; justify-content: space-between; }
 .dashboard-heading h2 { margin-block: 0 var(--pf2e-v2-gap-sm); }
 .attribute-grid { display: grid; gap: var(--pf2e-v2-gap-sm); grid-template-columns: repeat(6, minmax(4rem, 1fr)); }
-.attribute-card, .combat-stat, .speed-list, .shield-details { background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); padding: var(--pf2e-v2-gap-sm); }
+.attribute-card, .speed-list, .shield-details { background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); padding: var(--pf2e-v2-gap-sm); }
 .attribute-card { align-items: center; display: flex; flex-direction: column; }
-.attribute-card strong, .combat-stat strong { color: var(--pf2e-v2-accent-strong); font-size: 1.2rem; }
-.combat-dashboard { display: grid; gap: var(--pf2e-v2-gap-sm); grid-template-columns: minmax(7rem, auto) minmax(10rem, 1fr) minmax(14rem, 2fr); }
-.combat-stat { align-items: center; display: flex; gap: var(--pf2e-v2-gap-sm); }
+.attribute-card strong { color: var(--pf2e-v2-accent-strong); font-size: 1.2rem; }
 .speed-list, .shield-details, .language-list { align-items: center; display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-sm); }
-.speed-list h2, .shield-details h2 { flex-basis: 100%; margin: 0; }
+.speed-list h2 { flex-basis: 100%; margin: 0; }
+.defense-section > h2 { line-height: 1.15; margin-block: 0 var(--pf2e-v2-gap-sm); }
+.shield-details .shield-name { color: var(--pf2e-v2-heading); flex-basis: 100%; font-size: 1.05rem; }
+.perception-section { display: grid; gap: var(--pf2e-v2-gap-sm); padding-block-start: var(--pf2e-v2-gap-xs); }
+.perception-section .stat-card h2 { line-height: 1.15; margin-block: 0; }
 .stat-grid.skills { grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
 .stat-card { align-items: center; display: flex; justify-content: space-between; text-transform: capitalize; }
 .stat-card.rollable { color: inherit; cursor: pointer; font: inherit; text-align: left; width: 100%; }
@@ -338,6 +340,13 @@
     border-bottom-color: var(--pf2e-v2-border); margin-bottom: var(--pf2e-v2-gap-xs);
     padding: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm) var(--pf2e-v2-gap-sm);
 }
+.pf2e-v2-character-sheet .inventory-section-heading {
+    border-bottom-color: var(--pf2e-v2-accent); color: var(--pf2e-v2-heading);
+    margin-block-end: var(--pf2e-v2-gap-xs); padding-block: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm);
+}
+.pf2e-v2-character-sheet .inventory-section-heading h3 {
+    color: inherit; font-size: 1.15rem; font-weight: 700; line-height: 1.2; margin-block: 0;
+}
 .pf2e-v2-character-sheet .inventory :is(.item-controls, .stepper) { gap: 2px; }
 .pf2e-v2-character-sheet .inventory :is(.item-controls, .stepper, .coins) button,
 .pf2e-v2-character-sheet .inventory-section > header > button {
@@ -354,8 +363,7 @@
 }
 @media (max-width: 48rem) {
     .pf2e-v2-character-sheet .attribute-grid { grid-template-columns: repeat(3, minmax(4rem, 1fr)); }
-    .pf2e-v2-character-sheet .combat-dashboard { grid-template-columns: repeat(2, minmax(8rem, 1fr)); }
-    .pf2e-v2-character-sheet .shield-details { grid-column: 1 / -1; }
+    .pf2e-v2-character-sheet .shield-details { align-items: flex-start; }
     .pf2e-v2-character-sheet .window-content { padding: var(--pf2e-v2-gap-sm); }
     .pf2e-v2-character-sheet .pc-header { grid-template-columns: 4rem minmax(0, 1fr); }
     .pf2e-v2-character-sheet .pc-header img { height: 4rem; width: 4rem; }

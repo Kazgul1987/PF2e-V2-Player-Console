@@ -967,3 +967,22 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M12.2-SPELL-06 – No Focus Pool:** Open an Actor with no Focus Pool or Focus Spells; verify no broken display and no Focus `Slots: 0 / 0` fallback.
 - **M12.2-SPELL-07 – Compact Density:** In Compact density, verify Focus pips and Spellcasting headers remain readable and do not overlap.
 - **M12.2-SPELL-08 – Detached:** In a detached Spellcasting tab, verify theme contrast, Focus Pool presentation, controls, and layout remain correct.
+
+## Milestone 12.3 – Inventory hierarchy, shield defense, and Perception layout
+
+- **M12.3-SHIELD-01 – No Shield:** Open a character without a Core-recognized held shield. Verify the header still shows AC, the Character tab has no second AC card, and no empty defense panel or invented shield HP, Hardness, or BT appears.
+- **M12.3-SHIELD-02 – Held Shield:** Open a character whose shield is held and recognized by PF2e Core. Verify Defense shows its name, Hardness, current/max HP, and Broken Threshold, with values matching the official PF2e sheet.
+- **M12.3-SHIELD-03 – Raised:** Raise the held shield and verify the prepared Raised state is visible.
+- **M12.3-SHIELD-04 – Broken:** Reduce the shield below BT, or use an appropriate prepared test state, and verify Broken is visible.
+- **M12.3-SHIELD-05 – Destroyed:** Where Core exposes the prepared state, destroy the held shield and verify Destroyed is visible.
+- **M12.3-INV-01 – Section Hierarchy:** Use a character with Weapons & Shields, Armor, and Equipment. Verify each real category heading is prominent, the `Item` column heading remains below it, and `Item` cannot be mistaken for the category name.
+- **M12.3-INV-02 – Remaster Contrast:** In Remaster, verify all populated and empty inventory section headings are clearly readable.
+- **M12.3-INV-03 – Classic Contrast:** Repeat the inventory section-heading contrast check in Classic.
+- **M12.3-INV-04 – Dark Contrast:** Repeat the inventory section-heading contrast check in Dark.
+- **M12.3-UI-01 – Perception Flow:** Open Character and verify the Perception heading is fully visible, is not clipped or outside its section, and has normal spacing after the preceding dashboard section.
+- **M12.3-RESP-01 – Narrow:** At widths from approximately 520–700 px, verify shield details wrap cleanly, inventory headings remain visible, visible column headings do not overlap, and Perception remains in normal flow.
+- **M12.3-DETACH-01 – Detached:** Repeat the shield, inventory hierarchy, and Perception checks in a detached/pop-out sheet.
+- **M12.3-REG-01 – Presentation:** Change Remaster→Classic→Dark and Comfortable→Compact and verify the sheet-local theme and density still update immediately; recheck Spellcasting Focus Pool contrast and pips.
+- **M12.3-REG-02 – Inventory:** Recheck quantity, uses, carry type, invest, containers, drag/drop, coins, summary, delete, and transfer behavior.
+- **M12.3-REG-03 – Proficiencies/Biography:** Change Intimidation Expert→Master and verify rank, modifier, and DC update; then verify Biography Edit, Save, and Cancel.
+- **M12.3-REG-04 – Other Tabs:** Smoke-test Actions, Crafting, Effects, and PFS.
