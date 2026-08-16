@@ -25,6 +25,12 @@ export class SpellcastingController {
         const check = this.#collection(actor, entryId)?.entry?.statistic?.check;
         return check?.roll?.(RollController.eventToRollParams(event));
     }
+    static adjustFocus(actor, delta) {
+        if (!this.#editable(actor) || ![-1, 1].includes(delta)) return;
+        const resource = actor.getResource?.("focus");
+        if (!resource || typeof actor.updateResource !== "function") return;
+        return actor.updateResource("focus", resource.value + delta);
+    }
     static async updateSlotCount(actor, data) {
         if (!this.#editable(actor) || !["value", "max"].includes(data.field)) return;
         const collection = this.#collection(actor, data.entryId);

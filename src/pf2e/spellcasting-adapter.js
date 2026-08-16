@@ -32,6 +32,7 @@ export class SpellcastingAdapter {
                 id: String(group.id), label: game.i18n.localize(group.label), number: group.number ?? null,
                 uses: group.uses ? { value: group.uses.value, max: group.uses.max } : null,
                 isFocusPool,
+                isFocusCantrip: isFocusPool && group.id === "cantrips" && !group.uses,
                 focusPool: isFocusPool && group.uses ? focusPool : null,
                 editableUses: !!group.uses && !data.isFocusPool && !data.isInnate && !data.isRitual &&
                     !data.isEphemeral && Number.isInteger(group.number),

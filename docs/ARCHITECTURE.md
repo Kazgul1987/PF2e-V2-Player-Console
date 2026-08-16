@@ -86,6 +86,8 @@ All PFS change, keyboard, and drag/drop listeners attach through the established
 
 ## Theme and UI Architecture
 
+Focus resource mutations delegate to PF2e's public Actor resource boundary: the current value comes from `actor.getResource("focus")` and the requested delta is passed to `actor.updateResource("focus", nextValue)`. The controller accepts no arbitrary resource slug, performs no local clamping, and never directly updates `system.resources.focus`.
+
 The sheet presentation is a sheet-local design system. `src/settings.js` registers the client-scoped `theme` and `density` preferences and rerenders open consoles when either changes. The Application root receives `data-theme` and `data-density`; no class or data attribute is written to `html` or `body`, so normal and detached windows remain isolated.
 
 `character-sheet.css` defines semantic color tokens for application, panel and alternate surfaces, borders, text, headings (`--pf2e-v2-heading` and `--pf2e-v2-heading-muted`), accent, status, highlight, and focus colors. Remaster is the default green/parchment palette, Classic substitutes burgundy/parchment/brass values, and Dark uses low-glare charcoal/slate surfaces with readable desaturated accents. Components consume these tokens rather than maintaining tab-specific palettes. Density also supplies `--pf2e-v2-icon-control-size` and `--pf2e-v2-icon-size`, keeping icon-only controls distinct from readable text controls.

@@ -62,6 +62,8 @@
       "Slots": "Plätze",
       "FocusPoints": "Fokuspunkte",
       "FocusPointsLabel": "Fokuspunkte: {value} von {max}",
+      "FocusPointsAdjustHint": "Linksklick: 1 Fokuspunkt hinzufügen. Rechtsklick: 1 Fokuspunkt entfernen.",
+      "Unlimited": "Unbegrenzte Anwendungen",
       "EmptySlot": "Leerer Platz",
       "Expended": "Verbraucht",
       "Available": "Verfügbar",

@@ -89,7 +89,7 @@
 .defense-section > h2 { line-height: 1.15; margin-block: 0 var(--pf2e-v2-gap-sm); }
 .shield-details .shield-name { color: var(--pf2e-v2-heading); flex-basis: 100%; font-size: 1.05rem; }
 .perception-section { display: grid; gap: var(--pf2e-v2-gap-sm); padding-block-start: var(--pf2e-v2-gap-xs); }
-.perception-section .stat-card h2 { line-height: 1.15; margin-block: 0; }
+.perception-section > .section-header h2 { line-height: 1.15; margin-block: 0; }
 .stat-grid.skills { grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
 .stat-card { align-items: center; display: flex; justify-content: space-between; text-transform: capitalize; }
 .stat-card.rollable { color: inherit; cursor: pointer; font: inherit; text-align: left; width: 100%; }
@@ -188,7 +188,9 @@
 .spellcasting-tab :is(.spell-entry-meta, .spell-statistics) { color: var(--pf2e-v2-text-muted); }
 .spellcasting-tab .spell-statistics button { color: var(--pf2e-v2-accent-strong); font-weight: 700; }
 .focus-pool, .focus-points { align-items: center; display: inline-flex; gap: var(--pf2e-v2-gap-xs); }
-.focus-pool { color: var(--pf2e-v2-heading-muted); font-size: .875rem; font-weight: 600; }
+.focus-pool { border-radius: var(--pf2e-v2-radius-sm); color: var(--pf2e-v2-heading-muted); cursor: pointer; font-size: .875rem; font-weight: 600; padding: var(--pf2e-v2-gap-xs); }
+.focus-pool:hover, .focus-pool:focus-visible { background: var(--pf2e-v2-bg-panel-alt); box-shadow: 0 0 0 1px var(--pf2e-v2-focus); outline: none; }
+.spell-rank .infinity { color: var(--pf2e-v2-heading-muted); font-size: 1.25rem; font-weight: 700; }
 .focus-point { background: var(--pf2e-v2-bg-panel); border: 2px solid var(--pf2e-v2-border-strong); border-radius: 50%; box-sizing: border-box; display: inline-block; height: .8rem; width: .8rem; }
 .focus-point.filled { background: var(--pf2e-v2-accent); border-color: var(--pf2e-v2-accent-strong); }
 .focus-pool-value { color: var(--pf2e-v2-text-muted); font-variant-numeric: tabular-nums; }

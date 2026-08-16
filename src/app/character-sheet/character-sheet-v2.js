@@ -499,6 +499,16 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         feats?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
         feats?.addEventListener("drop", (event) => void FeatController.drop(this.actor, event, event.target), listenerOptions);
         const spellcasting = getTabPanel("spellcasting");
+        spellcasting?.addEventListener("click", (event) => {
+            const focus = event.target?.closest?.('[data-focus-resource][data-resource="focus"]');
+            if (focus) void SpellcastingController.adjustFocus(this.actor, 1);
+        }, listenerOptions);
+        spellcasting?.addEventListener("contextmenu", (event) => {
+            const focus = event.target?.closest?.('[data-focus-resource][data-resource="focus"]');
+            if (!focus) return;
+            event.preventDefault();
+            void SpellcastingController.adjustFocus(this.actor, -1);
+        }, listenerOptions);
         spellcasting?.addEventListener("dragstart", (event) => {
             const target = event.target?.closest?.("[draggable][data-spell-id]");
             if (target) SpellcastingController.dragStart(this.actor, event, target);
@@ -512,6 +522,12 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         }, listenerOptions);
         spellcasting?.addEventListener("keydown", (event) => {
             const input = event.target;
+            const focus = input?.closest?.('[data-focus-resource][data-resource="focus"]');
+            if (focus && ["Enter", " "].includes(event.key)) {
+                event.preventDefault();
+                void SpellcastingController.adjustFocus(this.actor, 1);
+                return;
+            }
             if (!input?.matches?.("[data-slot-count]")) return;
             if (event.key === "Enter") { event.preventDefault(); input.blur(); }
             if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }

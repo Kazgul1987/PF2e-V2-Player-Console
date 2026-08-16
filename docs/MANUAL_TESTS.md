@@ -986,3 +986,17 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M12.3-REG-02 – Inventory:** Recheck quantity, uses, carry type, invest, containers, drag/drop, coins, summary, delete, and transfer behavior.
 - **M12.3-REG-03 – Proficiencies/Biography:** Change Intimidation Expert→Master and verify rank, modifier, and DC update; then verify Biography Edit, Save, and Cancel.
 - **M12.3-REG-04 – Other Tabs:** Smoke-test Actions, Crafting, Effects, and PFS.
+
+## Milestone 12.4 – Focus interaction and Perception header
+
+- **M12.4-FOCUS-01 – Left click:** With Focus 1/3, left-click the Focus Pool twice and verify 2/3 then 3/3. Click again and verify PF2e Core prevents an invalid value without module-side clamping.
+- **M12.4-FOCUS-02 – Right click:** With Focus 2/3, right-click twice and verify 1/3 then 0/3. Right-click again and verify Core resource semantics prevent an invalid value.
+- **M12.4-FOCUS-03 – Context menu:** Right-click the Focus Pool and verify the resource decreases without a browser or Foundry context menu.
+- **M12.4-FOCUS-04 – Permission:** As an Observer/non-editor, verify the Focus Pool remains visible but click and contextmenu cause no mutation.
+- **M12.4-FOCUS-05 – Cast:** Cast a Focus Spell and verify PF2e consumes the Focus Point and the rerendered pips reflect it.
+- **M12.4-FOCUS-06 – Manual add after cast:** After casting, left-click the Focus Pool and verify it increases through the Core resource API.
+- **M12.4-FOCUS-07 – Focus cantrip:** Verify the Focus Cantrip group displays `∞ / ∞`, consumes no normal Focus Point, and never displays Focus pips; verify the Focus Spell group retains pips and normal spell groups retain slot counters.
+- **M12.4-FOCUS-08 – Detached:** In a detached sheet, verify Focus left-click +1 and right-click -1 work without cross-window errors.
+- **M12.4-PERCEPTION-01 – Heading:** Open Character and verify the Perception heading is fully visible in normal flow, outside the rollable button, with no clipped glyphs.
+- **M12.4-PERCEPTION-02 – Roll:** Click the Perception statistic row and verify a real PF2e Perception roll.
+- **M12.4-PERCEPTION-03 – Secret:** Use Secret Perception and verify the existing secret-roll flow remains intact.
