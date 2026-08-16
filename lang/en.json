@@ -133,6 +133,7 @@
     },
     "Character": {
       "CoreEditorNotice": "PF2e does not expose this editor as a public module API. The official PF2e character sheet has been opened; use its Character-tab editor.",
+      "Defense": "Defense",
       "ShieldRaised": "Raised"
     }
   }

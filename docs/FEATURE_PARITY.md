@@ -311,4 +311,7 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Language editing | partial / safe omission | Core `LanguageSelector` is not publicly exposed; official sheet fallback preserves campaign rarity, limits, and granted languages. |
 | Shield stats/state | implemented; runtime sign-off | Held-shield identity and prepared shield hardness, HP, BT, raised, broken, and destroyed state. |
 | Inventory section labels | implemented | Same seven Core-owned labels used by `prepareInventory()`. |
-| Perception heading clipping | implemented; runtime sign-off | Character panel top padding, zero first-child margin, and explicit heading line height. |
+| Inventory section visual hierarchy | implemented; runtime sign-off | Category headings use semantic heading/accent tokens and remain visually stronger than the unchanged column labels. |
+| Header AC summary | implemented | Header remains the sole prominent AC summary; the duplicate Character-tab AC card is removed. |
+| Shield detail presentation | implemented; runtime sign-off | Defense is conditional on matching held/prepared Core shield data and exposes no locally derived state. |
+| Perception heading clipping | implemented; runtime sign-off | A dedicated section supplies normal-flow spacing and explicit heading line height. |

@@ -133,6 +133,7 @@
     },
     "Character": {
       "CoreEditorNotice": "PF2e stellt diesen Editor nicht als öffentliche Modul-API bereit. Der offizielle PF2e-Charakterbogen wurde geöffnet; verwende dort den Editor im Charakter-Tab.",
+      "Defense": "Verteidigung",
       "ShieldRaised": "Angehoben"
     }
   }

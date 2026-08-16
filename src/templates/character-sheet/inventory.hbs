@@ -12,7 +12,7 @@
     </section>
     {{#each inventory.sections}}
     <section class="inventory-section">
-        <header><h3>{{label}}</h3>{{#if @root.editable}}<button type="button" data-action="createItem" data-item-type="{{createType}}" title="{{localize 'PF2E.CreateItemTitle'}}" aria-label="{{localize 'PF2E.CreateItemTitle'}}"><i class="fa-solid fa-plus"></i></button>{{/if}}</header>
+        <header class="inventory-section-heading"><h3>{{label}}</h3>{{#if @root.editable}}<button type="button" data-action="createItem" data-item-type="{{createType}}" title="{{localize 'PF2E.CreateItemTitle'}}" aria-label="{{localize 'PF2E.CreateItemTitle'}}"><i class="fa-solid fa-plus"></i></button>{{/if}}</header>
         <div class="inventory-columns"><span>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.Item"}}</span><span>{{localize "PF2E.QuantityLabel"}}</span><span>{{localize "PF2E.Item.Physical.Bulk.Label"}}</span><span>{{localize "PF2E_V2_PLAYER_CONSOLE.Labels.State"}}</span><span></span></div>
         <ul class="inventory-items" data-drop-container="">
             {{#each items}}{{> "modules/pf2e-v2-player-console/src/templates/character-sheet/inventory-item.hbs" item=this editable=@root.editable}}{{/each}}
