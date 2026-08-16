@@ -62,6 +62,8 @@
       "Slots": "Slots",
       "FocusPoints": "Focus Points",
       "FocusPointsLabel": "Focus Points: {value} of {max}",
+      "FocusPointsAdjustHint": "Left click: add 1 Focus Point. Right click: remove 1 Focus Point.",
+      "Unlimited": "Unlimited uses",
       "EmptySlot": "Empty slot",
       "Expended": "Expended",
       "Available": "Available",

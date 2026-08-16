@@ -11,7 +11,8 @@
         <div class="shield-details"><strong class="shield-name">{{actor.shield.name}}</strong><span>{{localize "PF2E.HardnessLabel"}} <strong>{{actor.shield.hardness}}</strong></span><span>HP <strong>{{actor.shield.hp.value}} / {{actor.shield.hp.max}}</strong></span><span>{{localize "PF2E.Actor.Creature.Shield.BrokenThreshold"}} <strong>{{actor.shield.brokenThreshold}}</strong></span>{{#if actor.shield.raised}}<span class="trait">{{localize "PF2E_V2_PLAYER_CONSOLE.Character.ShieldRaised"}}</span>{{/if}}{{#if actor.shield.broken}}<span class="trait">{{localize "PF2E.Item.Physical.Broken"}}</span>{{/if}}{{#if actor.shield.destroyed}}<span class="trait">{{localize "PF2E.Item.Physical.Destroyed"}}</span>{{/if}}</div>
     </section>{{/if}}
     <section class="dashboard-section perception-section">
-        <button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="perception"><h2>{{localize "PF2E.PerceptionHeader"}}</h2><strong>{{actor.perception.modifier}}</strong></button>
+        <header class="section-header"><h2>{{localize "PF2E.PerceptionHeader"}}</h2></header>
+        <button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="perception"><span>{{localize "PF2E.PerceptionHeader"}}</span><strong>{{actor.perception.modifier}}</strong></button>
         <button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="perception" data-secret aria-label="{{localize 'PF2E.Check.Specific.Perception.Secret'}}"><i class="fa-solid fa-eye-slash"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Actions.SecretPerception"}}</button>
     </section>
     <section><h2>{{localize "PF2E.SavesHeader"}}</h2><div class="stat-grid">{{#each actor.saves}}<button type="button" class="stat-card rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span>{{label}}</span><strong>{{modifier}}</strong></button>{{/each}}</div></section>

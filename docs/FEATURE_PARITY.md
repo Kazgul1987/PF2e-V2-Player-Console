@@ -121,6 +121,13 @@ Baseline: PF2e 8.4.0 at read-only commit `73c870286aeba87c25ccc0258028afedfc888d
 
 ## Milestone 6 – Spellcasting
 
+| Focus resource capability | Status | Notes |
+|---|---|---|
+| Focus Pool display | implemented | Prepared Focus values are rendered as pips. |
+| Focus Pool left-click increase | implemented | Delegates `+1` to the PF2e Actor resource API. |
+| Focus Pool right-click decrease | implemented | Suppresses the context menu and delegates `-1` to the PF2e Actor resource API. |
+| Focus Cantrip counter parity | implemented | The Core `cantrips` group without uses renders `∞ / ∞`; Focus pips remain exclusive to the Focus Spell group. |
+
 | Capability | Status | Notes |
 | --- | --- | --- |
 | Entry rendering / multiple entries | implemented | `ActorSpellcasting.collections`, including rituals |
