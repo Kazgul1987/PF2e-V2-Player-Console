@@ -46,13 +46,13 @@
     </section>
     <section class="sidebar-section">
         <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Checks"}}</h2>
-        <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="perception"><span class="sidebar-stat-copy"><span class="sidebar-stat-label">{{actor.perception.label}}</span>{{#if actor.perception.rank}}<small class="proficiency-badge" data-rank="{{actor.perception.rank.value}}">{{actor.perception.rank.label}}</small>{{/if}}</span><strong>{{actor.perception.modifier}}</strong></button>
-        {{#if actor.initiative}}<button type="button" class="sidebar-stat rollable" data-action="rollInitiative"><span class="sidebar-stat-copy"><span class="sidebar-stat-label">{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Initiative"}}</span><small class="sidebar-stat-detail">{{actor.initiative.label}}</small></span><strong>{{actor.initiative.modifier}}</strong></button>{{/if}}
+        <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="perception"><span class="sidebar-stat-main"><span class="sidebar-stat-label">{{actor.perception.label}}</span><strong class="sidebar-stat-modifier">{{actor.perception.modifier}}</strong></span>{{#if actor.perception.rank}}<span class="sidebar-stat-meta"><small class="proficiency-badge" data-rank="{{actor.perception.rank.value}}">{{actor.perception.rank.label}}</small></span>{{/if}}</button>
+        {{#if actor.initiative}}<button type="button" class="sidebar-stat rollable" data-action="rollInitiative"><span class="sidebar-stat-main"><span class="sidebar-stat-label">{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Initiative"}}</span><strong class="sidebar-stat-modifier">{{actor.initiative.modifier}}</strong></span><span class="sidebar-stat-meta"><small class="sidebar-stat-detail">{{actor.initiative.label}}</small></span></button>{{/if}}
     </section>
     <section class="sidebar-section">
         <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Saves"}}</h2>
         {{#each actor.saves}}
-            <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span class="sidebar-stat-copy"><span class="sidebar-stat-label">{{label}}</span>{{#if rank}}<small class="proficiency-badge" data-rank="{{rank.value}}">{{rank.label}}</small>{{/if}}</span><strong>{{modifier}}</strong></button>
+            <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span class="sidebar-stat-main"><span class="sidebar-stat-label">{{label}}</span><strong class="sidebar-stat-modifier">{{modifier}}</strong></span>{{#if rank}}<span class="sidebar-stat-meta"><small class="proficiency-badge" data-rank="{{rank.value}}">{{rank.label}}</small></span>{{/if}}</button>
         {{/each}}
     </section>
     {{#if actor.defenses.immunities.length}}<section class="sidebar-section sidebar-iwr"><h2>{{localize "PF2E.ImmunitiesLabel"}}</h2><ul>{{#each actor.defenses.immunities}}<li data-iwr-type="{{type}}">{{label}}</li>{{/each}}</ul></section>{{/if}}

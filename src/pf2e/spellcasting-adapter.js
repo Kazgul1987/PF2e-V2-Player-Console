@@ -2,6 +2,8 @@ import { LOG_PREFIX } from "../constants.js";
 
 /** Presentation-only normalization of PF2e's prepared spellcasting sheet data. */
 export class SpellcastingAdapter {
+    static MAX_VISIBLE_TRAITS = 3;
+
     static async prepare(actor) {
         const collections = actor?.spellcasting?.collections;
         if (!collections) throw new Error(`${LOG_PREFIX} ActorSpellcasting collections are unavailable`);
@@ -60,11 +62,14 @@ export class SpellcastingAdapter {
         const spell = active.spell;
         const traits = [...(spell.system?.traits?.value ?? [])].map((slug) =>
             game.i18n.localize(CONFIG.PF2E.spellTraits?.[slug] ?? slug));
+        const visibleTraits = traits.slice(0, this.MAX_VISIBLE_TRAITS);
+        const hiddenTraits = traits.slice(this.MAX_VISIBLE_TRAITS);
         return {
             empty: false, slotIndex, expended: !!active.expended, spellId: spell.id, name: spell.name, img: spell.img,
             castRank: active.castRank ?? group.number ?? spell.rank, signature: !!active.signature,
             uses: active.uses ? { value: active.uses.value, max: active.uses.max } : null,
-            traits, actionCost: spell.system?.time?.value ?? null,
+            traits, visibleTraits, hiddenTraits, hiddenTraitCount: hiddenTraits.length,
+            hiddenTraitLabels: hiddenTraits.join(", "), actionCost: spell.system?.time?.value ?? null,
             preparedSlot: entry.isPrepared && !entry.isFlexible,
         };
     }

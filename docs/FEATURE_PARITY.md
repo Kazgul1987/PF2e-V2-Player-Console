@@ -346,3 +346,11 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Native Application V2 resize | Implemented | `window.resizable` is explicitly enabled; no module resize/drag engine |
 | Detached responsive sizing | Implemented | Foundry owns the detached lifecycle; viewport and application-relative CSS reflow without fixed root dimensions |
 | Proficiencies overflow | Fixed | Shrinkable card/row tracks and bounded rank controls replace intrinsic minimum-width pressure |
+
+## Milestone 13.4 – Presentation fixes
+
+| Capability | Status | Notes |
+|---|---|---|
+| Sidebar stat-row layout | implemented | Main and meta rows own their intrinsic vertical space; Perception, Initiative, and save metadata cannot collide with following statistics |
+| Compact spell trait presentation | implemented | First three ordered traits remain directly visible and excess traits use a compact `+N` chip |
+| Hidden spell trait tooltip | implemented | All presentation-hidden labels remain available through Foundry tooltip/title and a localized accessible label |

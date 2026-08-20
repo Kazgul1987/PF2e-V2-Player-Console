@@ -117,3 +117,7 @@ Application sizing is owned by Foundry Application V2: the sheet opts into the n
 The application root has no CSS width, height, maximum width, or minimum width that can override Foundry's position. Its content grid fills the Foundry-controlled inline dimensions, with a bounded sidebar track and a `minmax(0, 1fr)` main track. Application-relative container queries complement viewport media queries so docked resizing and detached-browser resizing both reflow the sidebar. Tab panels, common tab rows, cards, and controls explicitly permit intrinsic content to shrink inside that track.
 
 Proficiencies use an auto-fitting zero-minimum card grid. Each row gives its name the flexible track, keeps modifier and DC intrinsic, bounds the rank track, and moves the rank control to a full-width second row at narrow application sizes. This fixes overflow by reflowing content rather than clipping it with `overflow-x: hidden`.
+
+## M13.4 presentation-only spell trait compaction
+
+Spell traits are truncated only at the presentation boundary. `SpellcastingAdapter` retains the complete ordered `traits` list and additionally projects the first three entries as `visibleTraits`, the remainder as `hiddenTraits`, and its length as `hiddenTraitCount`; the hidden labels remain available to the Foundry tooltip and localized accessible label. No trait is reordered, discarded, persisted, or assigned new rules semantics, and the spell-summary pipeline remains unchanged.
