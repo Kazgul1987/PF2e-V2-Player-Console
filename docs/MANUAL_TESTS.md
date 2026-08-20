@@ -1044,3 +1044,18 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M13.1-HERO-UX-02:** As Owner, confirm Hero Points left-click +1 and right-click -1 remain functional.
 - **M13.1-RESP-01:** With long IWR labels, confirm tags wrap without horizontal layout breakage in both densities.
 - **M13.1-DETACHED-01:** In a detached sheet, confirm Dying, Wounded, IWR, and rank badges render correctly.
+
+## Milestone 13.2 – Application V2 resize and responsive overflow
+
+- **M13.2-RESIZE-01 – Native Resize:** Open a docked sheet and drag Foundry's bottom-right resize handle. Confirm both width and height change and the sheet does not move instead.
+- **M13.2-RESIZE-02 – Grow:** Make the sheet substantially wider and taller. Confirm content uses the added space and no artificial maximum width stops growth.
+- **M13.2-RESIZE-03 – Shrink:** Make the sheet smaller. Confirm responsive layout activates and no massive horizontal scrollbar appears.
+- **M13.2-RESIZE-04 – Detached Browser:** Detach the sheet and enlarge the separate browser window. Confirm the sheet layout grows with it and main content uses the new viewport.
+- **M13.2-RESIZE-05 – Detached Narrow:** Narrow the detached browser window. Confirm responsive breakpoints activate, the sidebar adapts, and the previous docked width is not retained as a fixed layout width.
+- **M13.2-PROF-01 – Wide:** At a wide sheet size, confirm every Proficiencies card and rank control remains inside its border.
+- **M13.2-PROF-02 – Medium:** With the sidebar enabled at a medium width, confirm no Proficiencies control protrudes through the right edge of its card.
+- **M13.2-PROF-03 – Narrow:** At a narrow width, confirm the rank selector reflows to another row and no unusable horizontal scrollbar appears.
+- **M13.2-SIDEBAR-01:** Toggle `showSidebar` true and false at several sizes. Confirm both layouts remain natively resizable.
+- **M13.2-OVERFLOW-01:** At wide, medium, and narrow sizes, smoke-test Inventory, Actions, Spellcasting, Crafting, Feats, Effects, Biography, and PFS for horizontal overflow.
+- **M13.2-REGRESSION-01:** Recheck Remaster, Classic, and Dark themes plus Comfortable and Compact densities; verify HP and Hero Point controls, Focus left-click +1/right-click -1, and shield display.
+- **M13.2-REGRESSION-02:** Change Intimidation from Expert to Master and confirm persisted rank, modifier, and DC update; then verify Biography Edit, Save, and Cancel.

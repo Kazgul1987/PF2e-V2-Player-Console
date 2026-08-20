@@ -338,3 +338,11 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Save / Perception rank labels | Implemented | Localized Core proficiency configuration replaces numeric `R#` labels |
 | Hero Points observer UX | Implemented | Read-only display has no action marker, button role, interactive hint, pointer, or hover state |
 | Responsive / detached | Implemented | Left rail when wide, compact two-column resource band when narrow |
+
+## Milestone 13.2 – Application sizing
+
+| Capability | Status | Notes |
+|---|---|---|
+| Native Application V2 resize | Implemented | `window.resizable` is explicitly enabled; no module resize/drag engine |
+| Detached responsive sizing | Implemented | Foundry owns the detached lifecycle; viewport and application-relative CSS reflow without fixed root dimensions |
+| Proficiencies overflow | Fixed | Shrinkable card/row tracks and bounded rank controls replace intrinsic minimum-width pressure |
