@@ -73,7 +73,8 @@
       "ToggleExpended": "Verbrauchsstatus umschalten",
       "Unprepare": "Zauber aus Platz entfernen",
       "CurrentSlots": "Aktuelle Zauberplätze",
-      "MaximumSlots": "Maximale Zauberplätze"
+      "MaximumSlots": "Maximale Zauberplätze",
+      "AdditionalTraits": "{count} weitere Merkmale: {traits}"
     },
     "Crafting": {
       "Empty": "Keine Herstellungsfähigkeiten oder bekannten Formeln",

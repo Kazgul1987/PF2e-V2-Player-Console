@@ -73,7 +73,8 @@
       "ToggleExpended": "Toggle expended state",
       "Unprepare": "Unprepare spell",
       "CurrentSlots": "Current spell slots",
-      "MaximumSlots": "Maximum spell slots"
+      "MaximumSlots": "Maximum spell slots",
+      "AdditionalTraits": "{count} additional traits: {traits}"
     },
     "Crafting": {
       "Empty": "No crafting abilities or known formulas",

@@ -1076,3 +1076,17 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M13.3-DETACHED-01:** In a detached sheet at wide, medium, and narrow widths, confirm Sidebar, Inventory, and Spellcasting wrap without collisions or horizontal overflow.
 - **M13.3-THEME-01:** Repeat the visual checks in Classic, Remaster, and Dark and confirm badges, text, rows, and controls remain readable.
 - **M13.3-DENSITY-01:** Repeat in Comfortable and Compact and confirm no overlap and no unusably small controls.
+
+## Milestone 13.4 – Sidebar stat rows and compact spell traits
+
+- **M13.4-SIDEBAR-01 – Perception:** With a Perception rank badge, confirm the badge is fully readable, does not overlap Initiative, and the modifier remains right-aligned.
+- **M13.4-SIDEBAR-02 – Initiative:** Use a secondary initiative statistic such as Occultism and confirm it stays in Initiative's meta row without overlapping Perception or saves.
+- **M13.4-SIDEBAR-03 – Saves:** Confirm Fortitude, Reflex, and Will rank badges are visible, modifiers align right, and no save overlaps the following row.
+- **M13.4-SIDEBAR-04 – Compact Density:** In Compact density, confirm all sidebar stat rows remain readable without badge overlaps.
+- **M13.4-SPELL-01 – Many Traits:** Inspect a spell with at least five traits; confirm only three traits are directly visible, the remainder appears as `+N`, and the row is visibly flatter.
+- **M13.4-SPELL-02 – +N Tooltip:** Hover `+N` and confirm every hidden trait appears in its original order with no information loss.
+- **M13.4-SPELL-03 – Few Traits:** Inspect spells with one or two traits and confirm all are visible with no unnecessary overflow chip.
+- **M13.4-SPELL-04 – Exact Limit:** Inspect a spell with exactly three traits and confirm all three are visible with no `+N`.
+- **M13.4-SPELL-05 – Accessibility:** Inspect `+N` with accessibility tooling and confirm its localized accessible label includes the count and every hidden trait, while its tooltip text is correct.
+- **M13.4-SPELL-06 – Narrow:** In a narrow detached window, confirm spell names remain readable, traits move below the name compactly, controls remain reachable, and no horizontal scrollbar appears.
+- **M13.4-SPELL-07 – Functionality:** Recheck Cast, Focus adjustment, slot editing, Summary, prepare/unprepare, expend, chat, and drag/drop with no regression.
