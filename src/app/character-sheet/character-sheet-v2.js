@@ -162,11 +162,12 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     #applyPresentationSettings() {
-        const { theme, density, showSidebar } = getPresentationSettings();
+        const { theme, density, ornamentation, showSidebar } = getPresentationSettings();
         const element = this.element;
         if (!element) return;
         element.dataset.theme = theme;
         element.dataset.density = density;
+        element.dataset.ornamentation = ornamentation;
         element.dataset.sidebar = String(showSidebar);
     }
 

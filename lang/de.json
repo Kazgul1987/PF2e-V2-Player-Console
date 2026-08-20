@@ -136,6 +136,13 @@
       "Sidebar": {
         "Name": "Permanente Charakter-Seitenleiste",
         "Hint": "Zeigt zentrale Charakter- und Kampfwerte neben jedem Tab."
+      },
+      "Ornamentation": {
+        "Name": "Verzierung",
+        "Hint": "Wählt den Umfang der rein mit CSS erzeugten dekorativen Rahmen der PF2e V2 Player Console Sheets.",
+        "Off": "Aus",
+        "Subtle": "Dezent",
+        "Ornate": "Ornamentiert"
       }
     },
     "Character": {

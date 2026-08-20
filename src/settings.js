@@ -2,6 +2,7 @@ import { MODULE_ID } from "./constants.js";
 
 export const THEME_SETTING = "theme";
 export const DENSITY_SETTING = "density";
+export const ORNAMENTATION_SETTING = "ornamentation";
 export const SIDEBAR_SETTING = "showSidebar";
 
 /** Register client-owned presentation preferences. */
@@ -35,6 +36,21 @@ export function registerSettings(onPresentationChange, onSidebarChange) {
         onChange: onPresentationChange,
     });
 
+    game.settings.register(MODULE_ID, ORNAMENTATION_SETTING, {
+        name: "PF2E_V2_PLAYER_CONSOLE.Settings.Ornamentation.Name",
+        hint: "PF2E_V2_PLAYER_CONSOLE.Settings.Ornamentation.Hint",
+        scope: "client",
+        config: true,
+        type: String,
+        choices: {
+            off: "PF2E_V2_PLAYER_CONSOLE.Settings.Ornamentation.Off",
+            subtle: "PF2E_V2_PLAYER_CONSOLE.Settings.Ornamentation.Subtle",
+            ornate: "PF2E_V2_PLAYER_CONSOLE.Settings.Ornamentation.Ornate",
+        },
+        default: "subtle",
+        onChange: onPresentationChange,
+    });
+
     game.settings.register(MODULE_ID, SIDEBAR_SETTING, {
         name: "PF2E_V2_PLAYER_CONSOLE.Settings.Sidebar.Name",
         hint: "PF2E_V2_PLAYER_CONSOLE.Settings.Sidebar.Hint",
@@ -50,6 +66,7 @@ export function getPresentationSettings() {
     return {
         theme: game.settings.get(MODULE_ID, THEME_SETTING),
         density: game.settings.get(MODULE_ID, DENSITY_SETTING),
+        ornamentation: game.settings.get(MODULE_ID, ORNAMENTATION_SETTING),
         showSidebar: game.settings.get(MODULE_ID, SIDEBAR_SETTING),
     };
 }
