@@ -131,12 +131,30 @@
         "Hint": "Wählt Abstände und Bedienelement-Dichte der PF2e V2 Player Console Sheets.",
         "Comfortable": "Komfortabel",
         "Compact": "Kompakt"
+      },
+      "Sidebar": {
+        "Name": "Permanente Charakter-Seitenleiste",
+        "Hint": "Zeigt zentrale Charakter- und Kampfwerte neben jedem Tab."
       }
     },
     "Character": {
       "CoreEditorNotice": "PF2e stellt diesen Editor nicht als öffentliche Modul-API bereit. Der offizielle PF2e-Charakterbogen wurde geöffnet; verwende dort den Editor im Charakter-Tab.",
       "Defense": "Verteidigung",
       "ShieldRaised": "Angehoben"
+    },
+    "Sidebar": {
+      "Label": "Charakterressourcen",
+      "Vitals": "Ressourcen",
+      "CurrentHP": "Aktuelle Trefferpunkte",
+      "HeroPoints": "Heldenpunkte",
+      "HeroPointsLabel": "Heldenpunkte: {value} von {max}",
+      "HeroPointsHint": "Linksklick: 1 Heldenpunkt hinzufügen. Rechtsklick: 1 Heldenpunkt entfernen.",
+      "Defense": "Verteidigung",
+      "Checks": "Würfe",
+      "Initiative": "Initiative",
+      "Saves": "Rettungswürfe",
+      "Broken": "Beschädigt",
+      "Destroyed": "Zerstört"
     }
   }
 }

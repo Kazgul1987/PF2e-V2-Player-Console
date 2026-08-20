@@ -6,7 +6,7 @@
         {{else}}<h1>{{actor.name}}</h1>{{/if}}
         <span>{{localize "PF2E.LevelLabel"}} {{actor.level}}</span>
     </div>
-    <dl class="headline-stats">
+    <dl class="headline-stats {{#if showSidebar}}sidebar-duplicate{{/if}}">
         <div><dt>HP</dt><dd>{{actor.hp.value}} / {{actor.hp.max}}</dd></div>
         <div><dt>AC</dt><dd>{{actor.ac}}</dd></div>
     </dl>

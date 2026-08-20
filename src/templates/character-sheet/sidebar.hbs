@@ -1,0 +1,53 @@
+{{#if showSidebar}}
+<aside class="character-sidebar" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.Label'}}">
+    <section class="sidebar-section sidebar-vitals">
+        <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Vitals"}}</h2>
+        <div class="sidebar-resource hp-resource">
+            <span>HP</span>
+            <span class="resource-value">
+                {{#if editable}}
+                    <input type="number" value="{{actor.hp.value}}" data-hp-current aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.CurrentHP'}}" />
+                {{else}}<strong>{{actor.hp.value}}</strong>{{/if}}
+                / {{actor.hp.max}}
+            </span>
+        </div>
+        {{#if actor.heroPoints}}
+            <div class="sidebar-resource hero-resource {{#if editable}}interactive{{/if}}" data-hero-points
+                {{#if editable}}role="button" tabindex="0"{{/if}}
+                aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.HeroPointsLabel' value=actor.heroPoints.value max=actor.heroPoints.max}}"
+                title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.HeroPointsHint'}}">
+                <span>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.HeroPoints"}}</span>
+                <span class="resource-pips" aria-hidden="true">
+                    {{#each actor.heroPoints.pips}}<i class="resource-pip {{#if filled}}filled{{else}}empty{{/if}}"></i>{{/each}}
+                    <small>{{actor.heroPoints.value}} / {{actor.heroPoints.max}}</small>
+                </span>
+            </div>
+        {{/if}}
+    </section>
+    <section class="sidebar-section">
+        <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Defense"}}</h2>
+        <div class="sidebar-stat"><span>AC</span><strong>{{actor.ac}}</strong></div>
+        {{#if actor.shield}}
+            <div class="sidebar-shield">
+                <strong><i class="fa-solid fa-shield-halved"></i> {{actor.shield.name}}</strong>
+                <span>Hardness {{actor.shield.hardness}}</span><span>HP {{actor.shield.hp.value}} / {{actor.shield.hp.max}}</span>
+                <span>BT {{actor.shield.brokenThreshold}}</span>
+                {{#if actor.shield.raised}}<span>{{localize "PF2E_V2_PLAYER_CONSOLE.Character.ShieldRaised"}}</span>{{/if}}
+                {{#if actor.shield.broken}}<span>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Broken"}}</span>{{/if}}
+                {{#if actor.shield.destroyed}}<span>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Destroyed"}}</span>{{/if}}
+            </div>
+        {{/if}}
+    </section>
+    <section class="sidebar-section">
+        <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Checks"}}</h2>
+        <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="perception"><span>{{actor.perception.label}}</span><strong>{{actor.perception.modifier}}</strong></button>
+        {{#if actor.initiative}}<button type="button" class="sidebar-stat rollable" data-action="rollInitiative"><span>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Initiative"}} <small>{{actor.initiative.label}}</small></span><strong>{{actor.initiative.modifier}}</strong></button>{{/if}}
+    </section>
+    <section class="sidebar-section">
+        <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Saves"}}</h2>
+        {{#each actor.saves}}
+            <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span>{{label}}{{#if rank}} <small>R{{rank}}</small>{{/if}}</span><strong>{{modifier}}</strong></button>
+        {{/each}}
+    </section>
+</aside>
+{{/if}}

@@ -38,10 +38,11 @@ export function openCharacterSheet(actor) {
 }
 
 Hooks.once("init", () => {
+    const renderedApplications = () => [...applications.values()].filter((application) => application.rendered);
     registerSettings(() => {
-        for (const application of applications.values()) {
-            if (application.rendered) application.applyPresentationSettings();
-        }
+        for (const application of renderedApplications()) application.applyPresentationSettings();
+    }, () => {
+        for (const application of renderedApplications()) void application.render();
     });
     game.modules.get(MODULE_ID).api = { openCharacterSheet, PF2eCharacterSheetV2 };
     void preloadHandlebarsPartials().catch(() => undefined);

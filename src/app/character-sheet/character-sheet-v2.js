@@ -20,6 +20,7 @@ import { BiographyController } from "../../controllers/biography-controller.js";
 import { PFSAdapter } from "../../pf2e/pfs-adapter.js";
 import { PFSController } from "../../controllers/pfs-controller.js";
 import { getPresentationSettings } from "../../settings.js";
+import { SidebarController } from "../../controllers/sidebar-controller.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -37,6 +38,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         actions: {
             detach: PF2eCharacterSheetV2.#detach,
             rollStatistic: PF2eCharacterSheetV2.#rollStatistic,
+            rollInitiative: PF2eCharacterSheetV2.#rollInitiative,
             editAttributeBoosts: PF2eCharacterSheetV2.#openCoreCharacterSheet,
             editLanguages: PF2eCharacterSheetV2.#openCoreCharacterSheet,
             openItem: PF2eCharacterSheetV2.#inventoryAction,
@@ -118,6 +120,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     static PARTS = {
         header: { template: `modules/${MODULE_ID}/src/templates/character-sheet/header.hbs` },
+        sidebar: { template: `modules/${MODULE_ID}/src/templates/character-sheet/sidebar.hbs` },
         navigation: { template: `modules/${MODULE_ID}/src/templates/character-sheet/navigation.hbs` },
         character: { template: `modules/${MODULE_ID}/src/templates/character-sheet/character.hbs`, scrollable: [""] },
         actions: { template: `modules/${MODULE_ID}/src/templates/character-sheet/actions.hbs`, scrollable: [""] },
@@ -159,11 +162,12 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     #applyPresentationSettings() {
-        const { theme, density } = getPresentationSettings();
+        const { theme, density, showSidebar } = getPresentationSettings();
         const element = this.element;
         if (!element) return;
         element.dataset.theme = theme;
         element.dataset.density = density;
+        element.dataset.sidebar = String(showSidebar);
     }
 
     /** Refresh client presentation without querying either the main or detached document. */
@@ -218,6 +222,10 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         await RollController.rollStatistic(this.actor, target.dataset.statistic, event, {
             secret: Object.hasOwn(target.dataset, "secret"),
         });
+    }
+
+    static async #rollInitiative(event) {
+        return this.actor.initiative?.roll?.(RollController.eventToRollParams(event));
     }
 
     static #openCoreCharacterSheet() {
@@ -468,6 +476,32 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
                 event.currentTarget.value = this.actor.name;
                 event.currentTarget.blur();
             }
+        }, listenerOptions);
+        const sidebar = this.element.querySelector(".character-sidebar");
+        sidebar?.addEventListener("change", (event) => {
+            const input = event.target;
+            if (input?.matches?.("[data-hp-current]")) void SidebarController.updateHitPoints(this.actor, input.value);
+        }, listenerOptions);
+        sidebar?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (input?.matches?.("[data-hp-current]")) {
+                if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+                if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
+                return;
+            }
+            const heroPoints = event.target?.closest?.("[data-hero-points]");
+            if (heroPoints && ["Enter", " "].includes(event.key)) {
+                event.preventDefault();
+                void SidebarController.adjustHeroPoints(this.actor, 1);
+            }
+        }, listenerOptions);
+        sidebar?.addEventListener("click", (event) => {
+            if (event.target?.closest?.("[data-hero-points]")) void SidebarController.adjustHeroPoints(this.actor, 1);
+        }, listenerOptions);
+        sidebar?.addEventListener("contextmenu", (event) => {
+            if (!event.target?.closest?.("[data-hero-points]")) return;
+            event.preventDefault();
+            void SidebarController.adjustHeroPoints(this.actor, -1);
         }, listenerOptions);
         const actions = getTabPanel("actions");
         actions?.addEventListener("change", (event) => {
