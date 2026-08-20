@@ -18,8 +18,26 @@ function statisticView(statistic, slug, fallbackLabel) {
         slug,
         label: statistic.label ?? fallbackLabel,
         modifier: signed(statistic.mod),
-        rank: Number.isInteger(statistic.rank) ? statistic.rank : null,
+        rank: Number.isInteger(statistic.rank) ? {
+            value: statistic.rank,
+            label: game.i18n.localize(CONFIG.PF2E.proficiencyLevels?.[statistic.rank] ?? `PF2E.ProficiencyLevel${statistic.rank}`),
+        } : null,
     };
+}
+
+function conditionView(status) {
+    const value = Number(status?.value) || 0;
+    const max = Number(status?.max) || 0;
+    return {
+        value,
+        max,
+        active: value > 0,
+        pips: Array.from({ length: max }, (_, index) => ({ filled: index < value })),
+    };
+}
+
+function iwrView(entries) {
+    return Array.from(entries ?? [], (entry) => ({ type: entry.type, label: entry.label }));
 }
 
 /** Translate stable PF2e Actor runtime data into template-only data. */
@@ -69,6 +87,7 @@ export class CharacterAdapter {
         } : null;
         const heroPoints = actor.getResource?.("hero-points");
         const initiative = actor.initiative?.statistic;
+        const actorAttributes = actor.system.attributes ?? {};
 
         return {
             id: actor.id,
@@ -90,6 +109,15 @@ export class CharacterAdapter {
             perception: statisticView(perception, "perception", game.i18n.localize("PF2E.PerceptionLabel")),
             saves,
             initiative: initiative ? statisticView(initiative, actor.system.initiative?.statistic ?? "perception", initiative.label) : null,
+            conditions: {
+                dying: conditionView(actorAttributes.dying),
+                wounded: conditionView(actorAttributes.wounded),
+            },
+            defenses: {
+                immunities: iwrView(actorAttributes.immunities),
+                weaknesses: iwrView(actorAttributes.weaknesses),
+                resistances: iwrView(actorAttributes.resistances),
+            },
             skills,
         };
     }

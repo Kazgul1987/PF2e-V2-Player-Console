@@ -416,5 +416,8 @@ For a non-PF2e-compatible Item lacking `getDescription`, the helper falls back i
 | Perception and saves | `reference/pf2e/src/module/actor/character/document.ts` prepared Statistics | display adapter plus `actor.getStatistic(slug).roll()` |
 | Initiative | `reference/pf2e/src/module/actor/initiative.ts`; character preparation in `document.ts` | `actor.initiative.statistic` and `actor.initiative.roll()` |
 | Held shield | `reference/pf2e/src/module/actor/creature/document.ts` and prepared `system.attributes.shield` | render only when `actor.heldShield` matches prepared `itemId` |
-| Dying/Wounded | `reference/pf2e/src/module/actor/creature/document.ts` condition APIs | deferred; no condition mutation or derived HP rules |
-| I/W/R | prepared creature attribute data under `reference/pf2e/src/module/actor/creature/` | deferred pending reuse of a core-owned/simple prepared label view |
+| Dying/Wounded | `reference/pf2e/src/module/actor/creature/document.ts` (`prepareDerivedData`: active `actor.conditions.bySlug` values copied and clamped into attributes) | read-only `actor.system.attributes.{dying,wounded}.{value,max}`; no condition mutation or HP-derived rule |
+| Immunities / Weaknesses / Resistances | `reference/pf2e/src/module/actor/base.ts` (`prepareDerivedData`) constructs IWR instances at `actor.system.attributes.{immunities,weaknesses,resistances}` | display-only prepared arrays |
+| IWR display formatter | `reference/pf2e/src/module/actor/data/iwr.ts` (`IWR#label` / `#createLabel`) | consume each prepared instance's `label`, preserving localized exceptions and resistance `doubleVs` semantics |
+| Proficiency rank labels | `reference/pf2e/src/scripts/config/index.ts` (`CONFIG.PF2E.proficiencyLevels`) | localize the configured label for ranks 0–4; no module rank-name mapping |
+| Save / Perception rank | `reference/pf2e/src/module/actor/character/document.ts` prepared Statistics; official `reference/pf2e/src/module/actor/character/sheet.ts` `numberToRank` preparation | `actor.saves.*.rank` and `actor.perception.rank` projected with the Core-configured label |
