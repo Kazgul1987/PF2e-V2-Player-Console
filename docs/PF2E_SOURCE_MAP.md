@@ -405,3 +405,16 @@ For a non-PF2e-compatible Item lacking `getDescription`, the helper falls back i
 | Held Shield | `actor.heldShield`, correlated with `actor.system.attributes.shield.itemId` | No inventory trait search. |
 | Shield values/state | `actor.system.attributes.shield.{hardness,hp,brokenThreshold,raised,broken,destroyed}` | Core's shield preparation owns all values and states; V2 performs no BT, AC, or status calculation. |
 | Inventory section labels | The exact localization keys used by `ActorSheetPF2e#prepareInventory()` in `actor/sheet/base.ts` | `InventoryAdapter` localizes those Core-owned section labels once; it does not derive labels from item-type slugs. |
+
+## Milestone 13 – Persistent Sidebar / Core Resources (v14-dev)
+
+| Data/API | PF2e source | Console use |
+|---|---|---|
+| Hero/Mythic maximum preparation | `reference/pf2e/src/module/actor/character/document.ts` (`prepareBaseData`) | `heroPoints.max === 0` suppresses Hero Points; Mythic Points are deferred |
+| Resource lookup/update | `reference/pf2e/src/module/actor/creature/document.ts` (`getResource`, `updateResource`) and character overloads | `hero-points` lookup and update; PF2e clamps core resources |
+| Persisted/current HP | `reference/pf2e/src/module/actor/character/data.ts`; `reference/pf2e/src/module/system/statistic/hit-points.ts` | prepared display from `system.attributes.hp`; targeted current-value update at `system.attributes.hp.value` |
+| Perception and saves | `reference/pf2e/src/module/actor/character/document.ts` prepared Statistics | display adapter plus `actor.getStatistic(slug).roll()` |
+| Initiative | `reference/pf2e/src/module/actor/initiative.ts`; character preparation in `document.ts` | `actor.initiative.statistic` and `actor.initiative.roll()` |
+| Held shield | `reference/pf2e/src/module/actor/creature/document.ts` and prepared `system.attributes.shield` | render only when `actor.heldShield` matches prepared `itemId` |
+| Dying/Wounded | `reference/pf2e/src/module/actor/creature/document.ts` condition APIs | deferred; no condition mutation or derived HP rules |
+| I/W/R | prepared creature attribute data under `reference/pf2e/src/module/actor/creature/` | deferred pending reuse of a core-owned/simple prepared label view |

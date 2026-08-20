@@ -18,6 +18,7 @@ function statisticView(statistic, slug, fallbackLabel) {
         slug,
         label: statistic.label ?? fallbackLabel,
         modifier: signed(statistic.mod),
+        rank: Number.isInteger(statistic.rank) ? statistic.rank : null,
     };
 }
 
@@ -66,6 +67,8 @@ export class CharacterAdapter {
             broken: preparedShield.broken === true,
             destroyed: preparedShield.destroyed === true,
         } : null;
+        const heroPoints = actor.getResource?.("hero-points");
+        const initiative = actor.initiative?.statistic;
 
         return {
             id: actor.id,
@@ -74,6 +77,11 @@ export class CharacterAdapter {
             img: actor.img,
             level: actor.level ?? actor.system.details?.level?.value ?? 0,
             hp: actor.system.attributes?.hp ?? { value: 0, max: 0 },
+            heroPoints: heroPoints?.max > 0 ? {
+                value: heroPoints.value,
+                max: heroPoints.max,
+                pips: Array.from({ length: heroPoints.max }, (_, index) => ({ filled: index < heroPoints.value })),
+            } : null,
             ac: actor.armorClass?.value ?? actor.system.attributes?.ac?.value ?? "—",
             attributes,
             speeds,
@@ -81,6 +89,7 @@ export class CharacterAdapter {
             languages,
             perception: statisticView(perception, "perception", game.i18n.localize("PF2E.PerceptionLabel")),
             saves,
+            initiative: initiative ? statisticView(initiative, actor.system.initiative?.statistic ?? "perception", initiative.label) : null,
             skills,
         };
     }

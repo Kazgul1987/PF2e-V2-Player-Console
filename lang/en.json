@@ -131,12 +131,30 @@
         "Hint": "Choose the spacing and control density used by PF2e V2 Player Console sheets.",
         "Comfortable": "Comfortable",
         "Compact": "Compact"
+      },
+      "Sidebar": {
+        "Name": "Persistent character sidebar",
+        "Hint": "Show core character and combat resources beside every tab."
       }
     },
     "Character": {
       "CoreEditorNotice": "PF2e does not expose this editor as a public module API. The official PF2e character sheet has been opened; use its Character-tab editor.",
       "Defense": "Defense",
       "ShieldRaised": "Raised"
+    },
+    "Sidebar": {
+      "Label": "Character resources",
+      "Vitals": "Vitals",
+      "CurrentHP": "Current Hit Points",
+      "HeroPoints": "Hero Points",
+      "HeroPointsLabel": "Hero Points: {value} of {max}",
+      "HeroPointsHint": "Left click: add 1 Hero Point. Right click: remove 1 Hero Point.",
+      "Defense": "Defense",
+      "Checks": "Checks",
+      "Initiative": "Initiative",
+      "Saves": "Saving Throws",
+      "Broken": "Broken",
+      "Destroyed": "Destroyed"
     }
   }
 }

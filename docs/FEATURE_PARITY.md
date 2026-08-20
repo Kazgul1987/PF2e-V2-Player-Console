@@ -322,3 +322,17 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Header AC summary | implemented | Header remains the sole prominent AC summary; the duplicate Character-tab AC card is removed. |
 | Shield detail presentation | implemented; runtime sign-off | Defense is conditional on matching held/prepared Core shield data and exposes no locally derived state. |
 | Perception heading clipping | implemented; runtime sign-off | A dedicated section supplies normal-flow spacing and explicit heading line height. |
+
+## Milestone 13 – Persistent Sidebar / Core Resources
+
+| Capability | Status | Notes |
+|---|---|---|
+| Persistent sidebar / client setting | Implemented | Enabled by default, outside tabs, live rerender of open sheets |
+| Editable current HP | Implemented | Owner-only targeted source update; maximum is prepared/read-only |
+| Hero Points display / adjustment | Implemented | PF2e resource API; hidden when prepared maximum is zero |
+| AC / held shield summary | Implemented | Prepared Actor and held-shield state only |
+| Perception / saves | Implemented | Existing Statistic roll action |
+| Initiative | Implemented | Prepared ActorInitiative statistic and core roll API |
+| Dying / Wounded | Deferred | Avoids introducing condition interpretation or mutation in M13 |
+| Immunities / Weaknesses / Resistances | Deferred | Prepared structures lack a sufficiently small shared label view in this module |
+| Responsive / detached | Implemented | Left rail when wide, compact two-column resource band when narrow |

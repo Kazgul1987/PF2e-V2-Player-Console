@@ -1000,3 +1000,30 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M12.4-PERCEPTION-01 – Heading:** Open Character and verify the Perception heading is fully visible in normal flow, outside the rollable button, with no clipped glyphs.
 - **M12.4-PERCEPTION-02 – Roll:** Click the Perception statistic row and verify a real PF2e Perception roll.
 - **M12.4-PERCEPTION-03 – Secret:** Use Secret Perception and verify the existing secret-roll flow remains intact.
+
+## Milestone 13 – Persistent Sidebar / Core Resources
+
+- **M13-SIDEBAR-01 – Default:** With fresh client settings, open a character and confirm `showSidebar = true` and the sidebar is visible.
+- **M13-SIDEBAR-02 – Toggle Off:** Disable the setting; confirm every open console updates immediately, the sidebar disappears, and content uses the full width.
+- **M13-SIDEBAR-03 – Toggle On:** Enable it again and confirm the sidebar immediately returns without a world reload.
+- **M13-SIDEBAR-04 – All Tabs:** Visit Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, Effects, Biography, and PFS; the sidebar remains visible.
+- **M13-HP-01 – Edit Current HP:** As an owner, edit current HP; confirm Actor source updates and persists after reload.
+- **M13-HP-02 – Enter:** Change HP and press Enter; confirm no form submission and a correct update.
+- **M13-HP-03 – Escape:** Change HP and press Escape; confirm the persisted rendered value is restored and no change is sent.
+- **M13-HP-04 – Observer:** Confirm HP is visible as text and cannot be edited.
+- **M13-HERO-01 – Display:** Compare Hero Point current/max with PF2e core.
+- **M13-HERO-02 – Left Click:** At 1/3, left-click and confirm 2/3 through the core resource API.
+- **M13-HERO-03 – Right Click:** At 2/3, right-click and confirm 1/3 with no context menu.
+- **M13-HERO-04 – Bounds:** Click at maximum and right-click at zero; confirm PF2e core controls bounds.
+- **M13-HERO-05 – Observer:** Confirm an observer cannot mutate Hero Points.
+- **M13-HERO-06 – Mythic:** Confirm a character whose prepared Hero Point maximum is zero has no false Hero Point display.
+- **M13-PERCEPTION-01:** Click sidebar Perception and confirm a genuine PF2e statistic roll.
+- **M13-SAVES-01:** Roll Fortitude, Reflex, and Will from the sidebar.
+- **M13-INIT-01:** Compare initiative statistic/modifier with the official sheet and test the core initiative roll.
+- **M13-SHIELD-01:** With a held shield, compare name, hardness, HP, BT, and raised/broken/destroyed state.
+- **M13-SHIELD-02:** With no held shield, confirm no empty shield block.
+- **M13-RESP-01 – Narrow:** Resize a detached sheet narrowly; confirm the sidebar becomes a usable two-column resource band without horizontal scrolling.
+- **M13-RESP-02 – Wide:** Confirm the sidebar is left of the tab navigation/content.
+- **M13-THEME-01:** Check Remaster, Classic, and Dark readability.
+- **M13-DENSITY-01:** Check comfortable and compact spacing.
+- **M13-REGRESSION-01:** Recheck Character attributes/speeds/languages, Inventory coins/quantity/carry/drag/drop/summaries, Focus display/adjust/cast consumption, proficiency rank updates, and Biography edit/save/cancel.
