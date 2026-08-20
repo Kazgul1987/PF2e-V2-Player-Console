@@ -79,8 +79,10 @@
 .sidebar-section + .sidebar-section { border-top: 1px solid var(--pf2e-v2-border); margin-top: var(--pf2e-v2-gap-md); padding-top: var(--pf2e-v2-gap-sm); }
 .sidebar-section h2 { color: var(--pf2e-v2-heading); font-size: .85rem; letter-spacing: .05em; margin: 0 0 var(--pf2e-v2-gap-sm); text-transform: uppercase; }
 .sidebar-resource { align-items: center; display: flex; gap: var(--pf2e-v2-gap-sm); justify-content: space-between; min-height: var(--pf2e-v2-control-height); padding: var(--pf2e-v2-gap-xs); }
-.sidebar-stat { display: grid; min-height: var(--pf2e-v2-control-height); padding: var(--pf2e-v2-gap-xs); row-gap: 2px; }
-.sidebar-stat.rollable { background: transparent; border: 0; color: inherit; font: inherit; text-align: left; width: 100%; }
+.sidebar-stat { min-height: var(--pf2e-v2-control-height); padding: var(--pf2e-v2-gap-xs); }
+.sidebar-stat:not(.rollable) { align-items: center; display: flex; gap: var(--pf2e-v2-gap-sm); justify-content: space-between; }
+.sidebar-stat.rollable { align-content: start; background: transparent; border: 0; box-sizing: border-box; color: inherit; display: grid; font: inherit; grid-template-rows: auto auto; height: auto; min-height: calc(var(--pf2e-v2-control-height) + var(--pf2e-v2-gap-sm)); padding-block: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); row-gap: var(--pf2e-v2-gap-xs); text-align: left; width: 100%; }
+.sidebar-stat.rollable + .sidebar-stat.rollable { margin-top: var(--pf2e-v2-gap-xs); }
 .sidebar-stat.rollable:hover, .sidebar-stat.rollable:focus-visible, .hero-resource.interactive:hover, .hero-resource.interactive:focus-visible { background: var(--pf2e-v2-bg-panel-alt); outline: 1px solid var(--pf2e-v2-accent); }
 .sidebar-stat strong, .resource-value strong { color: var(--pf2e-v2-accent-strong); font-size: 1.05rem; }
 .sidebar-stat-main { align-items: center; display: grid; gap: var(--pf2e-v2-gap-sm); grid-template-columns: minmax(0, 1fr) auto; line-height: 1.15; min-width: 0; }
