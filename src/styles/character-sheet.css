@@ -30,7 +30,7 @@
     --pf2e-v2-icon-size: .8125rem;
     --pf2e-v2-section-space: .85rem;
     color: var(--pf2e-v2-text);
-    min-width: 22rem;
+    container-type: inline-size;
 }
 .pf2e-v2-character-sheet[data-theme="classic"] {
     --pf2e-v2-bg-app: #eee3ce; --pf2e-v2-bg-panel: #fbf4e5; --pf2e-v2-bg-panel-alt: #e5d6bb;
@@ -60,10 +60,10 @@
     --pf2e-v2-control-padding: .15rem .4rem; --pf2e-v2-icon-control-size: 1.625rem;
     --pf2e-v2-icon-size: .75rem; --pf2e-v2-section-space: .55rem;
 }
-.pf2e-v2-character-sheet .window-content { display: grid; gap: .75rem; grid-template-columns: minmax(13rem, 15rem) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); overflow: hidden; padding: 1rem; }
+.pf2e-v2-character-sheet .window-content { box-sizing: border-box; display: grid; gap: .75rem; grid-template-columns: minmax(13rem, 15rem) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); max-width: 100%; min-width: 0; overflow: hidden; padding: 1rem; width: 100%; }
 .pf2e-v2-character-sheet .pc-header { grid-column: 1 / -1; }
 .pf2e-v2-character-sheet .character-sidebar { grid-column: 1; grid-row: 2 / 4; }
-.pf2e-v2-character-sheet .sheet-tabs, .pf2e-v2-character-sheet .tab-panel { grid-column: 2; }
+.pf2e-v2-character-sheet .sheet-tabs, .pf2e-v2-character-sheet .tab-panel { grid-column: 2; max-width: 100%; min-width: 0; }
 .pf2e-v2-character-sheet[data-sidebar="false"] .window-content { grid-template-columns: minmax(0, 1fr); }
 .pf2e-v2-character-sheet[data-sidebar="false"] :is(.sheet-tabs, .tab-panel) { grid-column: 1; }
 .pc-header { align-items: center; display: grid; gap: 1rem; grid-template-columns: 5rem 1fr auto; }
@@ -102,6 +102,14 @@
 .sheet-tabs button.active { box-shadow: inset 0 -3px var(--color-warm-2); }
 .pf2e-v2-character-sheet .tab-panel:not(.active) { display: none; }
 .tab-panel { overflow: auto; padding-right: .3rem; }
+.pf2e-v2-character-sheet .tab-panel > * { box-sizing: border-box; max-width: 100%; min-width: 0; }
+.pf2e-v2-character-sheet :is(
+    .inventory-overview, .inventory-section, .inventory-columns, .inventory-row,
+    .action-section, .strike-row, .action-list > li, .feat-section, .feat-entry,
+    .spell-entry, .spell-row, .crafting-ability, .crafting-formula,
+    .effect-section, .effect-row, .biography-section, .biography-fields,
+    .biography-lists, .pfs-organized-play, .pfs-reputation-grid, .pfs-boon-row
+) { box-sizing: border-box; max-width: 100%; min-width: 0; }
 .pf2e-v2-character-sheet .tab-panel[data-tab="character"] { padding-block-start: var(--pf2e-v2-gap-sm); }
 .pf2e-v2-character-sheet .tab-panel[data-tab="character"] > :first-child { margin-block-start: 0; }
 .pf2e-v2-character-sheet .tab-panel[data-tab="character"] h2 { line-height: 1.15; }
@@ -125,9 +133,7 @@
 .stat-card strong { font-size: 1.2rem; }
 .placeholder { text-align: center; }
 @media (max-width: 50rem) {
-    .pf2e-v2-character-sheet { min-width: 24rem; }
     .pf2e-v2-character-sheet .window-content { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); }
-    .pf2e-v2-character-sheet .character-sidebar { display: grid; gap: var(--pf2e-v2-gap-md); grid-column: 1; grid-row: 2; grid-template-columns: repeat(2, minmax(10rem, 1fr)); max-height: 16rem; }
     .pf2e-v2-character-sheet :is(.sheet-tabs, .tab-panel) { grid-column: 1; }
     .pc-header { grid-template-columns: 4rem 1fr; } .pc-header img { height: 4rem; width: 4rem; } .headline-stats { grid-column: 1 / -1; }
 }
@@ -164,7 +170,7 @@
 .strike-row, .action-list > li { border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); padding: .45rem; }
 .strike-heading, .action-list > li { align-items: center; display: flex; gap: .5rem; justify-content: space-between; }
 .action-list > li { flex-wrap: wrap; }
-.strike-name, .action-name { align-items: center; background: none; border: 0; color: inherit; display: flex; gap: .5rem; min-width: 10rem; padding: 0; text-align: left; }
+.strike-name, .action-name { align-items: center; background: none; border: 0; color: inherit; display: flex; gap: .5rem; min-width: 0; padding: 0; text-align: left; }
 .strike-name img, .action-name img, .strike-ammo img { height: 2rem; object-fit: cover; width: 2rem; }
 .strike-buttons, .auxiliary-actions, .action-controls, .weapon-toggles { display: flex; flex-wrap: wrap; gap: .25rem; }
 .strike-buttons button, .auxiliary-actions button, .action-controls button, .weapon-toggles button { min-height: 1.7rem; padding: .15rem .4rem; }
@@ -256,21 +262,21 @@
 .crafting-formula > .item-summary { grid-column: 1 / -1; }
 .crafting-empty { opacity: .75; text-align: center; }
 @media (max-width: 50rem) { .spell-row { grid-template-columns: minmax(10rem, 1fr) auto; } .spell-meta, .spell-row > .slot-state { grid-column: 1 / -1; } }
-.proficiency-columns { display: grid; gap: .75rem; grid-template-columns: repeat(2, minmax(18rem, 1fr)); }
-.proficiency-section { border: 1px solid var(--color-border-light-primary); border-radius: .3rem; padding: .55rem; }
+.proficiency-columns { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); min-width: 0; }
+.proficiency-section { border: 1px solid var(--color-border-light-primary); border-radius: .3rem; max-width: 100%; min-width: 0; padding: .55rem; }
 .proficiency-section h3 { border-bottom: 1px solid var(--color-border-light-primary); margin: 0 0 .3rem; padding-bottom: .3rem; }
-.proficiency-list { list-style: none; margin: 0; padding: 0; }
-.proficiency-row { align-items: center; border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); display: grid; gap: .35rem .5rem; grid-template-columns: minmax(8rem, 1fr) auto auto minmax(8rem, auto) auto; min-height: 2.25rem; padding: .3rem; }
+.proficiency-list { list-style: none; margin: 0; min-width: 0; padding: 0; }
+.proficiency-row { align-items: center; border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); display: grid; gap: .35rem .5rem; grid-template-columns: minmax(0, 1fr) auto auto minmax(5rem, 7rem) auto; max-width: 100%; min-height: 2.25rem; min-width: 0; padding: .3rem; }
 .proficiency-name { min-width: 0; }
 .proficiency-name small, .proficiency-same-as, .proficiency-empty { opacity: .7; }
 .proficiency-same-as { grid-column: 1; font-size: .75rem; }
 .proficiency-modifier, .proficiency-dc { font-weight: 700; white-space: nowrap; }
-.proficiency-rank, .proficiency-rank-label { min-width: 8rem; }
+.proficiency-rank, .proficiency-rank-label { max-width: 100%; min-width: 0; }
 .proficiency-rank-label { text-align: right; }
 .proficiency-row button { min-height: 1.7rem; min-width: 1.7rem; padding: .15rem .35rem; }
 @media (max-width: 50rem) {
-    .proficiency-columns { grid-template-columns: 1fr; }
-    .proficiency-row { grid-template-columns: minmax(8rem, 1fr) auto auto; }
+    .proficiency-columns { grid-template-columns: minmax(0, 1fr); }
+    .proficiency-row { grid-template-columns: minmax(0, 1fr) auto auto; }
     .proficiency-rank, .proficiency-rank-label { grid-column: 2 / span 2; justify-self: end; }
     .proficiency-row button { grid-column: 3; grid-row: 1; }
 }
@@ -365,7 +371,7 @@
 .pf2e-v2-character-sheet .item-summary { border-left-width: 3px; border-radius: 0 0 var(--pf2e-v2-radius-sm) var(--pf2e-v2-radius-sm); margin-top: var(--pf2e-v2-gap-xs); padding: var(--pf2e-v2-gap-sm) var(--pf2e-v2-gap-md); }
 .pf2e-v2-character-sheet :is(.spell-empty, .crafting-empty, .proficiency-empty, .effects-empty, .pfs-boons-empty, .placeholder) { background: var(--pf2e-v2-bg-panel-alt); border: 1px dashed var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); color: var(--pf2e-v2-text-muted); margin: var(--pf2e-v2-gap-sm) 0; padding: var(--pf2e-v2-gap-md); text-align: center; }
 .pf2e-v2-character-sheet .inventory-items.nested { margin-left: var(--pf2e-v2-gap-xs); padding-left: var(--pf2e-v2-gap-xs); }
-.pf2e-v2-character-sheet .proficiency-rank { min-width: 7rem; width: 7rem; }
+.pf2e-v2-character-sheet .proficiency-rank { max-width: 100%; min-width: 0; width: 7rem; }
 .pf2e-v2-character-sheet .biography-richtext-display { line-height: 1.55; max-width: 75ch; }
 .pf2e-v2-character-sheet .biography-richtext-editor-host { background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); padding: var(--pf2e-v2-gap-sm); }
 .pf2e-v2-character-sheet .crafting-ability.insufficient { border-color: var(--pf2e-v2-danger); }
@@ -395,7 +401,6 @@
 /* Detached-first responsive layout: controls wrap instead of becoming unreachable. */
 @media (max-width: 64rem) {
     .pf2e-v2-character-sheet .pfs-reputation-grid { grid-template-columns: repeat(2, minmax(10rem, 1fr)); }
-    .pf2e-v2-character-sheet .proficiency-columns { grid-template-columns: repeat(2, minmax(16rem, 1fr)); }
 }
 @media (max-width: 48rem) {
     .pf2e-v2-character-sheet .attribute-grid { grid-template-columns: repeat(3, minmax(4rem, 1fr)); }
@@ -413,11 +418,31 @@
 }
 @media (max-width: 34rem) {
     .pf2e-v2-character-sheet .attribute-grid, .pf2e-v2-character-sheet .combat-dashboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .pf2e-v2-character-sheet { min-width: 18rem; }
     .pf2e-v2-character-sheet .pc-header { grid-template-columns: 1fr; text-align: center; }
     .pf2e-v2-character-sheet .pc-header img { justify-self: center; }
     .pf2e-v2-character-sheet .headline-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
     .pf2e-v2-character-sheet :is(.stat-grid, .biography-fields, .biography-lists) { grid-template-columns: 1fr; }
     .pf2e-v2-character-sheet .strike-heading { align-items: stretch; flex-direction: column; }
     .pf2e-v2-character-sheet .coins { align-items: stretch; flex-direction: column; }
+}
+
+/* Application-relative breakpoints also respond when the docked window, rather than the browser, is resized. */
+@container (max-width: 50rem) {
+    .pf2e-v2-character-sheet .window-content { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); }
+    .pf2e-v2-character-sheet .character-sidebar { display: grid; gap: var(--pf2e-v2-gap-md); grid-column: 1; grid-row: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 16rem; }
+    .pf2e-v2-character-sheet :is(.sheet-tabs, .tab-panel) { grid-column: 1; }
+    .pf2e-v2-character-sheet .inventory-columns { display: none; }
+    .pf2e-v2-character-sheet :is(.strike-heading, .action-list > li) { align-items: stretch; flex-direction: column; }
+    .pf2e-v2-character-sheet :is(.proficiency-columns, .pfs-reputation-grid, .pfs-organized-play) { grid-template-columns: minmax(0, 1fr); }
+    .pf2e-v2-character-sheet :is(.inventory-row, .feat-entry, .spell-row, .crafting-formula, .effect-row, .pfs-boon-row) { grid-template-columns: minmax(0, 1fr) auto; }
+    .pf2e-v2-character-sheet :is(.inventory-row .item-state, .inventory-row .item-controls, .feat-meta, .spell-meta, .spell-row > .slot-state, .effect-duration, .condition-details) { grid-column: 1 / -1; }
+    .pf2e-v2-character-sheet :is(.inventory-row .item-controls, .feat-entry > .item-controls, .spell-row > .item-controls, .crafting-formula > .item-controls, .effects-tab .item-controls) { flex-wrap: wrap; justify-self: end; }
+}
+@container (max-width: 34rem) {
+    .pf2e-v2-character-sheet .character-sidebar { grid-template-columns: minmax(0, 1fr); }
+    .pf2e-v2-character-sheet :is(.attribute-grid, .combat-dashboard, .headline-stats) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pf2e-v2-character-sheet :is(.stat-grid, .biography-fields, .biography-lists) { grid-template-columns: minmax(0, 1fr); }
+    .pf2e-v2-character-sheet .proficiency-row { grid-template-columns: minmax(0, 1fr) auto auto; }
+    .pf2e-v2-character-sheet :is(.proficiency-rank, .proficiency-rank-label) { grid-column: 1 / -1; justify-self: stretch; width: 100%; }
+    .pf2e-v2-character-sheet .proficiency-row button { grid-column: 3; grid-row: 1; }
 }
