@@ -1059,3 +1059,20 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M13.2-OVERFLOW-01:** At wide, medium, and narrow sizes, smoke-test Inventory, Actions, Spellcasting, Crafting, Feats, Effects, Biography, and PFS for horizontal overflow.
 - **M13.2-REGRESSION-01:** Recheck Remaster, Classic, and Dark themes plus Comfortable and Compact densities; verify HP and Hero Point controls, Focus left-click +1/right-click -1, and shield display.
 - **M13.2-REGRESSION-02:** Change Intimidation from Expert to Master and confirm persisted rank, modifier, and DC update; then verify Biography Edit, Save, and Cancel.
+
+## Milestone 13.3 – Sidebar and compact lists
+
+- **M13.3-SIDEBAR-01 – Perception Badge:** Show a Perception rank and confirm its badge does not overlap Initiative and the modifier remains readable.
+- **M13.3-SIDEBAR-02 – Saves Badge:** Show Fortitude, Reflex, and Will ranks and confirm no badge overlaps the next save and every modifier remains readable.
+- **M13.3-SIDEBAR-03 – Weaknesses:** Add weaknesses and confirm compact PF2e-Core labels appear without an empty oversized section.
+- **M13.3-SIDEBAR-04 – Resistances:** Add resistances and confirm their compact labels match PF2e Core.
+- **M13.3-SIDEBAR-05 – Long IWR:** Use long immunity, weakness, and resistance labels; confirm wrapping without horizontal sidebar scrolling.
+- **M13.3-INV-01 – Compact Inventory:** Open Inventory and confirm thumbnails, controls, and rows are smaller but remain legible and clickable.
+- **M13.3-INV-02 – Coins:** Add and remove each denomination and confirm the compact fields and controls preserve coin behavior.
+- **M13.3-INV-03 – Carry State:** Exercise held (one/two hands), worn, stowed, and dropped controls; confirm the compact group remains fully functional.
+- **M13.3-SPELL-01 – Compact Spell List:** Confirm spell thumbnails, Cast/utility controls, traits, and rows are visibly denser and remain usable.
+- **M13.3-SPELL-02 – Focus / Known / Rituals:** Inspect all available spell groups and confirm headers remain compact with no collisions.
+- **M13.3-SPELL-03 – Functionality:** Recheck cast, slot edits, Focus adjustment, prepare/unprepare, expend, summary, chat, and drag/drop with no regression.
+- **M13.3-DETACHED-01:** In a detached sheet at wide, medium, and narrow widths, confirm Sidebar, Inventory, and Spellcasting wrap without collisions or horizontal overflow.
+- **M13.3-THEME-01:** Repeat the visual checks in Classic, Remaster, and Dark and confirm badges, text, rows, and controls remain readable.
+- **M13.3-DENSITY-01:** Repeat in Comfortable and Compact and confirm no overlap and no unusably small controls.
