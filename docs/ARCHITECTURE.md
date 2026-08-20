@@ -127,3 +127,9 @@ Spell traits are truncated only at the presentation boundary. `SpellcastingAdapt
 Ornamentation is a pure presentation layer controlled by the client-scoped `ornamentation` setting (`off`, `subtle`, or `ornate`, defaulting to `subtle`). The existing live presentation-settings path writes only `data-ornamentation` on each Application V2 root, including detached roots; it never changes `body` or `html`.
 
 All ornament geometry is CSS-only and theme-aware. It uses borders, gradients, inset lines, and pseudo-elements rather than binary or protected brand assets. Decorative pseudo-elements use `pointer-events: none`, remain below Foundry's native window chrome and resize grip, and reduce at narrow viewport/container breakpoints. The layer neither derives rules data nor changes documents, controllers, hit targets, or PF2e mechanics.
+
+## M14.1 Sidebar presentation polish
+
+The sidebar HP bar is presentation-only: `CharacterAdapter` reads PF2e's prepared `system.attributes.hp.value` and `max`, then clamps only a display percentage to 0–100. It does not infer a health state or implement an HP rule. Prepared temporary HP is not added in this milestone because it is not needed by the existing sidebar view model and an additional representation would expand the presentation scope.
+
+Sidebar semantic icons are Font Awesome presentation only. A fixed icon column aligns AC, Perception, Initiative, and saves while the existing separate meta row continues to own rank badges and initiative detail. The theme-aware defense token intentionally colors only the AC symbol; it does not represent, inspect, or modify the independently rendered held shield.

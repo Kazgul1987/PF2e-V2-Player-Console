@@ -162,7 +162,8 @@
       "Initiative": "Initiative",
       "Saves": "Saving Throws",
       "Broken": "Broken",
-      "Destroyed": "Destroyed"
+      "Destroyed": "Destroyed",
+      "HPBarLabel": "Hit Points: {value} of {max}"
     }
   }
 }

@@ -162,7 +162,8 @@
       "Initiative": "Initiative",
       "Saves": "Rettungswürfe",
       "Broken": "Beschädigt",
-      "Destroyed": "Zerstört"
+      "Destroyed": "Zerstört",
+      "HPBarLabel": "Trefferpunkte: {value} von {max}"
     }
   }
 }
