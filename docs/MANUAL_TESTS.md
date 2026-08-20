@@ -1104,3 +1104,18 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M14-ORN-09 – Detached:** Detach the sheet. Confirm ornaments remain visible, create no overflow, and leave the native resize handle usable.
 - **M14-ORN-10 – Resize:** Resize the sheet larger and smaller. Confirm corners and dividers reduce cleanly without shifting or blocking content.
 - **M14-ORN-11 – Compact Density:** Repeat the ornament checks in Compact density and confirm no collisions.
+
+## Milestone 14.1 – Sidebar resource and icon polish
+
+- **M14.1-HP-01 – HP Bar:** Use a character with 144 / 176 HP. Confirm both numbers are correct and the bar is filled to approximately the same proportion.
+- **M14.1-HP-02 – HP Edit:** Edit current HP and confirm the number and bar update after the Actor render.
+- **M14.1-HP-03 – Zero HP:** Set HP to zero and confirm the bar is empty with no negative width.
+- **M14.1-HP-04 – Full HP:** Set current HP equal to maximum HP and confirm the bar is 100% full.
+- **M14.1-AC-01:** Confirm the AC row displays a distinct blue shield icon, independently of the held-shield summary.
+- **M14.1-PERCEPTION-01:** Confirm the eye icon and unchanged rank badge are visible and the whole Perception row still rolls.
+- **M14.1-INIT-01:** Confirm the initiative icon and secondary statistic are visible and the row still rolls initiative.
+- **M14.1-SAVES-01:** Confirm Fortitude, Reflex, and Will each have the appropriate icon, clean badge and modifier alignment, and remain rollable.
+- **M14.1-THEME-01:** In Remaster, Classic, and Dark, confirm the HP bar, blue AC shield, and stat icons are readable.
+- **M14.1-DENSITY-01:** In Comfortable and Compact, confirm no overlap, a visible HP bar, and uncramped icons.
+- **M14.1-ORNAMENT-01:** With ornamentation Off, Subtle, and Ornate, confirm icons remain informational and unobstructed.
+- **M14.1-DETACHED-01:** In a detached sheet, confirm the HP bar, icons, and stat rows render cleanly at wide and narrow sizes.

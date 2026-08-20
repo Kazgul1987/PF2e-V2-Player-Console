@@ -1,6 +1,7 @@
 import { LOG_PREFIX } from "../constants.js";
 
 const SAVE_SLUGS = ["fortitude", "reflex", "will"];
+const SAVE_ICONS = { fortitude: "fa-heart", reflex: "fa-feather", will: "fa-brain" };
 const ATTRIBUTE_SLUGS = ["str", "dex", "con", "int", "wis", "cha"];
 const MOVEMENT_SLUGS = ["land", "swim", "climb", "fly", "burrow"];
 
@@ -23,6 +24,15 @@ function statisticView(statistic, slug, fallbackLabel) {
             label: game.i18n.localize(CONFIG.PF2E.proficiencyLevels?.[statistic.rank] ?? `PF2E.ProficiencyLevel${statistic.rank}`),
         } : null,
     };
+}
+
+function hitPointsView(hitPoints) {
+    const source = hitPoints ?? {};
+    const value = Number.isFinite(Number(source.value)) ? Number(source.value) : 0;
+    const max = Number.isFinite(Number(source.max)) ? Math.max(0, Number(source.max)) : 0;
+    const percent = max > 0 ? Math.max(0, Math.min(100, (value / max) * 100)) : 0;
+
+    return { ...source, value, max, percent, progressValue: Math.max(0, Math.min(max, value)) };
 }
 
 function conditionView(status) {
@@ -53,7 +63,10 @@ export class CharacterAdapter {
 
         const getStatistic = (slug) => actor.getStatistic?.(slug);
         const perception = actor.perception ?? getStatistic("perception");
-        const saves = SAVE_SLUGS.map((slug) => statisticView(actor.saves?.[slug] ?? getStatistic(slug), slug, slug));
+        const saves = SAVE_SLUGS.map((slug) => ({
+            ...statisticView(actor.saves?.[slug] ?? getStatistic(slug), slug, slug),
+            icon: SAVE_ICONS[slug],
+        }));
         const skills = Object.entries(actor.skills ?? {})
             .map(([slug, statistic]) => statisticView(statistic ?? getStatistic(slug), slug, slug))
             .sort((a, b) => a.label.localeCompare(b.label, game.i18n.lang));
@@ -95,7 +108,7 @@ export class CharacterAdapter {
             name: actor.name,
             img: actor.img,
             level: actor.level ?? actor.system.details?.level?.value ?? 0,
-            hp: actor.system.attributes?.hp ?? { value: 0, max: 0 },
+            hp: hitPointsView(actor.system.attributes?.hp),
             heroPoints: heroPoints?.max > 0 ? {
                 value: heroPoints.value,
                 max: heroPoints.max,

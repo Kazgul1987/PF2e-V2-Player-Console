@@ -16,6 +16,8 @@
     --pf2e-v2-highlight: #a47842;
     --pf2e-v2-danger: #9b3737;
     --pf2e-v2-success: #397153;
+    --pf2e-v2-hp-fill: #397153;
+    --pf2e-v2-defense-icon: #3f6591;
     --pf2e-v2-warning: #91641d;
     --pf2e-v2-focus: #d1973f;
     --pf2e-v2-radius-sm: .25rem;
@@ -38,12 +40,14 @@
     --pf2e-v2-text: #2d2825; --pf2e-v2-text-muted: #6b5d52; --pf2e-v2-heading: #462f31;
     --pf2e-v2-heading-muted: #6d5853; --pf2e-v2-accent: #8a2937;
     --pf2e-v2-accent-strong: #611c28; --pf2e-v2-highlight: #9a7031; --pf2e-v2-focus: #bd8531;
+    --pf2e-v2-hp-fill: #397153; --pf2e-v2-defense-icon: #355886;
 }
 .pf2e-v2-character-sheet[data-theme="remaster"] {
     --pf2e-v2-bg-header: #244b3d;
     --pf2e-v2-accent: #356b55;
     --pf2e-v2-accent-strong: #214b3b;
     --pf2e-v2-highlight: #a47842;
+    --pf2e-v2-hp-fill: #397153; --pf2e-v2-defense-icon: #3f6591;
 }
 .pf2e-v2-character-sheet[data-theme="dark"] {
     color-scheme: dark;
@@ -53,6 +57,7 @@
     --pf2e-v2-heading: #f1eee4; --pf2e-v2-heading-muted: #c8cec8;
     --pf2e-v2-accent: #789d8b; --pf2e-v2-accent-strong: #99b9aa; --pf2e-v2-highlight: #bf9361;
     --pf2e-v2-danger: #df8585; --pf2e-v2-success: #8fc7a3; --pf2e-v2-warning: #e0b76c; --pf2e-v2-focus: #e1ad5c;
+    --pf2e-v2-hp-fill: #8fc7a3; --pf2e-v2-defense-icon: #8daed2;
 }
 .pf2e-v2-character-sheet[data-density="compact"] {
     --pf2e-v2-gap-xs: .15rem; --pf2e-v2-gap-sm: .3rem; --pf2e-v2-gap-md: .5rem;
@@ -80,17 +85,23 @@
 .sidebar-section h2 { color: var(--pf2e-v2-heading); font-size: .85rem; letter-spacing: .05em; margin: 0 0 var(--pf2e-v2-gap-sm); text-transform: uppercase; }
 .sidebar-resource { align-items: center; display: flex; gap: var(--pf2e-v2-gap-sm); justify-content: space-between; min-height: var(--pf2e-v2-control-height); padding: var(--pf2e-v2-gap-xs); }
 .sidebar-stat { min-height: var(--pf2e-v2-control-height); padding: var(--pf2e-v2-gap-xs); }
-.sidebar-stat:not(.rollable) { align-items: center; display: flex; gap: var(--pf2e-v2-gap-sm); justify-content: space-between; }
+.sidebar-stat:not(.rollable) { align-items: center; display: grid; gap: var(--pf2e-v2-gap-sm); grid-template-columns: 1rem minmax(0, 1fr) auto; }
 .sidebar-stat.rollable { align-content: start; background: transparent; border: 0; box-sizing: border-box; color: inherit; display: grid; font: inherit; grid-template-rows: auto auto; height: auto; min-height: calc(var(--pf2e-v2-control-height) + var(--pf2e-v2-gap-sm)); padding-block: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); row-gap: var(--pf2e-v2-gap-xs); text-align: left; width: 100%; }
 .sidebar-stat.rollable + .sidebar-stat.rollable { margin-top: var(--pf2e-v2-gap-xs); }
 .sidebar-stat.rollable:hover, .sidebar-stat.rollable:focus-visible, .hero-resource.interactive:hover, .hero-resource.interactive:focus-visible { background: var(--pf2e-v2-bg-panel-alt); outline: 1px solid var(--pf2e-v2-accent); }
 .sidebar-stat strong, .resource-value strong { color: var(--pf2e-v2-accent-strong); font-size: 1.05rem; }
-.sidebar-stat-main { align-items: center; display: grid; gap: var(--pf2e-v2-gap-sm); grid-template-columns: minmax(0, 1fr) auto; line-height: 1.15; min-width: 0; }
+.sidebar-stat-main { align-items: center; display: grid; gap: var(--pf2e-v2-gap-sm); grid-template-columns: 1rem minmax(0, 1fr) auto; line-height: 1.15; min-width: 0; }
+.sidebar-stat-icon { font-size: .875rem; justify-self: center; pointer-events: none; width: 1rem; }
+.sidebar-stat-icon-defense { color: var(--pf2e-v2-defense-icon); }
 .sidebar-stat-meta { display: flex; line-height: 1.2; min-width: 0; }
 .sidebar-stat-label, .sidebar-stat-detail { max-width: 100%; overflow-wrap: anywhere; }
 .sidebar-stat small { color: var(--pf2e-v2-text-muted); display: block; font-size: .7rem; line-height: 1.2; }
 .sidebar-stat-modifier { justify-self: end; }
 .hp-resource input { height: var(--pf2e-v2-control-height); text-align: center; width: 4rem; }
+.sidebar-hp-bar { background: var(--pf2e-v2-bg-panel-alt); border: 1px solid var(--pf2e-v2-border); border-radius: 999px; height: .5rem; margin: 0 var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); overflow: hidden; }
+.sidebar-hp-bar-fill { background: var(--pf2e-v2-hp-fill); display: block; height: 100%; width: var(--hp-percent); }
+.pf2e-v2-character-sheet[data-density="compact"] .sidebar-hp-bar { height: .375rem; }
+.sidebar-stat-meta { padding-left: calc(1rem + var(--pf2e-v2-gap-sm)); }
 .hero-resource.interactive { border-radius: var(--pf2e-v2-radius-sm); cursor: pointer; }
 .resource-pips { align-items: center; display: inline-flex; gap: var(--pf2e-v2-gap-xs); }
 .resource-pip { background: var(--pf2e-v2-bg-panel); border: 2px solid var(--pf2e-v2-border-strong); border-radius: 50%; height: .75rem; width: .75rem; }
