@@ -333,6 +333,8 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | AC / held shield summary | Implemented | Prepared Actor and held-shield state only |
 | Perception / saves | Implemented | Existing Statistic roll action |
 | Initiative | Implemented | Prepared ActorInitiative statistic and core roll API |
-| Dying / Wounded | Deferred | Avoids introducing condition interpretation or mutation in M13 |
-| Immunities / Weaknesses / Resistances | Deferred | Prepared structures lack a sufficiently small shared label view in this module |
+| Dying / Wounded | Implemented | Read-only prepared status values and maxima; no HP inference or condition mutation |
+| Immunities / Weaknesses / Resistances | Implemented | Prepared IWR instances and their Core-composed `label` getters |
+| Save / Perception rank labels | Implemented | Localized Core proficiency configuration replaces numeric `R#` labels |
+| Hero Points observer UX | Implemented | Read-only display has no action marker, button role, interactive hint, pointer, or hover state |
 | Responsive / detached | Implemented | Left rail when wide, compact two-column resource band when narrow |

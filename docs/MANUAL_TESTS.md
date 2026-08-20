@@ -1027,3 +1027,20 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M13-THEME-01:** Check Remaster, Classic, and Dark readability.
 - **M13-DENSITY-01:** Check comfortable and compact spacing.
 - **M13-REGRESSION-01:** Recheck Character attributes/speeds/languages, Inventory coins/quantity/carry/drag/drop/summaries, Focus display/adjust/cast consumption, proficiency rank updates, and Biography edit/save/cancel.
+
+## Milestone 13.1 – Sidebar parity pass
+
+- **M13.1-DYING-01:** With Dying greater than zero, confirm the sidebar pips match the Core-prepared state.
+- **M13.1-WOUNDED-01:** With Wounded greater than zero, confirm the sidebar pips match the Core-prepared state.
+- **M13.1-DYING-02:** Change Dying/Wounded through the official PF2e condition UI and confirm existing Actor/Item hooks refresh the sidebar.
+- **M13.1-IWR-01:** Add an Immunity and confirm its Core label appears.
+- **M13.1-IWR-02:** Add a Weakness and confirm type and value are correct.
+- **M13.1-IWR-03:** Add a Resistance and confirm type and value are correct.
+- **M13.1-IWR-04:** Compare an IWR exception/special case with the official sheet, including resistance double-vs text.
+- **M13.1-IWR-05:** With no IWR entries, confirm no empty IWR panels appear.
+- **M13.1-RANK-01:** Confirm Fortitude rank uses the localized Core label (for example Master), never `R3`.
+- **M13.1-RANK-02:** Confirm Reflex, Will, and Perception rank labels match the official sheet.
+- **M13.1-HERO-UX-01:** As Observer, confirm Hero Points remain visible without pointer/hover affordance and left/right clicks produce neither notification nor mutation.
+- **M13.1-HERO-UX-02:** As Owner, confirm Hero Points left-click +1 and right-click -1 remain functional.
+- **M13.1-RESP-01:** With long IWR labels, confirm tags wrap without horizontal layout breakage in both densities.
+- **M13.1-DETACHED-01:** In a detached sheet, confirm Dying, Wounded, IWR, and rank badges render correctly.

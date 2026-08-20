@@ -12,16 +12,22 @@
             </span>
         </div>
         {{#if actor.heroPoints}}
-            <div class="sidebar-resource hero-resource {{#if editable}}interactive{{/if}}" data-hero-points
-                {{#if editable}}role="button" tabindex="0"{{/if}}
+            <div class="sidebar-resource hero-resource {{#if editable}}interactive{{/if}}"
+                {{#if editable}}data-hero-points role="button" tabindex="0" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.HeroPointsHint'}}"{{/if}}
                 aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.HeroPointsLabel' value=actor.heroPoints.value max=actor.heroPoints.max}}"
-                title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.HeroPointsHint'}}">
+                >
                 <span>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.HeroPoints"}}</span>
                 <span class="resource-pips" aria-hidden="true">
                     {{#each actor.heroPoints.pips}}<i class="resource-pip {{#if filled}}filled{{else}}empty{{/if}}"></i>{{/each}}
                     <small>{{actor.heroPoints.value}} / {{actor.heroPoints.max}}</small>
                 </span>
             </div>
+        {{/if}}
+        {{#if actor.conditions.dying.active}}
+            <div class="sidebar-resource condition-resource"><span>{{localize "PF2E.condition.dying.name"}}</span><span class="condition-pips" aria-label="{{actor.conditions.dying.value}} / {{actor.conditions.dying.max}}">{{#each actor.conditions.dying.pips}}<i class="resource-pip {{#if filled}}filled danger{{else}}empty{{/if}}"></i>{{/each}}</span></div>
+        {{/if}}
+        {{#if actor.conditions.wounded.active}}
+            <div class="sidebar-resource condition-resource"><span>{{localize "PF2E.condition.wounded.name"}}</span><span class="condition-pips" aria-label="{{actor.conditions.wounded.value}} / {{actor.conditions.wounded.max}}">{{#each actor.conditions.wounded.pips}}<i class="resource-pip {{#if filled}}filled warning{{else}}empty{{/if}}"></i>{{/each}}</span></div>
         {{/if}}
     </section>
     <section class="sidebar-section">
@@ -40,14 +46,17 @@
     </section>
     <section class="sidebar-section">
         <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Checks"}}</h2>
-        <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="perception"><span>{{actor.perception.label}}</span><strong>{{actor.perception.modifier}}</strong></button>
+        <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="perception"><span>{{actor.perception.label}}{{#if actor.perception.rank}} <small class="proficiency-badge" data-rank="{{actor.perception.rank.value}}">{{actor.perception.rank.label}}</small>{{/if}}</span><strong>{{actor.perception.modifier}}</strong></button>
         {{#if actor.initiative}}<button type="button" class="sidebar-stat rollable" data-action="rollInitiative"><span>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Initiative"}} <small>{{actor.initiative.label}}</small></span><strong>{{actor.initiative.modifier}}</strong></button>{{/if}}
     </section>
     <section class="sidebar-section">
         <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Saves"}}</h2>
         {{#each actor.saves}}
-            <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span>{{label}}{{#if rank}} <small>R{{rank}}</small>{{/if}}</span><strong>{{modifier}}</strong></button>
+            <button type="button" class="sidebar-stat rollable" data-action="rollStatistic" data-statistic="{{slug}}"><span>{{label}}{{#if rank}} <small class="proficiency-badge" data-rank="{{rank.value}}">{{rank.label}}</small>{{/if}}</span><strong>{{modifier}}</strong></button>
         {{/each}}
     </section>
+    {{#if actor.defenses.immunities.length}}<section class="sidebar-section sidebar-iwr"><h2>{{localize "PF2E.ImmunitiesLabel"}}</h2><ul>{{#each actor.defenses.immunities}}<li data-iwr-type="{{type}}">{{label}}</li>{{/each}}</ul></section>{{/if}}
+    {{#if actor.defenses.weaknesses.length}}<section class="sidebar-section sidebar-iwr"><h2>{{localize "PF2E.WeaknessesLabel"}}</h2><ul>{{#each actor.defenses.weaknesses}}<li data-iwr-type="{{type}}">{{label}}</li>{{/each}}</ul></section>{{/if}}
+    {{#if actor.defenses.resistances.length}}<section class="sidebar-section sidebar-iwr"><h2>{{localize "PF2E.ResistancesLabel"}}</h2><ul>{{#each actor.defenses.resistances}}<li data-iwr-type="{{type}}">{{label}}</li>{{/each}}</ul></section>{{/if}}
 </aside>
 {{/if}}
