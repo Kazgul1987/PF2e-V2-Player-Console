@@ -490,3 +490,90 @@
     .pf2e-v2-character-sheet :is(.proficiency-rank, .proficiency-rank-label) { grid-column: 1 / -1; justify-self: stretch; width: 100%; }
     .pf2e-v2-character-sheet .proficiency-row button { grid-column: 3; grid-row: 1; }
 }
+
+/* Ornamentation: CSS-only, theme-aware presentation scoped to the sheet root. */
+.pf2e-v2-character-sheet {
+    --pf2e-v2-ornament: #a47842;
+    --pf2e-v2-ornament-muted: #bca47a;
+    --pf2e-v2-ornament-strong: #765329;
+    --pf2e-v2-ornament-glow: color-mix(in srgb, #d5b36d 24%, transparent);
+    --pf2e-v2-divider: linear-gradient(90deg, var(--pf2e-v2-ornament-strong), var(--pf2e-v2-ornament-muted) 48%, transparent);
+    --pf2e-v2-corner-size: 1.4rem;
+}
+.pf2e-v2-character-sheet[data-theme="remaster"] {
+    --pf2e-v2-ornament: #a47842; --pf2e-v2-ornament-muted: #bca47a; --pf2e-v2-ornament-strong: #765329;
+    --pf2e-v2-ornament-glow: color-mix(in srgb, #d5b36d 24%, transparent);
+}
+.pf2e-v2-character-sheet[data-theme="classic"] {
+    --pf2e-v2-ornament: #ad8240; --pf2e-v2-ornament-muted: #c5aa78; --pf2e-v2-ornament-strong: #704326;
+    --pf2e-v2-ornament-glow: color-mix(in srgb, #d7ad5c 22%, transparent);
+}
+.pf2e-v2-character-sheet[data-theme="dark"] {
+    --pf2e-v2-ornament: #a78c60; --pf2e-v2-ornament-muted: #777967; --pf2e-v2-ornament-strong: #c0a36b;
+    --pf2e-v2-ornament-glow: color-mix(in srgb, #9eb77a 14%, transparent);
+}
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) :is(.pc-header, .character-sidebar),
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) :is(.spell-entry, .crafting-ability, .proficiency-section, .biography-section, .pfs-organized-play, .pfs-reputation, .pfs-boons, .coins) {
+    position: relative;
+}
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .pc-header {
+    box-shadow: inset 0 0 0 1px var(--pf2e-v2-ornament-glow), 0 2px 5px color-mix(in srgb, var(--pf2e-v2-text) 22%, transparent);
+}
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .pc-header::before,
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .pc-header::after,
+.pf2e-v2-character-sheet[data-ornamentation="ornate"] .character-sidebar::before,
+.pf2e-v2-character-sheet[data-ornamentation="ornate"] .character-sidebar::after {
+    border-color: var(--pf2e-v2-ornament); border-style: solid; content: ""; height: var(--pf2e-v2-corner-size);
+    pointer-events: none; position: absolute; width: var(--pf2e-v2-corner-size);
+}
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .pc-header::before { border-width: 2px 0 0 2px; left: .3rem; top: .3rem; }
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .pc-header::after { border-width: 0 2px 2px 0; bottom: .3rem; right: .3rem; }
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .pc-header h1 {
+    box-shadow: inset 0 -1px var(--pf2e-v2-ornament-muted); text-shadow: 0 1px var(--pf2e-v2-ornament-glow);
+}
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .character-sidebar {
+    border-color: var(--pf2e-v2-ornament-muted); box-shadow: inset 0 0 0 1px var(--pf2e-v2-ornament-glow);
+}
+.pf2e-v2-character-sheet[data-ornamentation="ornate"] :is(.pc-header, .character-sidebar) {
+    box-shadow: inset 0 0 0 1px var(--pf2e-v2-ornament-strong), inset 0 0 0 4px var(--pf2e-v2-ornament-glow);
+}
+.pf2e-v2-character-sheet[data-ornamentation="ornate"] .character-sidebar::before { border-width: 2px 0 0 2px; left: .25rem; top: .25rem; }
+.pf2e-v2-character-sheet[data-ornamentation="ornate"] .character-sidebar::after { border-width: 0 2px 2px 0; bottom: .25rem; right: .25rem; }
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .sidebar-section + .sidebar-section {
+    border-image: var(--pf2e-v2-divider) 1; border-top-color: var(--pf2e-v2-ornament-muted); position: relative;
+}
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .sidebar-section + .sidebar-section::before {
+    background: var(--pf2e-v2-ornament); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); content: "";
+    height: .35rem; left: 42%; pointer-events: none; position: absolute; top: -.2rem; width: .35rem;
+}
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) :is(
+    .tab-panel > h2, .inventory-overview, .crafting-overview, .feats-overview, .effects-overview,
+    .dashboard-heading, .section-header, .defense-section > h2, .tab-panel > section > h2
+) { align-items: center; display: flex; gap: var(--pf2e-v2-gap-sm); }
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) :is(
+    .tab-panel > h2, .inventory-overview, .crafting-overview, .feats-overview, .effects-overview,
+    .dashboard-heading, .section-header, .defense-section > h2, .tab-panel > section > h2
+)::after {
+    background: var(--pf2e-v2-divider); content: ""; flex: 1 1 3rem; height: 1px; min-width: 1.5rem; pointer-events: none;
+}
+.pf2e-v2-character-sheet[data-ornamentation="ornate"] :is(
+    .tab-panel > h2, .inventory-overview, .crafting-overview, .feats-overview, .effects-overview,
+    .dashboard-heading, .section-header, .defense-section > h2, .tab-panel > section > h2
+)::after { box-shadow: 0 2px var(--pf2e-v2-ornament-glow); height: 2px; }
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) :is(.spell-entry, .crafting-ability, .proficiency-section, .biography-section, .pfs-organized-play, .pfs-reputation, .pfs-boons, .coins) {
+    box-shadow: inset 0 1px var(--pf2e-v2-ornament-glow);
+}
+.pf2e-v2-character-sheet[data-ornamentation="ornate"] :is(.spell-entry, .crafting-ability, .proficiency-section, .biography-section, .pfs-organized-play, .pfs-reputation, .pfs-boons, .coins) {
+    box-shadow: inset 0 0 0 1px var(--pf2e-v2-ornament-glow), inset 0 2px var(--pf2e-v2-ornament-muted);
+}
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .sheet-tabs button.active {
+    box-shadow: inset 0 2px var(--pf2e-v2-ornament-muted), inset 0 -3px var(--pf2e-v2-ornament);
+}
+@media (max-width: 48rem) {
+    .pf2e-v2-character-sheet { --pf2e-v2-corner-size: .9rem; }
+    .pf2e-v2-character-sheet[data-ornamentation="ornate"] :is(.pc-header, .character-sidebar) { box-shadow: inset 0 0 0 1px var(--pf2e-v2-ornament-muted); }
+}
+@container (max-width: 36rem) {
+    .pf2e-v2-character-sheet { --pf2e-v2-corner-size: .75rem; }
+    .pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) :is(.dashboard-heading, .section-header)::after { min-width: .75rem; }
+}

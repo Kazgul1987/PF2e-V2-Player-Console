@@ -121,3 +121,9 @@ Proficiencies use an auto-fitting zero-minimum card grid. Each row gives its nam
 ## M13.4 presentation-only spell trait compaction
 
 Spell traits are truncated only at the presentation boundary. `SpellcastingAdapter` retains the complete ordered `traits` list and additionally projects the first three entries as `visibleTraits`, the remainder as `hiddenTraits`, and its length as `hiddenTraitCount`; the hidden labels remain available to the Foundry tooltip and localized accessible label. No trait is reordered, discarded, persisted, or assigned new rules semantics, and the spell-summary pipeline remains unchanged.
+
+## Ornamentation Layer
+
+Ornamentation is a pure presentation layer controlled by the client-scoped `ornamentation` setting (`off`, `subtle`, or `ornate`, defaulting to `subtle`). The existing live presentation-settings path writes only `data-ornamentation` on each Application V2 root, including detached roots; it never changes `body` or `html`.
+
+All ornament geometry is CSS-only and theme-aware. It uses borders, gradients, inset lines, and pseudo-elements rather than binary or protected brand assets. Decorative pseudo-elements use `pointer-events: none`, remain below Foundry's native window chrome and resize grip, and reduce at narrow viewport/container breakpoints. The layer neither derives rules data nor changes documents, controllers, hit targets, or PF2e mechanics.

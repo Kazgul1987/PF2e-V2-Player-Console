@@ -1090,3 +1090,17 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M13.4-SPELL-05 – Accessibility:** Inspect `+N` with accessibility tooling and confirm its localized accessible label includes the count and every hidden trait, while its tooltip text is correct.
 - **M13.4-SPELL-06 – Narrow:** In a narrow detached window, confirm spell names remain readable, traits move below the name compactly, controls remain reachable, and no horizontal scrollbar appears.
 - **M13.4-SPELL-07 – Functionality:** Recheck Cast, Focus adjustment, slot editing, Summary, prepare/unprepare, expend, chat, and drag/drop with no regression.
+
+## Milestone 14 – Ornamental theme pass
+
+- **M14-ORN-01 – Off:** Set `ornamentation` to Off. Confirm no additional decorative elements appear and the functional layout is unchanged.
+- **M14-ORN-02 – Subtle:** Confirm header corners, the refined sidebar frame, decorative section dividers, and minimal card accents are visible without visual overload.
+- **M14-ORN-03 – Ornate:** Confirm stronger but controlled double/inset framing and corner details do not overlap content or controls.
+- **M14-ORN-04 – Remaster:** Test Subtle and Ornate in Remaster; confirm bronze, muted gold, forest green, and warm natural tones remain readable.
+- **M14-ORN-05 – Classic:** Test Subtle and Ornate in Classic; confirm brass/gold, burgundy, red-brown, and parchment remain readable.
+- **M14-ORN-06 – Dark:** Test Subtle and Ornate in Dark; confirm desaturated brass, dark metal, and restrained green/gold glow remain readable.
+- **M14-ORN-07 – Sidebar:** Inspect Vitals, Defense, Checks, Saving Throws, Immunities, Weaknesses, and Resistances. Confirm dividers are clean, text is unobscured, and stat rows are unchanged.
+- **M14-ORN-08 – Tabs:** Switch through every tab. Confirm decoration remains stable and active, hover, and inactive hierarchy is clear.
+- **M14-ORN-09 – Detached:** Detach the sheet. Confirm ornaments remain visible, create no overflow, and leave the native resize handle usable.
+- **M14-ORN-10 – Resize:** Resize the sheet larger and smaller. Confirm corners and dividers reduce cleanly without shifting or blocking content.
+- **M14-ORN-11 – Compact Density:** Repeat the ornament checks in Compact density and confirm no collisions.

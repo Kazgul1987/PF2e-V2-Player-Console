@@ -136,6 +136,13 @@
       "Sidebar": {
         "Name": "Persistent character sidebar",
         "Hint": "Show core character and combat resources beside every tab."
+      },
+      "Ornamentation": {
+        "Name": "Ornamentation",
+        "Hint": "Choose the amount of CSS-only decorative framing used by PF2e V2 Player Console sheets.",
+        "Off": "Off",
+        "Subtle": "Subtle",
+        "Ornate": "Ornate"
       }
     },
     "Character": {

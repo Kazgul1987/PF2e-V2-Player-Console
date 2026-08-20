@@ -354,3 +354,13 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Sidebar stat-row layout | implemented | Main and meta rows own their intrinsic vertical space; Perception, Initiative, and save metadata cannot collide with following statistics |
 | Compact spell trait presentation | implemented | First three ordered traits remain directly visible and excess traits use a compact `+N` chip |
 | Hidden spell trait tooltip | implemented | All presentation-hidden labels remain available through Foundry tooltip/title and a localized accessible label |
+
+## Milestone 14 – Ornamentation layer
+
+| Capability | Status | Notes |
+|---|---|---|
+| Ornamentation Off | implemented | No M14 decoration selectors match; the functional theme remains unchanged |
+| Ornamentation Subtle | implemented; runtime sign-off | Default client preference; restrained header corners, sidebar frame, dividers, card accents, and active-tab lines |
+| Ornamentation Ornate | implemented; runtime sign-off | Controlled double/inset frames and stronger lines without utility-button decoration |
+| Theme-aware decorations | implemented; runtime sign-off | Dedicated bronze/nature, brass/burgundy, and desaturated metal token values for Remaster, Classic, and Dark |
+| Detached-safe decorations | implemented structurally | Sheet-root scope, responsive reduction, pointer-transparent geometry, and no resize-grip z-index |
