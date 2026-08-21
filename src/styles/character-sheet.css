@@ -17,6 +17,9 @@
     --pf2e-v2-danger: #9b3737;
     --pf2e-v2-success: #397153;
     --pf2e-v2-hp-fill: #397153;
+    --pf2e-v2-xp-fill: #8b7135;
+    --pf2e-v2-xp-track: #ded6bd;
+    --pf2e-v2-xp-border: #8f8061;
     --pf2e-v2-defense-icon: #3f6591;
     --pf2e-v2-warning: #91641d;
     --pf2e-v2-focus: #d1973f;
@@ -41,6 +44,7 @@
     --pf2e-v2-heading-muted: #6d5853; --pf2e-v2-accent: #8a2937;
     --pf2e-v2-accent-strong: #611c28; --pf2e-v2-highlight: #9a7031; --pf2e-v2-focus: #bd8531;
     --pf2e-v2-hp-fill: #397153; --pf2e-v2-defense-icon: #355886;
+    --pf2e-v2-xp-fill: #a87828; --pf2e-v2-xp-track: #e2d3b5; --pf2e-v2-xp-border: #967649;
 }
 .pf2e-v2-character-sheet[data-theme="remaster"] {
     --pf2e-v2-bg-header: #244b3d;
@@ -48,6 +52,7 @@
     --pf2e-v2-accent-strong: #214b3b;
     --pf2e-v2-highlight: #a47842;
     --pf2e-v2-hp-fill: #397153; --pf2e-v2-defense-icon: #3f6591;
+    --pf2e-v2-xp-fill: #8b7135; --pf2e-v2-xp-track: #ded6bd; --pf2e-v2-xp-border: #8f8061;
 }
 .pf2e-v2-character-sheet[data-theme="dark"] {
     color-scheme: dark;
@@ -58,6 +63,7 @@
     --pf2e-v2-accent: #789d8b; --pf2e-v2-accent-strong: #99b9aa; --pf2e-v2-highlight: #bf9361;
     --pf2e-v2-danger: #df8585; --pf2e-v2-success: #8fc7a3; --pf2e-v2-warning: #e0b76c; --pf2e-v2-focus: #e1ad5c;
     --pf2e-v2-hp-fill: #8fc7a3; --pf2e-v2-defense-icon: #8daed2;
+    --pf2e-v2-xp-fill: #c0a36b; --pf2e-v2-xp-track: #424846; --pf2e-v2-xp-border: #9d8c6c;
 }
 .pf2e-v2-character-sheet[data-density="compact"] {
     --pf2e-v2-gap-xs: .15rem; --pf2e-v2-gap-sm: .3rem; --pf2e-v2-gap-md: .5rem;
@@ -134,6 +140,20 @@
 .dashboard-section { margin-bottom: var(--pf2e-v2-section-space); }
 .dashboard-heading { align-items: center; display: flex; justify-content: space-between; }
 .dashboard-heading h2 { margin-block: 0 var(--pf2e-v2-gap-sm); }
+.character-identity-grid { display: grid; gap: var(--pf2e-v2-gap-sm); grid-template-columns: repeat(2, minmax(5rem, auto)) minmax(12rem, 1fr); }
+.character-identity-field, .character-xp { background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); padding: var(--pf2e-v2-gap-sm); }
+.character-identity-field { display: grid; gap: 2px; }
+.character-identity-field span { color: var(--pf2e-v2-text-muted); font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.character-identity-field strong { color: var(--pf2e-v2-accent-strong); overflow-wrap: anywhere; }
+.character-xp { min-width: 0; }
+.character-xp-header { align-items: baseline; display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); justify-content: space-between; }
+.character-xp-header span { color: var(--pf2e-v2-text-muted); font-size: .78rem; }
+.character-xp-segments { display: grid; gap: clamp(1px, .4cqi, 3px); grid-template-columns: repeat(10, minmax(0, 1fr)); margin-top: var(--pf2e-v2-gap-xs); min-width: 0; }
+.character-xp-segment { background: var(--pf2e-v2-xp-track); border: 1px solid var(--pf2e-v2-xp-border); box-sizing: border-box; display: block; height: .55rem; overflow: hidden; }
+.character-xp-segment-fill { background: var(--pf2e-v2-xp-fill); display: block; height: 100%; width: var(--segment-fill); }
+.pf2e-v2-character-sheet:is([data-ornamentation="subtle"], [data-ornamentation="ornate"]) .character-xp-segment { box-shadow: inset 0 1px var(--pf2e-v2-ornament-glow); }
+.pf2e-v2-character-sheet[data-ornamentation="ornate"] .character-xp-segment { outline: 1px solid color-mix(in srgb, var(--pf2e-v2-ornament-muted) 35%, transparent); outline-offset: -2px; }
+.pf2e-v2-character-sheet[data-density="compact"] .character-xp-segment { height: .45rem; }
 .attribute-grid { display: grid; gap: var(--pf2e-v2-gap-sm); grid-template-columns: repeat(6, minmax(4rem, 1fr)); }
 .attribute-card, .speed-list, .shield-details { background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); padding: var(--pf2e-v2-gap-sm); }
 .attribute-card { align-items: center; display: flex; flex-direction: column; }
@@ -154,6 +174,10 @@
     .pf2e-v2-character-sheet .window-content { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); }
     .pf2e-v2-character-sheet :is(.sheet-tabs, .tab-panel) { grid-column: 1; }
     .pc-header { grid-template-columns: 4rem 1fr; } .pc-header img { height: 4rem; width: 4rem; } .headline-stats { grid-column: 1 / -1; }
+}
+@container (max-width: 34rem) {
+    .pf2e-v2-character-sheet .character-identity-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pf2e-v2-character-sheet .character-xp { grid-column: 1 / -1; }
 }
 .inventory-overview, .inventory-section > header { align-items: center; display: flex; gap: 1rem; justify-content: space-between; }
 .inventory-overview h2, .inventory-section h3 { margin-right: auto; }

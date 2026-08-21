@@ -154,7 +154,11 @@
     "Character": {
       "CoreEditorNotice": "PF2e does not expose this editor as a public module API. The official PF2e character sheet has been opened; use its Character-tab editor.",
       "Defense": "Defense",
-      "ShieldRaised": "Raised"
+      "ShieldRaised": "Raised",
+      "Identity": "Character Identity",
+      "Deity": "Deity",
+      "Experience": "Experience",
+      "XPProgressLabel": "Experience progress: {value} of {max} XP ({pct} percent)"
     },
     "Sidebar": {
       "Label": "Character resources",

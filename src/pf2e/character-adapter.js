@@ -50,6 +50,33 @@ function iwrView(entries) {
     return Array.from(entries ?? [], (entry) => ({ type: entry.type, label: entry.label }));
 }
 
+/** Build a display-only projection of PF2e's prepared experience data. */
+function experienceView(experience) {
+    const source = experience ?? {};
+    const value = Number(source.value);
+    const min = Number(source.min);
+    const max = Number(source.max);
+    const corePct = source.pct === null || source.pct === undefined ? Number.NaN : Number(source.pct);
+    const fallbackPct = max > min ? ((value - min) / (max - min)) * 100 : 0;
+    const pct = Number.isFinite(corePct) ? corePct : fallbackPct;
+    const clampedPct = Math.max(0, Math.min(100, Number.isFinite(pct) ? pct : 0));
+
+    return {
+        value: Number.isFinite(value) ? value : 0,
+        min: Number.isFinite(min) ? min : 0,
+        max: Number.isFinite(max) ? max : 0,
+        pct: clampedPct,
+        ariaLabel: game.i18n.format("PF2E_V2_PLAYER_CONSOLE.Character.XPProgressLabel", {
+            value: Number.isFinite(value) ? value : 0,
+            max: Number.isFinite(max) ? max : 0,
+            pct: clampedPct,
+        }),
+        segments: Array.from({ length: 10 }, (_, index) => ({
+            fill: Math.max(0, Math.min(100, (clampedPct - index * 10) * 10)),
+        })),
+    };
+}
+
 /** Translate stable PF2e Actor runtime data into template-only data. */
 export class CharacterAdapter {
     static supports(actor) {
@@ -101,6 +128,7 @@ export class CharacterAdapter {
         const heroPoints = actor.getResource?.("hero-points");
         const initiative = actor.initiative?.statistic;
         const actorAttributes = actor.system.attributes ?? {};
+        const deity = actor.deity;
 
         return {
             id: actor.id,
@@ -108,6 +136,8 @@ export class CharacterAdapter {
             name: actor.name,
             img: actor.img,
             level: actor.level ?? actor.system.details?.level?.value ?? 0,
+            deity: { exists: Boolean(deity), name: deity?.name ?? "—" },
+            xp: experienceView(actor.system.details?.xp),
             hp: hitPointsView(actor.system.attributes?.hp),
             heroPoints: heroPoints?.max > 0 ? {
                 value: heroPoints.value,

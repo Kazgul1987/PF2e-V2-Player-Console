@@ -41,6 +41,13 @@ Application V2 navigation buttons and content panels intentionally share `data-g
 
 Stable core labels reused by templates include `PF2E.PerceptionHeader`, `PF2E.SavesHeader`, `PF2E.SkillsLabel`, `PF2E.LevelLabel`, and `PF2E.Check.Specific.Perception.Secret`, verified in PF2e's `static/lang/en.json` and core templates. Module-specific actions, placeholders, tabs, and errors use `PF2E_V2_PLAYER_CONSOLE.*` from `lang/en.json` and `lang/de.json`; no PF2e keys are guessed.
 
+## M14.3 Character deity and experience
+
+- **Deity preparation:** `reference/pf2e/src/module/item/deity/document.ts:36-53` assigns the embedded Deity document to `actor.deity` and prepares `system.details.deities`. `reference/pf2e/src/module/actor/character/document.ts:310-323` resets that prepared reference/data before item preparation.
+- **Current Core sheet deity call-site:** `reference/pf2e/src/module/actor/character/sheet.ts:185` assigns `sheetData.deity = actor.deity`; `reference/pf2e/static/templates/actors/character/tabs/character.hbs:39-41` renders that prepared document. The module therefore uses `actor.deity?.name` rather than searching embedded Items or resolving slugs.
+- **XP contract and preparation:** `reference/pf2e/src/module/actor/character/data.ts:128-138` declares prepared `value`, `min`, `max`, and computed `pct`. `reference/pf2e/src/module/actor/character/document.ts:491-496` prepares `pct` from the current Core values.
+- **Current Core sheet XP call-site:** `reference/pf2e/static/templates/actors/character/partials/header.hbs:35-42` renders `data.details.xp.value`, `max`, and `pct`. The module reads the same `actor.system.details.xp` object and does not assume a maximum value.
+
 ## Runtime foundation: Handlebars partials
 
 The complete `src/templates` inventory contains one external partial: `character-sheet/inventory-item.hbs`, referenced recursively by `inventory.hbs`. The `strikeRow` and `actionSection` blocks in `actions.hbs` are template-local `#*inline` partials and therefore require no global registration. `character.hbs` has no partial reference.

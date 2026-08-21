@@ -154,7 +154,11 @@
     "Character": {
       "CoreEditorNotice": "PF2e stellt diesen Editor nicht als öffentliche Modul-API bereit. Der offizielle PF2e-Charakterbogen wurde geöffnet; verwende dort den Editor im Charakter-Tab.",
       "Defense": "Verteidigung",
-      "ShieldRaised": "Angehoben"
+      "ShieldRaised": "Angehoben",
+      "Identity": "Charakteridentität",
+      "Deity": "Gottheit",
+      "Experience": "Erfahrung",
+      "XPProgressLabel": "Erfahrungsfortschritt: {value} von {max} EP ({pct} Prozent)"
     },
     "Sidebar": {
       "Label": "Charakterressourcen",

@@ -1,4 +1,17 @@
 <section class="tab-panel tab {{tab.cssClass}}" data-group="primary" data-tab="character">
+    <section class="dashboard-section character-identity" aria-labelledby="character-identity-heading">
+        <header class="dashboard-heading"><h2 id="character-identity-heading">{{localize "PF2E_V2_PLAYER_CONSOLE.Character.Identity"}}</h2></header>
+        <div class="character-identity-grid">
+            <div class="character-identity-field"><span>{{localize "PF2E.LevelLabel"}}</span><strong>{{actor.level}}</strong></div>
+            <div class="character-identity-field"{{#if actor.deity.exists}} title="{{actor.deity.name}}"{{/if}}><span>{{localize "PF2E_V2_PLAYER_CONSOLE.Character.Deity"}}</span><strong>{{actor.deity.name}}</strong></div>
+            <div class="character-xp">
+                <div class="character-xp-header"><strong>{{localize "PF2E_V2_PLAYER_CONSOLE.Character.Experience"}}</strong><span>{{actor.xp.value}} / {{actor.xp.max}} XP</span></div>
+                <div class="character-xp-segments" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{actor.xp.pct}}" aria-label="{{actor.xp.ariaLabel}}">
+                    {{#each actor.xp.segments}}<span class="character-xp-segment" style="--segment-fill: {{fill}}%" aria-hidden="true"><span class="character-xp-segment-fill"></span></span>{{/each}}
+                </div>
+            </div>
+        </div>
+    </section>
     <section class="dashboard-section attributes-section">
         <header class="dashboard-heading"><h2>{{localize "PF2E.Actor.Creature.AttributeModifiers"}}</h2>{{#if editable}}<button type="button" data-action="editAttributeBoosts" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Character.CoreEditorNotice'}}"><i class="fa-solid fa-pen-to-square"></i> {{localize "PF2E.Edit"}}</button>{{/if}}</header>
         <div class="attribute-grid">{{#each actor.attributes}}<div class="attribute-card"><span>{{label}}</span><strong>{{modifier}}</strong></div>{{/each}}</div>
