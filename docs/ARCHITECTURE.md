@@ -147,3 +147,9 @@ The module owns a compact, resizable `HandlebarsApplicationMixin(ApplicationV2)`
 PF2e Core owns all rules. Known spells, rank groups, active/empty slots, and expended state are projected from `entry.getSheetData({ prepList: true })`; the module does not scan `actor.items` or persist a parallel slot model. Candidate controls only narrow the rank groups Core supplies, while `collection.prepareSpell(...)` remains the final cantrip/heightening validator. Unprepare delegates `prepareSpell(null, ...)`, and same-rank D&D delegates `swapSlotPositions(...)`. No template performs a document mutation and no local spell, slot, or rank rule engine exists.
 
 Eligibility uses Core's prepared-entry flags only: `isPrepared === true`, with `isFlexible`, `isRitual`, `isSpontaneous`, `isInnate`, and `isFocusPool` all false. In particular, flexible preparation is detected directly through Core's `entry.isFlexible` / sheet-data `isFlexible`, never through class, tradition, or item-name inference.
+
+## Shared Character Interaction Layer
+
+`CharacterActionDispatcher` resolves every GM-pane action from an explicit Actor and pane root; the GM Application is never used as a character sheet action receiver. `bindCharacterPaneListeners` binds HP, resources, inventory, spellcasting, crafting, proficiencies, feats, effects, biography, and PFS listeners only beneath the supplied root. Both the normal V2 sheet and GM panes use this binder.
+
+`BiographyEditor` owns editor state independently of `DocumentSheetV2` private fields. Both surfaces call it with an explicit Actor, root, and owner, eliminating private-brand calls on the GM console. Actor/item hooks and independent tab changes are coalesced through `refreshPane(actorId)`, which prepares and replaces only the affected pane; full renders are reserved for selection, layout, focus, and presentation changes.

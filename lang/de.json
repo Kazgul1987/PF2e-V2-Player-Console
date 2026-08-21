@@ -36,7 +36,14 @@
       "Columns": "Spalten",
       "Rows": "Zeilen",
       "Remove": "Charakter aus der Konsole entfernen",
-      "Empty": "Füge PF2e-Charaktere über das Kontextmenü des Akteursverzeichnisses hinzu."
+      "Empty": "Füge PF2e-Charaktere über das Kontextmenü des Akteursverzeichnisses hinzu.",
+      "SelectCharacters": "Charaktere auswählen",
+      "PlayerOwned": "Charaktere im Besitz von Spielern",
+      "Focused": "Fokussiert",
+      "Focus": "Charakter fokussieren",
+      "OpenSheet": "Charakterbogen öffnen",
+      "ApplySelection": "Auswahl anwenden",
+      "NoPlayerCharacters": "Keine Spielercharaktere"
     },
     "Labels": {
       "CharacterName": "Charaktername",
@@ -172,6 +179,10 @@
         "Off": "Aus",
         "Subtle": "Dezent",
         "Ornate": "Ornamentiert"
+      },
+      "GMLayout": {
+        "Name": "Layout der SL-Konsole",
+        "Hint": "Wählt das persistente Bereichslayout der SL-Konsole."
       }
     },
     "Character": {

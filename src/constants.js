@@ -27,4 +27,5 @@ export const HANDLEBARS_PARTIALS = Object.freeze([
         (name) => `modules/${MODULE_ID}/src/templates/character-sheet/${name}.hbs`,
     ),
     `modules/${MODULE_ID}/src/templates/character-sheet/inventory-item.hbs`,
+    `modules/${MODULE_ID}/src/templates/gm-character-console/pane.hbs`,
 ]);

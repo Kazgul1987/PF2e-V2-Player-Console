@@ -55,6 +55,8 @@ Hooks.once("init", () => {
     }, () => {
         for (const application of renderedApplications()) void application.render();
         if (gmConsole?.rendered) void gmConsole.render();
+    }, () => {
+        if (gmConsole?.rendered) void gmConsole.render(true);
     });
     game.modules.get(MODULE_ID).api = { openCharacterSheet, openGMConsole, PF2eCharacterSheetV2, GMCharacterConsole };
     void preloadHandlebarsPartials().catch(() => undefined);

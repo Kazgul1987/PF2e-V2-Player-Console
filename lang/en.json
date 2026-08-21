@@ -36,7 +36,14 @@
       "Columns": "Columns",
       "Rows": "Rows",
       "Remove": "Remove character from console",
-      "Empty": "Add PF2e characters from the Actor Directory context menu."
+      "Empty": "Add PF2e characters from the Actor Directory context menu.",
+      "SelectCharacters": "Select Characters",
+      "PlayerOwned": "Player-Owned Characters",
+      "Focused": "Focused",
+      "Focus": "Focus Character",
+      "OpenSheet": "Open Character Sheet",
+      "ApplySelection": "Apply Selection",
+      "NoPlayerCharacters": "No Player Characters"
     },
     "Labels": {
       "CharacterName": "Character name",
@@ -172,6 +179,10 @@
         "Off": "Off",
         "Subtle": "Subtle",
         "Ornate": "Ornate"
+      },
+      "GMLayout": {
+        "Name": "GM console layout",
+        "Hint": "Choose the persistent GM console pane layout."
       }
     },
     "Character": {

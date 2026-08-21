@@ -1202,3 +1202,27 @@ Exercise the manager in Remaster, Classic, and Dark with ornamentation Off, Subt
 
 ### M14.4-PREPUI-17 – Compact
 Resize the manager narrowly and test both density settings. Verify the two panes stack, rows stay compact, and no horizontal scrollbar or collision is normal.
+
+## M15.1 GM Multi-Character Console
+
+- **M15.1-GM-01 – Player-Owned Discovery:** Open as GM with player-owned characters and NPCs; characters are discovered and NPCs excluded.
+- **M15.1-GM-02 – Manual Selection:** Toggle selector checkboxes and apply; panes and client-persisted selection match.
+- **M15.1-GM-03 – Layout Persistence:** Select columns and reload; columns remains selected.
+- **M15.1-GM-04 – Focused Mode:** Focus Actor A; only A has a full pane and others remain selector buttons.
+- **M15.1-GM-05 – Independent Tabs:** Set Actor A to Inventory and B to Spellcasting; states remain independent.
+- **M15.1-GM-06 – Targeted Actor Update:** Change A's HP; only A's pane node is replaced.
+- **M15.1-GM-07 – Targeted Item Update:** Change B's item; only B refreshes.
+- **M15.1-GM-08 – Hero Points:** Adjust A's hero points; A changes without a full-console render.
+- **M15.1-GM-09 – Focus Points:** Adjust B's focus; B changes.
+- **M15.1-GM-10 – Inventory Change:** Test quantity, carry state, and D&D; only the destination pane Actor changes.
+- **M15.1-GM-11 – Spellcasting:** Cast, expend a slot, and prepare a spell; the pane Actor changes.
+- **M15.1-GM-12 – Prepare Spells:** Open preparation manager; it receives the pane Actor and entry and remains functional.
+- **M15.1-GM-13 – Biography:** Open, save, and cancel rich text; no private-brand error occurs and the pane Actor updates.
+- **M15.1-GM-14 – Proficiencies:** Change a rank; the correct Actor and pane refresh.
+- **M15.1-GM-15 – Effects:** Change a condition/effect; the correct Actor updates.
+- **M15.1-GM-16 – PFS:** Exercise PFS controls; the correct Actor updates.
+- **M15.1-GM-17 – Open Normal Sheet:** Use pane control; the Actor's normal configured sheet opens.
+- **M15.1-GM-18 – Remove:** Remove a pane; Actor remains and persisted selection changes.
+- **M15.1-GM-19 – Non-GM API:** Call `openGMConsole()` as player; no console opens.
+- **M15.1-GM-20 – Detached:** Pop out console; buttons, D&D, biography, and spell manager work.
+- **M15.1-GM-21 – Performance:** With four characters repeatedly change HP/items/tabs; no full render occurs and UI remains responsive.
