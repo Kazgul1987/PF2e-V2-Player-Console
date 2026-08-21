@@ -1202,26 +1202,3 @@ Exercise the manager in Remaster, Classic, and Dark with ornamentation Off, Subt
 
 ### M14.4-PREPUI-17 – Compact
 Resize the manager narrowly and test both density settings. Verify the two panes stack, rows stay compact, and no horizontal scrollbar or collision is normal.
-
-## Post-M15 rollback: normal V2 sheet regression
-
-- **ROLLBACK-01 – Actor Directory Open:** Open a Character through the Actor Directory V2 action and verify the normal V2 character sheet opens.
-- **ROLLBACK-02 – Sidebar:** Verify HP editing and bar, Hero Points, Dying/Wounded, AC, shield, Perception, Initiative, saves, immunities, weaknesses, and resistances.
-- **ROLLBACK-03 – Character:** Verify deity and the ten-segment XP display, attributes, speed, and languages.
-- **ROLLBACK-04 – Inventory:** Verify quantity, carry state, summaries, compact layout, and drag/drop.
-- **ROLLBACK-05 – Spellcasting:** Verify cast, slot handling, Focus Points, prepared-spell management, left-aligned spell names, and compact trait overflow.
-- **ROLLBACK-06 – Biography:** Open the rich-text editor, Save an edit, reopen it, and Cancel an edit without losing the saved value.
-- **ROLLBACK-07 – Remaining Tabs:** Verify Actions, Crafting, Proficiencies, Feats, Effects, and PFS interactions.
-- **ROLLBACK-08 – Presentation:** Exercise Remaster, Classic, and Dark themes, both densities, all ornamentation modes, sidebar visibility, native tabs, and native resize.
-- **ROLLBACK-09 – Detached:** Detach the normal V2 character sheet and repeat Sidebar, Inventory, Spellcasting/prepared-spell, Biography, tab, presentation, and resize checks in the popout.
-
-## Native tab rendering regression
-
-- **TAB-REGRESSION-01 – Initial Render:** Open the V2 character sheet. Verify exactly one primary tab is active, the default or saved tab is visible, and every other tab panel is hidden.
-- **TAB-REGRESSION-02 – Character → Actions:** Click Actions from Character. Verify Character disappears and only Actions is visible.
-- **TAB-REGRESSION-03 – Actions → Inventory:** Click Inventory from Actions. Verify only Inventory is visible.
-- **TAB-REGRESSION-04 – Spellcasting:** Click Spellcasting. Verify only Spellcasting is visible and no other tab content is displayed at the same time.
-- **TAB-REGRESSION-05 – All Tabs:** Visit Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, Effects, Biography, and PFS in sequence. Verify exactly one primary tab is visible at every point.
-- **TAB-REGRESSION-06 – Sidebar:** Switch through the tabs. Verify the sidebar remains stable and visible, the grid/height does not expand unexpectedly, and hidden tabs create no additional scroll containers.
-- **TAB-REGRESSION-07 – Detached:** Detach the V2 sheet and visit every tab. Verify exactly one tab is visible and the layout remains stable.
-- **TAB-REGRESSION-08 – Theme/Density/Ornamentation:** Repeat tab switching with Remaster, Classic, and Dark themes; Comfortable and Compact density; and Off, Subtle, and Ornate ornamentation. Verify presentation settings do not change tab behavior.

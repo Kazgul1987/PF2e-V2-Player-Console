@@ -147,11 +147,3 @@ The module owns a compact, resizable `HandlebarsApplicationMixin(ApplicationV2)`
 PF2e Core owns all rules. Known spells, rank groups, active/empty slots, and expended state are projected from `entry.getSheetData({ prepList: true })`; the module does not scan `actor.items` or persist a parallel slot model. Candidate controls only narrow the rank groups Core supplies, while `collection.prepareSpell(...)` remains the final cantrip/heightening validator. Unprepare delegates `prepareSpell(null, ...)`, and same-rank D&D delegates `swapSlotPositions(...)`. No template performs a document mutation and no local spell, slot, or rank rule engine exists.
 
 Eligibility uses Core's prepared-entry flags only: `isPrepared === true`, with `isFlexible`, `isRitual`, `isSpontaneous`, `isInnate`, and `isFocusPool` all false. In particular, flexible preparation is detected directly through Core's `entry.isFlexible` / sheet-data `isFlexible`, never through class, tradition, or item-name inference.
-
-## Shared Character Interaction Layer
-
-`bindCharacterPaneListeners` binds the normal V2 sheet's HP, resources, inventory, spellcasting, crafting, proficiencies, feats, effects, biography, and PFS listeners beneath the supplied application root. Keeping the listener layer actor-explicit preserves the normal sheet's controller boundaries and detached-window safety.
-
-`BiographyEditor` owns editor state independently of `DocumentSheetV2` private fields. The normal sheet supplies its Actor, application root, and owner explicitly, so Open, Save, and Cancel remain lifecycle-safe without restoring duplicated private editor methods.
-
-`prepareCharacterView(...)` remains the shared view adapter used by normal-sheet application and part preparation. It keeps prepared PF2e data projection centralized rather than duplicating view-model logic across render paths.

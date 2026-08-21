@@ -21,8 +21,6 @@ import { PFSAdapter } from "../../pf2e/pfs-adapter.js";
 import { PFSController } from "../../controllers/pfs-controller.js";
 import { getPresentationSettings } from "../../settings.js";
 import { SidebarController } from "../../controllers/sidebar-controller.js";
-import { prepareCharacterView } from "../character-view/character-view-context.js";
-import { BiographyEditor, bindCharacterPaneListeners } from "../character-view/character-interactions.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -156,11 +154,11 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     async _prepareContext(options) {
         const presentation = getPresentationSettings();
-        const view = await prepareCharacterView(this.actor, { activeTab: this.tabGroups.primary, editable: this.isEditable });
         return {
             ...(await super._prepareContext(options)),
-            ...view,
+            actor: CharacterAdapter.prepare(this.actor),
             tabs: this._prepareTabs("primary"),
+            editable: this.isEditable,
             ...presentation,
         };
     }
@@ -183,18 +181,17 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     async _preparePartContext(partId, context, options) {
         const partContext = await super._preparePartContext(partId, context, options);
         if (TABS.includes(partId)) {
-            const activeTab = Object.values(context.tabs).find((tab) => tab.active)?.id ?? this.tabGroups.primary;
-            const view = await prepareCharacterView(this.actor, {
-                activeTab,
-                editable: this.isEditable,
-            });
-            const safeView = { ...view };
-            delete safeView.tabs;
-            delete safeView.tab;
-            delete safeView.activeTab;
-            Object.assign(partContext, safeView);
             partContext.tab = context.tabs[partId];
         }
+        if (partId === "inventory") partContext.inventory = InventoryAdapter.prepare(this.actor);
+        if (partId === "actions") partContext.actions = ActionsAdapter.prepare(this.actor);
+        if (partId === "feats") partContext.feats = FeatsAdapter.prepare(this.actor);
+        if (partId === "spellcasting") partContext.spellcasting = await SpellcastingAdapter.prepare(this.actor);
+        if (partId === "crafting") partContext.crafting = await CraftingAdapter.prepare(this.actor);
+        if (partId === "proficiencies") partContext.proficiencies = ProficienciesAdapter.prepare(this.actor, this.isEditable);
+        if (partId === "effects") partContext.effects = EffectsAdapter.prepare(this.actor, this.isEditable);
+        if (partId === "biography") partContext.biography = await BiographyAdapter.prepare(this.actor, this.isEditable);
+        if (partId === "pfs") partContext.pfs = PFSAdapter.prepare(this.actor);
         return partContext;
     }
 
@@ -212,7 +209,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     async _onClose(options) {
-        BiographyEditor.close({ owner: this });
+        this.#closeBiographyEditor();
         for (const [hook, id] of this.#hooks) Hooks.off(hook, id);
         this.#hooks.length = 0;
         await super._onClose(options);
@@ -419,21 +416,246 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     async #openBiographyEditor(target) {
-        return BiographyEditor.open({ actor: this.actor, root: this.element, owner: this, target, editable: this.isEditable });
+        if (this.#biographyEditor || !this.isEditable) return;
+        const container = target.closest("[data-richtext-field]");
+        const field = container?.dataset.richtextField;
+        const raw = BiographyController.richTextValue(this.actor, field);
+        const host = container?.querySelector("[data-richtext-editor-host]");
+        const mount = host?.querySelector("[data-richtext-editor-mount]");
+        const display = container?.querySelector("[data-richtext-display]");
+        if (raw === null || !host || !mount || !display) return;
+
+        const { HTMLProseMirrorElement } = foundry.applications.elements;
+        const editor = HTMLProseMirrorElement.create({
+            name: `system.details.biography.${field}`,
+            value: raw,
+            documentUUID: this.actor.uuid,
+            collaborate: false,
+            toggled: false,
+        });
+        this.#biographyEditor = { container, display, editor, field, host };
+        display.hidden = true;
+        host.hidden = false;
+        mount.replaceChildren(editor);
+        editor.focus();
     }
 
-    async #saveBiographyEditor(target) { return BiographyEditor.save({ owner: this, actorId: this.actor.id, target }); }
-    #closeBiographyEditor() { BiographyEditor.close({ owner: this, actorId: this.actor.id }); }
+    async #saveBiographyEditor(target) {
+        const active = this.#biographyEditor;
+        if (!active || target.closest("[data-richtext-field]") !== active.container) return;
+        active.editor.save();
+        const value = active.editor.value;
+        this.#closeBiographyEditor();
+        await BiographyController.updateRichText(this.actor, active.field, value);
+    }
+
+    #closeBiographyEditor() {
+        const active = this.#biographyEditor;
+        if (!active) return;
+        active.editor.remove();
+        active.host.hidden = true;
+        active.display.hidden = false;
+        this.#biographyEditor = null;
+    }
 
     async _onRender(context, options) {
         // An explicit Application render disconnects the V14 form element, whose callback destroys ProseMirror.
         // Document hooks are deferred while editing, but other render callers still get a clean cancellation.
-        if (BiographyEditor.isEditing(this, this.actor.id) && !this.element?.isConnected) BiographyEditor.close({ owner: this, actorId: this.actor.id });
+        if (this.#biographyEditor && !this.#biographyEditor.editor.isConnected) this.#biographyEditor = null;
         await super._onRender(context, options);
         this.#applyPresentationSettings();
         this.#renderListeners?.abort();
         this.#renderListeners = new AbortController();
-        bindCharacterPaneListeners({ actor: this.actor, root: this.element, rerender: () => this.render(), signal: this.#renderListeners.signal });
+        const listenerOptions = { signal: this.#renderListeners.signal };
+        const getTabPanel = (tab) => this.element.querySelector(
+            `.tab-panel[data-group="primary"][data-tab="${tab}"]`,
+        );
+        const nameInput = this.element.querySelector('[data-actor-name]');
+        nameInput?.addEventListener("change", (event) => void this.#updateActorName(event.currentTarget), listenerOptions);
+        nameInput?.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                event.currentTarget.blur();
+            } else if (event.key === "Escape") {
+                event.preventDefault();
+                event.currentTarget.value = this.actor.name;
+                event.currentTarget.blur();
+            }
+        }, listenerOptions);
+        const sidebar = this.element.querySelector(".character-sidebar");
+        sidebar?.addEventListener("change", (event) => {
+            const input = event.target;
+            if (input?.matches?.("[data-hp-current]")) void SidebarController.updateHitPoints(this.actor, input.value);
+        }, listenerOptions);
+        sidebar?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (input?.matches?.("[data-hp-current]")) {
+                if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+                if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
+                return;
+            }
+            const heroPoints = event.target?.closest?.("[data-hero-points]");
+            if (heroPoints && ["Enter", " "].includes(event.key)) {
+                event.preventDefault();
+                void SidebarController.adjustHeroPoints(this.actor, 1);
+            }
+        }, listenerOptions);
+        sidebar?.addEventListener("click", (event) => {
+            if (event.target?.closest?.("[data-hero-points]")) void SidebarController.adjustHeroPoints(this.actor, 1);
+        }, listenerOptions);
+        sidebar?.addEventListener("contextmenu", (event) => {
+            if (!event.target?.closest?.("[data-hero-points]")) return;
+            event.preventDefault();
+            void SidebarController.adjustHeroPoints(this.actor, -1);
+        }, listenerOptions);
+        const actions = getTabPanel("actions");
+        actions?.addEventListener("change", (event) => {
+            const target = event.target;
+            if (!target?.matches?.("input, select")) return;
+            const row = target.closest("[data-domain][data-option]");
+            if (row && ["toggleRollOption", "toggleRollOptionSuboption"].includes(target.dataset.action)) {
+                const checkbox = row.querySelector('input[data-action="toggleRollOption"]');
+                const select = row.querySelector('select[data-action="toggleRollOptionSuboption"]');
+                void ActionController.toggleRollOption(this.actor, row.dataset, checkbox?.checked ?? false, select?.value ?? null);
+                return;
+            }
+            if (target.dataset.action === "selectStrikeAmmo") {
+                void ActionController.ammo(this.actor, target.closest("[data-strike-index]")?.dataset ?? {}, target.value);
+            }
+        }, listenerOptions);
+        const inventory = getTabPanel("inventory");
+        inventory?.addEventListener("dragstart", (event) => {
+            const target = event.target.closest("[draggable][data-item-id]");
+            if (target) InventoryController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        inventory?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        inventory?.addEventListener("drop", (event) => void InventoryController.drop(this.actor, event, event.target), listenerOptions);
+        const feats = getTabPanel("feats");
+        feats?.addEventListener("dragstart", (event) => {
+            const target = event.target.closest("[draggable][data-item-id]");
+            if (target) FeatController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        feats?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        feats?.addEventListener("drop", (event) => void FeatController.drop(this.actor, event, event.target), listenerOptions);
+        const spellcasting = getTabPanel("spellcasting");
+        spellcasting?.addEventListener("click", (event) => {
+            const focus = event.target?.closest?.('[data-focus-resource][data-resource="focus"]');
+            if (focus) void SpellcastingController.adjustFocus(this.actor, 1);
+        }, listenerOptions);
+        spellcasting?.addEventListener("contextmenu", (event) => {
+            const focus = event.target?.closest?.('[data-focus-resource][data-resource="focus"]');
+            if (!focus) return;
+            event.preventDefault();
+            void SpellcastingController.adjustFocus(this.actor, -1);
+        }, listenerOptions);
+        spellcasting?.addEventListener("dragstart", (event) => {
+            const target = event.target?.closest?.("[draggable][data-spell-id]");
+            if (target) SpellcastingController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        spellcasting?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        spellcasting?.addEventListener("drop", (event) => void SpellcastingController.drop(this.actor, event, event.target), listenerOptions);
+        spellcasting?.addEventListener("change", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-slot-count]")) return;
+            void SpellcastingController.updateSlotCount(this.actor, { ...input.closest("[data-entry-id]")?.dataset, ...input.dataset, value: input.value });
+        }, listenerOptions);
+        spellcasting?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            const focus = input?.closest?.('[data-focus-resource][data-resource="focus"]');
+            if (focus && ["Enter", " "].includes(event.key)) {
+                event.preventDefault();
+                void SpellcastingController.adjustFocus(this.actor, 1);
+                return;
+            }
+            if (!input?.matches?.("[data-slot-count]")) return;
+            if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+            if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
+        }, listenerOptions);
+        const crafting = getTabPanel("crafting");
+        crafting?.addEventListener("change", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-formula-quantity]")) return;
+            const row = input.closest("[data-formula-index]");
+            void CraftingController.quantity(this.actor, row?.closest("[data-crafting-id]")?.dataset.craftingId, Number(row?.dataset.formulaIndex), input.value);
+        }, listenerOptions);
+        crafting?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-formula-quantity]")) return;
+            if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+            if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
+        }, listenerOptions);
+        crafting?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        crafting?.addEventListener("drop", (event) => void CraftingController.drop(this.actor, event, event.target), listenerOptions);
+        const proficiencies = getTabPanel("proficiencies");
+        proficiencies?.addEventListener("change", async (event) => {
+            const select = event.target;
+            if (!select?.matches?.("[data-rank-control]")) return;
+            await ProficienciesController.updateRank(this.actor, { ...select.dataset, rank: Number(select.value) });
+            // The resolved document update has completed PF2e preparation: rebuild from the new Statistic objects.
+            await this.render();
+        }, listenerOptions);
+        const effects = getTabPanel("effects");
+        effects?.addEventListener("dragstart", (event) => {
+            const target = event.target?.closest?.("[draggable][data-item-id]");
+            if (target) EffectsController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        effects?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        effects?.addEventListener("drop", (event) => void EffectsController.drop(this.actor, event), listenerOptions);
+        const biography = getTabPanel("biography");
+        biography?.addEventListener("change", (event) => {
+            const input = event.target;
+            if (input?.matches?.("[data-biography-field]")) {
+                void BiographyController.updateText(this.actor, input.dataset.biographyField, input.value);
+            } else if (input?.matches?.("[data-biography-list-input]")) {
+                const row = input.closest("[data-biography-list]");
+                void BiographyController.updateListEntry(this.actor, row?.dataset.biographyList, Number(input.dataset.index), input.value);
+            }
+        }, listenerOptions);
+        biography?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-biography-field], [data-biography-list-input]")) return;
+            if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+            if (event.key === "Escape") {
+                event.preventDefault();
+                input.value = input.matches("[data-biography-field]")
+                    ? BiographyController.value(this.actor, input.dataset.biographyField)
+                    : input.defaultValue;
+                input.blur();
+            }
+        }, listenerOptions);
+        const pfs = getTabPanel("pfs");
+        pfs?.addEventListener("change", async (event) => {
+            const input = event.target;
+            let accepted;
+            if (input?.matches?.("[data-pfs-number]")) {
+                accepted = await PFSController.updateOrganizedPlayNumber(this.actor, input.dataset.pfsNumber, input.value);
+            } else if (input?.matches?.("[data-pfs-level-bump]")) {
+                accepted = await PFSController.toggleLevelBump(this.actor, input.checked);
+            } else if (input?.matches?.("[data-pfs-faction]")) {
+                accepted = await PFSController.updateFaction(this.actor, input.value);
+            } else if (input?.matches?.("[data-pfs-reputation]")) {
+                accepted = await PFSController.updateReputation(this.actor, input.dataset.pfsReputation, input.value);
+            } else return;
+            if (!accepted && input.matches("[data-pfs-level-bump]")) {
+                input.checked = Boolean(this.actor.system.pfs.levelBump);
+            } else if (!accepted && input.matches("[data-pfs-faction]")) {
+                input.value = this.actor.system.pfs.currentFaction;
+            } else if (!accepted) {
+                input.value = PFSController.value(this.actor, input.dataset.pfsNumber, input.dataset.pfsReputation);
+            }
+        }, listenerOptions);
+        pfs?.addEventListener("keydown", (event) => {
+            const input = event.target;
+            if (!input?.matches?.("[data-pfs-number], [data-pfs-reputation]")) return;
+            if (event.key === "Enter") { event.preventDefault(); input.blur(); }
+            if (event.key === "Escape") { event.preventDefault(); input.value = input.defaultValue; input.blur(); }
+        }, listenerOptions);
+        pfs?.addEventListener("dragstart", (event) => {
+            const target = event.target?.closest?.("[draggable][data-item-id]");
+            if (target) PFSController.dragStart(this.actor, event, target);
+        }, listenerOptions);
+        pfs?.addEventListener("dragover", (event) => event.preventDefault(), listenerOptions);
+        pfs?.addEventListener("drop", (event) => void PFSController.drop(this.actor, event), listenerOptions);
     }
 
     async #updateActorName(input) {
@@ -456,10 +678,10 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     #registerDocumentHooks() {
         const renderActor = (actor) => {
-            if (actor.uuid === this.actor.uuid && !BiographyEditor.isEditing(this)) void this.render();
+            if (actor.uuid === this.actor.uuid && !this.#biographyEditor) void this.render();
         };
         const renderItem = (item) => {
-            if (item.actor?.uuid === this.actor.uuid && !BiographyEditor.isEditing(this)) void this.render();
+            if (item.actor?.uuid === this.actor.uuid && !this.#biographyEditor) void this.render();
         };
         for (const [hook, callback] of [
             ["updateActor", renderActor],
@@ -471,7 +693,5 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     #hooks = [];
     #renderListeners = null;
+    #biographyEditor = null;
 }
-
-/** Shared ApplicationV2 action semantics consumed by actor-explicit GM panes. */
-export const CHARACTER_ACTIONS = PF2eCharacterSheetV2.DEFAULT_OPTIONS.actions;

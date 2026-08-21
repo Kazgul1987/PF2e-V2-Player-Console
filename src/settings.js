@@ -60,7 +60,6 @@ export function registerSettings(onPresentationChange, onSidebarChange) {
         default: true,
         onChange: onSidebarChange,
     });
-
 }
 
 export function getPresentationSettings() {
