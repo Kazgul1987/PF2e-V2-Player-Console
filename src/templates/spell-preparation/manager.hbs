@@ -1,0 +1,39 @@
+{{#if unavailable}}
+<p class="preparation-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.PreparationUnavailable"}}</p>
+{{else}}
+<div class="preparation-columns">
+    <section class="preparation-pane known-spells">
+        <h2><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.KnownSpells"}}</h2>
+        {{#each knownGroups as |group|}}
+        <section class="preparation-rank">
+            <h3>{{group.label}}</h3>
+            <ol>{{#each group.spells as |spell|}}
+                <li class="preparation-spell" data-spell-id="{{spell.id}}">
+                    <img src="{{spell.img}}" alt=""><span class="preparation-name"><strong>{{spell.name}}</strong><small>{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Rank" rank=spell.rank}}</small></span>
+                    <span class="preparation-traits">{{#each spell.visibleTraits}}<span class="trait">{{this}}</span>{{/each}}{{#if spell.hiddenTraitCount}}<span class="trait trait-overflow" title="{{spell.hiddenTraitLabels}}">+{{spell.hiddenTraitCount}}</span>{{/if}}</span>
+                    {{#if @root.editable}}<button type="button" data-action="prepareKnown" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.ChooseSlot'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.PrepareNamed' spell=spell.name}}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Prepare"}}</button>{{/if}}
+                </li>
+            {{/each}}</ol>
+        </section>
+        {{else}}<p class="preparation-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.NoKnownSpells"}}</p>{{/each}}
+    </section>
+    <section class="preparation-pane prepared-slots">
+        <h2><i class="fa-solid fa-table-cells" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.PreparedSlots"}}</h2>
+        {{#each groups as |group|}}
+        <section class="preparation-rank">
+            <h3>{{group.label}}</h3>
+            <ol>{{#each group.slots as |slot|}}
+                <li class="preparation-slot {{#if slot.empty}}empty{{/if}} {{#if slot.expended}}expended{{/if}}" data-entry-id="{{@root.id}}" data-group-id="{{group.id}}" data-slot-index="{{slot.slotIndex}}" {{#unless slot.empty}}data-spell-id="{{slot.spellId}}" draggable="{{@root.editable}}"{{/unless}}>
+                    <span class="slot-number">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.SlotNumber" number=slot.displayNumber}}</span>
+                    {{#if slot.empty}}<span class="slot-state"><i class="fa-regular fa-square" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.EmptyPreparedSlot"}}</span>
+                        {{#if @root.editable}}<button type="button" data-action="prepareSlot" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.ChooseSpell'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.ChooseSpell'}}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Prepare"}}</button>{{/if}}
+                    {{else}}<img src="{{slot.img}}" alt=""><strong>{{slot.name}}</strong><span class="slot-state">{{#if slot.expended}}<i class="fa-solid fa-ban" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Expended"}}{{else}}<i class="fa-solid fa-check" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Available"}}{{/if}}</span>
+                        {{#if @root.editable}}<button type="button" data-action="unprepareSlot" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Unprepare'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.Unprepare'}}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>{{/if}}
+                    {{/if}}
+                </li>
+            {{/each}}</ol>
+        </section>
+        {{/each}}
+    </section>
+</div>
+{{/if}}

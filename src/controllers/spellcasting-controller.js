@@ -4,14 +4,18 @@ import { renderItemSummary } from "../pf2e/item-summary.js";
 export class SpellcastingController {
     static #collection(actor, id) { return actor?.spellcasting?.collections?.get?.(id) ?? null; }
     static #spell(actor, id) { return actor?.items?.get?.(id) ?? null; }
-    static #editable(actor) {
+    static #editable(actor, { notify = true } = {}) {
         const allowed = actor?.canUserModify?.(game.user, "update") === true;
-        if (!allowed) ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Errors.NotEditable"));
+        if (!allowed && notify) ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Errors.NotEditable"));
         return allowed;
     }
+    static collection(actor, id) { return this.#collection(actor, id); }
+    static isEditable(actor, options) { return this.#editable(actor, options); }
     static async #preparedSlot(collection, groupId, slotIndex) {
         if (!collection?.entry || collection.entry.isPrepared !== true || collection.entry.isFlexible === true ||
-            collection.entry.isRitual === true || !Number.isInteger(slotIndex) || slotIndex < 0) return null;
+            collection.entry.isRitual === true || collection.entry.isSpontaneous === true ||
+            collection.entry.isInnate === true || collection.entry.isFocusPool === true ||
+            !Number.isInteger(slotIndex) || slotIndex < 0) return null;
         const data = await collection.entry.getSheetData();
         const group = data.groups?.find((candidate) => String(candidate.id) === String(groupId));
         return group && slotIndex < group.active.length ? { group, slotIndex } : null;
@@ -84,6 +88,80 @@ export class SpellcastingController {
             if (!spell || !await this.#preparedSlot(collection, data.groupId, Number(data.slotIndex))) return;
             return collection.prepareSpell(spell, data.groupId, Number(data.slotIndex));
         } catch (error) { this.#report(error); }
+    }
+    static async prepareDirect(actor, data) {
+        if (!this.#editable(actor)) return;
+        const collection = this.#collection(actor, data.entryId);
+        try {
+            const target = await this.#preparedSlot(collection, data.groupId, Number(data.slotIndex));
+            const spell = collection?.get?.(data.spellId);
+            if (!target || target.group.active[target.slotIndex] || !spell) return;
+            return collection.prepareSpell(spell, data.groupId, Number(data.slotIndex));
+        } catch (error) { this.#report(error); }
+    }
+    static async chooseSpell(actor, data) {
+        const collection = this.#collection(actor, data.entryId);
+        try {
+            const target = await this.#preparedSlot(collection, data.groupId, Number(data.slotIndex));
+            if (!target || target.group.active[target.slotIndex]) return null;
+            const prepList = (await collection.entry.getSheetData({ prepList: true })).prepList ?? {};
+            const rank = data.groupId === "cantrips" ? 0 : Number(data.groupId);
+            if (!Number.isInteger(rank)) return null;
+            const spells = Object.entries(prepList)
+                .filter(([knownRank]) => rank === 0 ? Number(knownRank) === 0 : Number(knownRank) > 0 && Number(knownRank) <= rank)
+                .flatMap(([, entries]) => entries.map(({ spell }) => spell)).filter(Boolean);
+            return this.#choose(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Spellcasting.ChooseSpell"), "spellId",
+                spells.map((spell) => ({ value: spell.id, label: spell.name })));
+        } catch (error) { this.#report(error); return null; }
+    }
+    static async chooseSlot(actor, entryId, spellId) {
+        const collection = this.#collection(actor, entryId);
+        try {
+            const data = await collection?.entry?.getSheetData({ prepList: true });
+            const known = Object.entries(data?.prepList ?? {}).flatMap(([rank, entries]) =>
+                entries.map(({ spell }) => ({ spell, rank: Number(rank) }))).find(({ spell }) => spell?.id === spellId);
+            if (!known) return null;
+            const targets = (data.groups ?? []).flatMap((group) => {
+                const rank = group.id === "cantrips" ? 0 : Number(group.number ?? group.id);
+                if (rank === 0 ? known.rank !== 0 : known.rank === 0 || known.rank > rank) return [];
+                return (group.active ?? []).flatMap((active, slotIndex) => active ? [] : [{
+                    value: `${group.id}:${slotIndex}`,
+                    label: `${game.i18n.localize(group.label)} — ${game.i18n.format("PF2E_V2_PLAYER_CONSOLE.Spellcasting.SlotNumber", { number: slotIndex + 1 })}`,
+                }]);
+            });
+            const selected = await this.#choose(game.i18n.format("PF2E_V2_PLAYER_CONSOLE.Spellcasting.PrepareNamed", { spell: known.spell.name }), "slot", targets);
+            if (!selected) return null;
+            const separator = selected.lastIndexOf(":");
+            return { groupId: selected.slice(0, separator), slotIndex: Number(selected.slice(separator + 1)) };
+        } catch (error) { this.#report(error); return null; }
+    }
+    static async #choose(title, name, choices) {
+        if (!choices.length) {
+            ui.notifications.info(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Spellcasting.NoEligibleTargets"));
+            return null;
+        }
+        const options = choices.map(({ value, label }) => `<option value="${foundry.utils.escapeHTML(value)}">${foundry.utils.escapeHTML(label)}</option>`).join("");
+        return foundry.applications.api.DialogV2.wait({
+            window: { title }, content: `<div class="standard-form"><label>${foundry.utils.escapeHTML(title)}<select name="${name}">${options}</select></label></div>`,
+            buttons: [{ action: "choose", label: game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Spellcasting.Prepare"), icon: "fa-solid fa-plus", default: true,
+                callback: (_event, button) => {
+                    const form = button.closest("form");
+                    return form ? new foundry.applications.ux.FormDataExtended(form).object[name] : null;
+                } }, { action: "cancel", label: game.i18n.localize("Cancel"), icon: "fa-solid fa-xmark", callback: () => null }],
+            rejectClose: false,
+        });
+    }
+    static async openPreparationManager(actor, entryId) {
+        if (!this.#editable(actor)) return;
+        const collection = this.#collection(actor, entryId);
+        if (!await this.#preparedSlotEntry(collection)) return;
+        const { SpellPreparationManager } = await import("../app/spell-preparation/spell-preparation-manager.js");
+        return new SpellPreparationManager({ actor, entryId }).render({ force: true });
+    }
+    static async #preparedSlotEntry(collection) {
+        const entry = collection?.entry;
+        return !!entry && entry.isPrepared === true && entry.isFlexible !== true && entry.isRitual !== true &&
+            entry.isSpontaneous !== true && entry.isInnate !== true && entry.isFocusPool !== true;
     }
     static async unprepare(actor, data) {
         if (!this.#editable(actor)) return;

@@ -16,10 +16,32 @@ export class SpellcastingAdapter {
         return { entries: entries.sort((a, b) => a.sort - b.sort), empty: entries.length === 0 };
     }
 
+    /** Build the manager view exclusively from Core's preparation sheet data. */
+    static async prepareManager(collection) {
+        const entry = collection?.entry;
+        if (!entry || entry.isPrepared !== true || entry.isFlexible === true || entry.isRitual === true ||
+            entry.isSpontaneous === true || entry.isInnate === true || entry.isFocusPool === true) return null;
+        const data = await entry.getSheetData({ prepList: true });
+        const groups = (data.groups ?? []).map((group) => ({
+            id: String(group.id),
+            label: game.i18n.localize(group.label),
+            number: group.number ?? (group.id === "cantrips" ? 0 : Number(group.id)),
+            slots: (group.active ?? []).map((active, slotIndex) => this.#managerSlot(active, slotIndex)),
+        })).filter((group) => group.slots.length > 0);
+        const knownGroups = Object.entries(data.prepList ?? {}).map(([rank, entries]) => ({
+            rank: Number(rank),
+            label: groups.find((group) => Number(group.number) === Number(rank))?.label ??
+                game.i18n.format("PF2E_V2_PLAYER_CONSOLE.Spellcasting.Rank", { rank }),
+            spells: entries.map(({ spell }) => this.#knownSpell(spell)).filter(Boolean),
+        })).filter((group) => group.spells.length > 0);
+        return { id: entry.id, name: entry.name, groups, knownGroups };
+    }
+
     static #entry(data, focusPool) {
         const statistic = data.statistic;
         const isFocusPool = !!data.isFocusPool;
-        const canPrepareSlots = data.isPrepared === true && data.isFlexible !== true && data.isRitual !== true;
+        const canPrepareSlots = data.isPrepared === true && data.isFlexible !== true && data.isRitual !== true &&
+            data.isSpontaneous !== true && data.isInnate !== true && data.isFocusPool !== true;
         return {
             id: data.id, name: data.name, sort: data.sort ?? 0, category: game.i18n.localize(CONFIG.PF2E.preparationType?.[data.category] ?? data.category),
             tradition: data.tradition ? game.i18n.localize(CONFIG.PF2E.magicTraditions?.[data.tradition] ?? data.tradition) : null,
@@ -76,6 +98,26 @@ export class SpellcastingAdapter {
             traits, visibleTraits, hiddenTraits, hiddenTraitCount: hiddenTraits.length,
             hiddenTraitLabels: hiddenTraits.join(", "), actionCost: spell.system?.time?.value ?? null,
             isPreparedSlot: canPrepareSlots, canPrepare: false, canUnprepare: canPrepareSlots,
+        };
+    }
+
+    static #knownSpell(spell) {
+        if (!spell) return null;
+        const traits = [...(spell.system?.traits?.value ?? [])].map((slug) =>
+            game.i18n.localize(CONFIG.PF2E.spellTraits?.[slug] ?? slug));
+        return {
+            id: spell.id, name: spell.name, img: spell.img, rank: spell.baseRank ?? spell.rank,
+            visibleTraits: traits.slice(0, this.MAX_VISIBLE_TRAITS),
+            hiddenTraitCount: Math.max(0, traits.length - this.MAX_VISIBLE_TRAITS),
+            hiddenTraitLabels: traits.slice(this.MAX_VISIBLE_TRAITS).join(", "),
+        };
+    }
+
+    static #managerSlot(active, slotIndex) {
+        if (!active?.spell) return { slotIndex, displayNumber: slotIndex + 1, empty: true, expended: !!active?.expended };
+        return {
+            slotIndex, displayNumber: slotIndex + 1, empty: false, expended: !!active.expended,
+            spellId: active.spell.id, name: active.spell.name, img: active.spell.img,
         };
     }
 }

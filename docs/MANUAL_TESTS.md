@@ -1149,3 +1149,56 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M14.3-XP-07 – Ornamentation:** Check Off, Subtle, and Ornate. Confirm their simple, highlighted, and inset segment treatments create no layout issue.
 - **M14.3-XP-08 – Compact Density:** Confirm all ten segments remain visible in Compact density.
 - **M14.3-XP-09 – Detached:** Detach the Character tab and test wide, medium, and narrow sizes. Confirm deity and XP remain visible without horizontal overflow.
+
+## M14.4 – Full Prepared Spell Management UI
+
+### M14.4-PREPUI-01 – Button Visibility
+Open Spellcasting for an editable, prepared, non-flexible entry. Verify the labeled **Prepare Spells** button is visible in its entry header.
+
+### M14.4-PREPUI-02 – No Button for Spontaneous
+Open an editable spontaneous entry. Verify no **Prepare Spells** button appears.
+
+### M14.4-PREPUI-03 – No Button for Flexible Prepared
+Open an editable flexible-prepared entry. Verify no classic preparation button or manager is offered.
+
+### M14.4-PREPUI-04 – Open Manager
+Click **Prepare Spells**. Verify the resizable Application V2 manager opens and remains usable.
+
+### M14.4-PREPUI-05 – Known Spells
+Verify known spells come from the selected entry, are grouped under Cantrips/Rank headings, and show compact icons, ranks, and traits.
+
+### M14.4-PREPUI-06 – Empty Slots
+Verify every empty classic prepared slot is visible and has a labeled Prepare action.
+
+### M14.4-PREPUI-07 – Prepare from Known Spell
+Click Prepare beside a known spell, choose one of the offered valid slots, and verify both manager and main sheet update.
+
+### M14.4-PREPUI-08 – Prepare from Empty Slot
+Click Prepare on an empty slot. Verify only eligible known spells are offered and the selected spell is prepared through Core.
+
+### M14.4-PREPUI-09 – Unprepare
+Unprepare an occupied slot. Verify the slot becomes empty while the spell remains in Known Spells.
+
+### M14.4-PREPUI-10 – Swap
+Drag one prepared slot onto another slot in the same rank. Verify Core `swapSlotPositions(...)` is called and the order persists.
+
+### M14.4-PREPUI-11 – Expended Spell
+Open a manager containing an expended slot. Verify it remains occupied and is visually labeled Expended rather than Empty.
+
+### M14.4-PREPUI-12 – Cantrips
+Prepare, unprepare, and swap prepared cantrips. Verify Core accepts the operations and non-cantrips are never offered to cantrip slots.
+
+### M14.4-PREPUI-13 – Higher Rank
+Choose a lower-rank known spell for a higher-rank slot. Verify it is offered only on the Core-compatible rank path and Core remains the final validator.
+
+### M14.4-PREPUI-14 – Read-only Actor
+Open the same Actor as a user without update permission. Verify the sheet remains readable and has no preparation button or mutation controls/D&D.
+
+### M14.4-PREPUI-15 – Detached
+Detach the character sheet, open the manager, and exercise prepare, unprepare, and swap. Verify no main-window DOM dependency or cross-window error.
+
+### M14.4-PREPUI-16 – Themes
+Exercise the manager in Remaster, Classic, and Dark with ornamentation Off, Subtle, and Ornate. Verify readable tokens and controls.
+
+### M14.4-PREPUI-17 – Compact
+Resize the manager narrowly and test both density settings. Verify the two panes stack, rows stay compact, and no horizontal scrollbar or collision is normal.

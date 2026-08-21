@@ -13,6 +13,7 @@
                     <div class="spell-statistics">
                         {{#if entry.canAttack}}<button type="button" data-action="spellAttack" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.RollAttack'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.RollAttack'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.Attack"}} {{numberFormat entry.attack sign=true}}</button>{{/if}}
                         {{#if entry.dc}}<span title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.DC'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.DC"}} {{entry.dc}}</span>{{/if}}
+                        {{#if @root.editable}}{{#if entry.canPrepareSlots}}<button type="button" class="prepare-spells-button" data-action="openSpellPreparation" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.PrepareSpellsHint'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Spellcasting.PrepareSpells'}}"><i class="fa-solid fa-book-open-reader" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Spellcasting.PrepareSpells"}}</button>{{/if}}{{/if}}
                     </div>
                 </header>
                 {{#each entry.groups as |group|}}
