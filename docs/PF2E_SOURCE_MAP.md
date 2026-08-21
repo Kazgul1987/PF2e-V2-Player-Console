@@ -454,3 +454,18 @@ For a non-PF2e-compatible Item lacking `getDescription`, the helper falls back i
 | IWR display formatter | `reference/pf2e/src/module/actor/data/iwr.ts` (`IWR#label` / `#createLabel`) | consume each prepared instance's `label`, preserving localized exceptions and resistance `doubleVs` semantics |
 | Proficiency rank labels | `reference/pf2e/src/scripts/config/index.ts` (`CONFIG.PF2E.proficiencyLevels`) | localize the configured label for ranks 0–4; no module rank-name mapping |
 | Save / Perception rank | `reference/pf2e/src/module/actor/character/document.ts` prepared Statistics; official `reference/pf2e/src/module/actor/character/sheet.ts` `numberToRank` preparation | `actor.saves.*.rank` and `actor.perception.rank` projected with the Core-configured label |
+
+## M14.4 – Prepared Spell Management
+
+The pinned PF2e V14 source includes `SpellPreparationApp`, but it is a system-internal Svelte application imported by the Core creature sheet rather than a public runtime service. The console therefore owns a small Application V2 view while delegating every rule-bearing operation to the live collection.
+
+| Concern | Verified current Core call-site | Console boundary |
+| --- | --- | --- |
+| Prepared entry detection | `src/module/item/spellcasting-entry/document.ts:54-75,371-394`; `src/module/actor/creature/apps/spell-preparation/app.ts:76-86` | Uses `isPrepared` and excludes the direct Core flags `isFlexible`, `isRitual`, `isSpontaneous`, `isInnate`, and `isFocusPool`. |
+| Flexible distinction | `src/module/item/spellcasting-entry/document.ts:58-60`; `src/module/actor/creature/apps/spell-preparation/app.ts:80-104` | `entry.isFlexible === true` suppresses the classic manager; no inferred class/tradition rule. |
+| Known/preparation list | `src/module/actor/creature/apps/spell-preparation/app.ts:78,124-146`; `src/module/item/spellcasting-entry/document.ts:371-394`; `collection.ts:328-340` | Reads `entry.getSheetData({ prepList: true }).prepList`; never filters `actor.items`. |
+| Slot group/rank structure | `src/module/item/spellcasting-entry/collection.ts:153-308`; `src/module/actor/creature/apps/spell-preparation/app.ts:88-121` | Projects Core `groups[].id`, `number`, and `active[]`; Cantrips retain the `cantrips` group ID. |
+| Prepare | `src/module/actor/creature/apps/spell-preparation/app.ts:154-160`; `src/module/actor/creature/sheet.ts:386-391`; `collection.ts:119-139` | Calls `collection.prepareSpell(spell, groupId, slotIndex)` after resolving a live spell from that collection. Core validates cantrip and base-rank compatibility. |
+| Unprepare | `src/module/actor/creature/apps/spell-preparation/app.ts:162-168`; `src/module/actor/creature/sheet.ts:199-208` | Calls `collection.prepareSpell(null, groupId, slotIndex)`; never deletes the Spell Item. |
+| Swap | `src/module/actor/creature/sheet.ts:340-360`; `src/module/item/spellcasting-entry/collection.ts:101-117` | Same-entry/same-group D&D calls `collection.swapSlotPositions(groupId, sourceIndex, targetIndex)`; no direct slot-array write. |
+| Expended separation | `src/module/actor/creature/sheet.ts:211-222`; `src/module/item/spellcasting-entry/collection.ts:141-151` | Displays `active.expended` separately from occupancy; preparation management does not toggle it. |

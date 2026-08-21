@@ -76,6 +76,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             unprepareSpell: PF2eCharacterSheetV2.#spellAction,
             toggleSlotExpended: PF2eCharacterSheetV2.#spellAction,
             spellAttack: PF2eCharacterSheetV2.#spellAction,
+            openSpellPreparation: PF2eCharacterSheetV2.#spellAction,
             openFormula: PF2eCharacterSheetV2.#craftingAction,
             formulaToChat: PF2eCharacterSheetV2.#craftingAction,
             formulaSummary: PF2eCharacterSheetV2.#craftingAction,
@@ -317,6 +318,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             case "unprepareSpell": return SpellcastingController.unprepare(this.actor, data);
             case "toggleSlotExpended": return SpellcastingController.expend(this.actor, data);
             case "spellAttack": return SpellcastingController.attack(this.actor, data.entryId, event);
+            case "openSpellPreparation": return SpellcastingController.openPreparationManager(this.actor, data.entryId);
             case "spellSummary": {
                 const summary = row?.querySelector(":scope > .item-summary");
                 if (!summary) return;

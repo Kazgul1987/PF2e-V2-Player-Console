@@ -139,3 +139,11 @@ Sidebar semantic icons are Font Awesome presentation only. A fixed icon column a
 Character identity reads the PF2e Character Document's prepared `actor.deity` reference and projects only its document-owned name. Experience reads `actor.system.details.xp` (`value`, `min`, `max`, and prepared `pct`). Core's `pct` is preferred; only when it is unavailable does the adapter calculate `(value - min) / (max - min) * 100`, with a zero result for a non-positive range.
 
 Clamping and the ten-segment fill calculation are presentation-only. They neither mutate Core's XP data nor interpret level-up, reset, variant, or milestone semantics. The sheet implements no local leveling or XP rules and exposes no XP mutation control.
+
+## Prepared Spell Management
+
+The module owns a compact, resizable `HandlebarsApplicationMixin(ApplicationV2)` management surface; it does not expose or copy PF2e's private Svelte preparation application. The manager registers with the Actor application collection for document-driven live renders, scopes all DOM listeners to its own Application root, and uses the same sheet-local theme, density, and ornamentation attributes, making it safe for detached windows.
+
+PF2e Core owns all rules. Known spells, rank groups, active/empty slots, and expended state are projected from `entry.getSheetData({ prepList: true })`; the module does not scan `actor.items` or persist a parallel slot model. Candidate controls only narrow the rank groups Core supplies, while `collection.prepareSpell(...)` remains the final cantrip/heightening validator. Unprepare delegates `prepareSpell(null, ...)`, and same-rank D&D delegates `swapSlotPositions(...)`. No template performs a document mutation and no local spell, slot, or rank rule engine exists.
+
+Eligibility uses Core's prepared-entry flags only: `isPrepared === true`, with `isFlexible`, `isRitual`, `isSpontaneous`, `isInnate`, and `isFocusPool` all false. In particular, flexible preparation is detected directly through Core's `entry.isFlexible` / sheet-data `isFlexible`, never through class, tradition, or item-name inference.

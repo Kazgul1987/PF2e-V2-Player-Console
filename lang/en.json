@@ -80,7 +80,18 @@
       "Prepare": "Prepare spell",
       "KnownSpell": "Known spell",
       "NoKnownSpells": "No eligible known spells are available for this slot.",
-      "Rank": "Rank {rank}"
+      "Rank": "Rank {rank}",
+      "PrepareSpells": "Prepare Spells",
+      "PrepareSpellsHint": "Open prepared spell management",
+      "PreparationTitle": "Prepare Spells — {actor}",
+      "PreparationUnavailable": "This spellcasting entry is no longer available for classic preparation.",
+      "KnownSpells": "Known Spells",
+      "PreparedSlots": "Prepared Slots",
+      "ChooseSlot": "Choose a valid prepared slot",
+      "ChooseSpell": "Choose a valid known spell",
+      "PrepareNamed": "Prepare {spell}",
+      "SlotNumber": "Slot {number}",
+      "NoEligibleTargets": "No eligible preparation targets are available."
     },
     "Crafting": {
       "Empty": "No crafting abilities or known formulas",

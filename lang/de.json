@@ -80,7 +80,18 @@
       "Prepare": "Zauber vorbereiten",
       "KnownSpell": "Bekannter Zauber",
       "NoKnownSpells": "Für diesen Platz sind keine geeigneten bekannten Zauber verfügbar.",
-      "Rank": "Rang {rank}"
+      "Rank": "Rang {rank}",
+      "PrepareSpells": "Zauber vorbereiten",
+      "PrepareSpellsHint": "Verwaltung vorbereiteter Zauber öffnen",
+      "PreparationTitle": "Zauber vorbereiten — {actor}",
+      "PreparationUnavailable": "Dieser Zaubereintrag ist nicht mehr für klassische Vorbereitung verfügbar.",
+      "KnownSpells": "Bekannte Zauber",
+      "PreparedSlots": "Vorbereitete Plätze",
+      "ChooseSlot": "Gültigen vorbereiteten Platz wählen",
+      "ChooseSpell": "Gültigen bekannten Zauber wählen",
+      "PrepareNamed": "{spell} vorbereiten",
+      "SlotNumber": "Platz {number}",
+      "NoEligibleTargets": "Keine gültigen Vorbereitungsziele verfügbar."
     },
     "Crafting": {
       "Empty": "Keine Herstellungsfähigkeiten oder bekannten Formeln",

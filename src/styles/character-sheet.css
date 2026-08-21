@@ -269,6 +269,7 @@
 .spellcasting-tab .spell-rank h4 { color: var(--pf2e-v2-heading-muted); }
 .spellcasting-tab :is(.spell-entry-meta, .spell-statistics) { color: var(--pf2e-v2-text-muted); }
 .spellcasting-tab .spell-statistics button { color: var(--pf2e-v2-accent-strong); font-weight: 700; }
+.prepare-spells-button { align-items: center; display: inline-flex; gap: .35rem; white-space: nowrap; }
 .focus-pool, .focus-points { align-items: center; display: inline-flex; gap: var(--pf2e-v2-gap-xs); }
 .focus-pool { border-radius: var(--pf2e-v2-radius-sm); color: var(--pf2e-v2-heading-muted); cursor: pointer; font-size: .875rem; font-weight: 600; padding: var(--pf2e-v2-gap-xs); }
 .focus-pool:hover, .focus-pool:focus-visible { background: var(--pf2e-v2-bg-panel-alt); box-shadow: 0 0 0 1px var(--pf2e-v2-focus); outline: none; }
@@ -308,6 +309,26 @@
 .crafting-formula > .item-summary { grid-column: 1 / -1; }
 .crafting-empty { opacity: .75; text-align: center; }
 @media (max-width: 50rem) { .spell-row { grid-template-columns: minmax(10rem, 1fr) auto; } .spell-meta, .spell-row > .slot-state { grid-column: 1 / -1; } }
+.spell-preparation-manager .window-content { min-width: 0; }
+.preparation-columns { display: grid; gap: .75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; }
+.preparation-pane { border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); min-width: 0; padding: .55rem; }
+.preparation-pane > h2 { color: var(--pf2e-v2-heading); font-size: 1.15rem; margin: 0 0 .5rem; }
+.preparation-rank > h3 { border-bottom: 1px solid var(--pf2e-v2-border); color: var(--pf2e-v2-heading-muted); font-size: 1rem; margin: .45rem 0 0; padding: .25rem; }
+.preparation-rank ol { list-style: none; margin: 0; padding: 0; }
+.preparation-spell, .preparation-slot { align-items: center; border-bottom: 1px solid color-mix(in srgb, var(--pf2e-v2-border) 55%, transparent); display: grid; gap: .35rem; min-height: 2.6rem; padding: .3rem; }
+.preparation-spell { grid-template-columns: 2rem minmax(0, 1fr) auto auto; }
+.preparation-slot { grid-template-columns: auto 2rem minmax(0, 1fr) auto auto; }
+.preparation-spell > img, .preparation-slot > img { height: 2rem; object-fit: cover; width: 2rem; }
+.preparation-name { display: flex; flex-direction: column; min-width: 0; text-align: left; }
+.preparation-name :is(strong, small), .preparation-slot > strong { overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.preparation-traits { align-items: center; display: flex; flex-wrap: wrap; gap: .2rem; }
+.preparation-spell button, .preparation-slot button { align-items: center; display: inline-flex; gap: .25rem; min-height: 1.8rem; padding: .2rem .4rem; }
+.preparation-slot.empty { border: 1px dashed color-mix(in srgb, var(--pf2e-v2-accent) 45%, transparent); grid-template-columns: auto minmax(0, 1fr) auto; }
+.preparation-slot.expended { opacity: .65; }
+.preparation-slot[draggable="true"] { cursor: grab; }
+.slot-number { color: var(--pf2e-v2-text-muted); font-size: .75rem; white-space: nowrap; }
+.preparation-empty { color: var(--pf2e-v2-text-muted); padding: 1rem; text-align: center; }
+@media (max-width: 46rem) { .preparation-columns { grid-template-columns: minmax(0, 1fr); } .preparation-spell { grid-template-columns: 2rem minmax(0, 1fr) auto; } .preparation-traits { grid-column: 2 / -1; } }
 .proficiency-columns { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); min-width: 0; }
 .proficiency-section { border: 1px solid var(--color-border-light-primary); border-radius: .3rem; max-width: 100%; min-width: 0; padding: .55rem; }
 .proficiency-section h3 { border-bottom: 1px solid var(--color-border-light-primary); margin: 0 0 .3rem; padding-bottom: .3rem; }
