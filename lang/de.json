@@ -74,7 +74,13 @@
       "Unprepare": "Zauber aus Platz entfernen",
       "CurrentSlots": "Aktuelle Zauberplätze",
       "MaximumSlots": "Maximale Zauberplätze",
-      "AdditionalTraits": "{count} weitere Merkmale: {traits}"
+      "AdditionalTraits": "{count} weitere Merkmale: {traits}",
+      "EmptyPreparedSlot": "Leerer vorbereiteter Platz",
+      "DropToPrepare": "Bekannten Zauber hier ablegen, um ihn vorzubereiten",
+      "Prepare": "Zauber vorbereiten",
+      "KnownSpell": "Bekannter Zauber",
+      "NoKnownSpells": "Für diesen Platz sind keine geeigneten bekannten Zauber verfügbar.",
+      "Rank": "Rang {rank}"
     },
     "Crafting": {
       "Empty": "Keine Herstellungsfähigkeiten oder bekannten Formeln",

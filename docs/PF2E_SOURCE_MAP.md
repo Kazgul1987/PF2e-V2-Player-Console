@@ -269,6 +269,32 @@ Search/filter, blank creation, and Compendium Browser launching remain **pending
 - **Core UI:** `reference/pf2e/static/templates/actors/partials/spell-collection.hbs` exposes group counters only for `group.uses` outside focus pools. Innate uses remain per Spell Item and rituals are virtual.
 - **Runtime API:** persistent `SpellcastingEntryPF2e.update({"system.slots.slotN.value|max": integer})`. The module whitelists the terminal field and rank and lets the Document lifecycle perform final validation.
 
+## Milestone 14.2 – prepared-spell parity
+
+The current v14-dev creature sheet opens the source-internal Svelte `SpellPreparationApp` from
+`src/module/actor/creature/sheet.ts:#openSpellPreparation` for every prepared entry. The app calls
+`entry.getSheetData({ prepList: true })`; its `prepList` is the entry collection's known-spell source.
+Classic prepared ranks use concrete slots, while flexible prepared non-cantrips use signature toggles;
+only flexible cantrips use concrete preparation slots. Because the app class is not exposed as a public
+runtime API, this module uses a small `DialogV2` (an Application V2 surface) for a concrete empty classic
+slot and populates it only from that same prepared `prepList`. It does not query `actor.items` or a
+Compendium.
+
+| Core operation | Verified current call-site | Module runtime call |
+| --- | --- | --- |
+| Prepare / unprepare | `src/module/actor/creature/apps/spell-preparation/app.ts:159,167`; actor-sheet concrete-slot paths at `src/module/actor/creature/sheet.ts:207,390` | `collection.prepareSpell(spellOrNull, groupId, slotIndex)` |
+| Swap occupied prepared slots | `src/module/actor/creature/sheet.ts:340-360` | `collection.swapSlotPositions(groupId, sourceIndex, targetIndex)` after same-entry/group and concrete-slot validation |
+| Add a known spell to a collection | preparation-app drop at `src/module/actor/creature/apps/spell-preparation/app.ts:255`; actor-sheet drops at `src/module/actor/creature/sheet.ts:386,412,464` | `collection.addSpell(item, { groupId })`; Core owns movement/copying and rank validation |
+| Expended state | `src/module/actor/creature/sheet.ts:211-222`; casting also calls it from `src/module/item/spellcasting-entry/document.ts:321` | `collection.setSlotExpendedState(groupId, slotIndex, value)` independently of the prepared Spell ID |
+| Known-spell picker data | `src/module/actor/creature/apps/spell-preparation/app.ts:88-146` | `entry.getSheetData({ prepList: true }).prepList`, then final resolution through the same `collection` |
+
+Classic controls are gated by prepared sheet flags (`isPrepared === true`, `isFlexible !== true`, and
+not ritual). Spontaneous, innate, focus, ritual, and flexible entries receive no classic prepare button,
+drop styling, unprepare control, or prepared-slot swap path. Core's `prepareSpell` remains the final
+cantrip/rank validator. The module only narrows picker rows using the rank groups already supplied by
+`prepList`, matching the eligibility branches in `SpellPreparationApp`; it implements no heightening or
+spell-eligibility engine.
+
 ## Milestone 7 – Crafting
 
 | Core source | Runtime API | Purpose | Module usage |
