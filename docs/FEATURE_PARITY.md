@@ -364,3 +364,11 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Ornamentation Ornate | implemented; runtime sign-off | Controlled double/inset frames and stronger lines without utility-button decoration |
 | Theme-aware decorations | implemented; runtime sign-off | Dedicated bronze/nature, brass/burgundy, and desaturated metal token values for Remaster, Classic, and Dark |
 | Detached-safe decorations | implemented structurally | Sheet-root scope, responsive reduction, pointer-transparent geometry, and no resize-grip z-index |
+
+## Milestone 14.3 – Character identity and XP
+
+| Capability | Status | Notes |
+|---|---|---|
+| Deity display | implemented | Prepared `actor.deity?.name`, with an em dash when no deity is present |
+| XP display | implemented | Read-only prepared `actor.system.details.xp` current and maximum values |
+| Segmented XP progress | implemented | Exactly ten presentation-only segments, including partial fill from prepared percentage |

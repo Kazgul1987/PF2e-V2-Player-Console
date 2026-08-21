@@ -133,3 +133,9 @@ All ornament geometry is CSS-only and theme-aware. It uses borders, gradients, i
 The sidebar HP bar is presentation-only: `CharacterAdapter` reads PF2e's prepared `system.attributes.hp.value` and `max`, then clamps only a display percentage to 0–100. It does not infer a health state or implement an HP rule. Prepared temporary HP is not added in this milestone because it is not needed by the existing sidebar view model and an additional representation would expand the presentation scope.
 
 Sidebar semantic icons are Font Awesome presentation only. A fixed icon column aligns AC, Perception, Initiative, and saves while the existing separate meta row continues to own rank badges and initiative detail. The theme-aware defense token intentionally colors only the AC symbol; it does not represent, inspect, or modify the independently rendered held shield.
+
+## M14.3 Character identity and experience
+
+Character identity reads the PF2e Character Document's prepared `actor.deity` reference and projects only its document-owned name. Experience reads `actor.system.details.xp` (`value`, `min`, `max`, and prepared `pct`). Core's `pct` is preferred; only when it is unavailable does the adapter calculate `(value - min) / (max - min) * 100`, with a zero result for a non-positive range.
+
+Clamping and the ten-segment fill calculation are presentation-only. They neither mutate Core's XP data nor interpret level-up, reset, variant, or milestone semantics. The sheet implements no local leveling or XP rules and exposes no XP mutation control.

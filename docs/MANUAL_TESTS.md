@@ -1135,3 +1135,17 @@ Create an Effect with Spell origin and no effect traits, drop it on Effects, and
 - **M14.1-DENSITY-01:** In Comfortable and Compact, confirm no overlap, a visible HP bar, and uncramped icons.
 - **M14.1-ORNAMENT-01:** With ornamentation Off, Subtle, and Ornate, confirm icons remain informational and unobstructed.
 - **M14.1-DETACHED-01:** In a detached sheet, confirm the HP bar, icons, and stat rows render cleanly at wide and narrow sizes.
+
+## Milestone 14.3 – Character identity and segmented XP
+
+- **M14.3-DEITY-01 – Character with Deity:** Open a character with a deity. Confirm its prepared name is visible and no deity rules are reproduced locally.
+- **M14.3-DEITY-02 – No Deity:** Open a character without a deity. Confirm an em dash is shown, the layout remains clean, and no JavaScript error occurs.
+- **M14.3-XP-01 – Zero XP:** Use 0 / max XP. Confirm all ten segments are empty and the numbers are correct.
+- **M14.3-XP-02 – Partial XP:** Use 735 / 1000 XP. Confirm seven segments are full, the eighth is 35% filled, the remainder are empty, and the numbers are correct.
+- **M14.3-XP-03 – Full XP:** Use max / max XP. Confirm all ten segments are full.
+- **M14.3-XP-04 – Non-1000 Max:** Use a Core/system state with another XP maximum. Confirm the display uses prepared `max` and `pct` without a 1000-XP assumption.
+- **M14.3-XP-05 – Over/Invalid Presentation Safety:** Exercise an out-of-range percentage if possible. Confirm visual fill is clamped to 0–100 while Core data is not changed.
+- **M14.3-XP-06 – Themes:** Check Remaster, Classic, and Dark. Confirm the track, border, fill, text, and numeric value remain legible with sufficient contrast.
+- **M14.3-XP-07 – Ornamentation:** Check Off, Subtle, and Ornate. Confirm their simple, highlighted, and inset segment treatments create no layout issue.
+- **M14.3-XP-08 – Compact Density:** Confirm all ten segments remain visible in Compact density.
+- **M14.3-XP-09 – Detached:** Detach the Character tab and test wide, medium, and narrow sizes. Confirm deity and XP remain visible without horizontal overflow.
