@@ -2,9 +2,11 @@ import { HANDLEBARS_PARTIALS, LOG_PREFIX, MODULE_ID } from "./constants.js";
 import { PF2eCharacterSheetV2 } from "./app/character-sheet/character-sheet-v2.js";
 import { CharacterAdapter } from "./pf2e/character-adapter.js";
 import { registerSettings } from "./settings.js";
+import { GMCharacterConsole, canOpenGMConsole } from "./app/gm-character-console/gm-character-console.js";
 
 const applications = new Map();
 let partialsPromise;
+let gmConsole;
 
 function preloadHandlebarsPartials() {
     partialsPromise ??= foundry.applications.handlebars.loadTemplates(HANDLEBARS_PARTIALS).catch((error) => {
@@ -37,14 +39,24 @@ export function openCharacterSheet(actor) {
     return application;
 }
 
+export function openGMConsole(actors = []) {
+    if (!canOpenGMConsole()) return null;
+    gmConsole ??= new GMCharacterConsole({ actors });
+    for (const actor of actors) gmConsole.addActor(actor, { render: false });
+    void preloadHandlebarsPartials().then(() => gmConsole.render(true)).catch(() => undefined);
+    return gmConsole;
+}
+
 Hooks.once("init", () => {
     const renderedApplications = () => [...applications.values()].filter((application) => application.rendered);
     registerSettings(() => {
         for (const application of renderedApplications()) application.applyPresentationSettings();
+        gmConsole?.applyPresentationSettings();
     }, () => {
         for (const application of renderedApplications()) void application.render();
+        if (gmConsole?.rendered) void gmConsole.render();
     });
-    game.modules.get(MODULE_ID).api = { openCharacterSheet, PF2eCharacterSheetV2 };
+    game.modules.get(MODULE_ID).api = { openCharacterSheet, openGMConsole, PF2eCharacterSheetV2, GMCharacterConsole };
     void preloadHandlebarsPartials().catch(() => undefined);
     console.info(`${LOG_PREFIX} Initialised`);
 });
@@ -57,6 +69,15 @@ Hooks.on("getActorContextOptions", (_application, entries) => {
         onClick: (_event, entry) => {
             const actor = actorFromDirectoryEntry(entry);
             if (actor) openCharacterSheet(actor);
+        },
+    });
+    if (game.user.isGM) entries.push({
+        label: "PF2E_V2_PLAYER_CONSOLE.Actions.AddToConsole",
+        icon: "fa-solid fa-table-columns",
+        visible: (entry) => CharacterAdapter.supports(actorFromDirectoryEntry(entry)),
+        onClick: (_event, entry) => {
+            const actor = actorFromDirectoryEntry(entry);
+            if (actor) openGMConsole([actor]);
         },
     });
 });

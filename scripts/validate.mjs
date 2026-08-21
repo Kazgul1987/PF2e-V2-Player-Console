@@ -28,11 +28,12 @@ for (const language of manifest.languages) {
 for (const template of ["header", "navigation", "character", "actions", "inventory", "spellcasting", "crafting", "proficiencies", "feats", "effects", "biography", "pfs", "inventory-item"]) {
     await access(new URL(`../src/templates/character-sheet/${template}.hbs`, import.meta.url));
 }
+await access(new URL("../src/templates/gm-character-console/console.hbs", import.meta.url));
 console.log("Manifest and module paths are valid.");
 
 const sourceRoot = fileURLToPath(new URL("../src", import.meta.url));
 const sourceFiles = [
-    "module.js", "constants.js", "app/character-sheet/character-sheet-v2.js",
+    "module.js", "constants.js", "app/character-sheet/character-sheet-v2.js", "app/character-view/character-view-context.js", "app/gm-character-console/gm-character-console.js",
     "controllers/roll-controller.js", "controllers/inventory-controller.js", "controllers/action-controller.js", "controllers/feat-controller.js", "controllers/spellcasting-controller.js", "controllers/crafting-controller.js", "controllers/proficiencies-controller.js", "controllers/effects-controller.js", "controllers/biography-controller.js", "controllers/pfs-controller.js",
     "pf2e/character-adapter.js", "pf2e/inventory-adapter.js", "pf2e/actions-adapter.js", "pf2e/feats-adapter.js", "pf2e/spellcasting-adapter.js", "pf2e/crafting-adapter.js", "pf2e/proficiencies-adapter.js", "pf2e/effects-adapter.js", "pf2e/biography-adapter.js", "pf2e/pfs-adapter.js", "pf2e/item-summary.js",
 ];

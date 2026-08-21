@@ -14,6 +14,7 @@
     },
     "Actions": {
       "OpenSheet": "V2-Charakterbogen öffnen",
+      "AddToConsole": "Zur SL-Charakterkonsole hinzufügen",
       "Detach": "In Browserfenster auslagern",
       "Save": "Speichern",
       "SecretPerception": "Geheime Wahrnehmung",
@@ -26,6 +27,16 @@
       "NoStrikes": "Keine vorbereiteten Angriffe",
       "Ammo": "Munition",
       "Cancel": "Abbrechen"
+    },
+    "Console": {
+      "Title": "SL-Charakterkonsole",
+      "Characters": "Charaktere",
+      "Layout": "Bereichslayout",
+      "Grid": "Raster",
+      "Columns": "Spalten",
+      "Rows": "Zeilen",
+      "Remove": "Charakter aus der Konsole entfernen",
+      "Empty": "Füge PF2e-Charaktere über das Kontextmenü des Akteursverzeichnisses hinzu."
     },
     "Labels": {
       "CharacterName": "Charaktername",
@@ -41,6 +52,7 @@
     },
     "Errors": {
       "CharacterOnly": "PF2e V2 Player Console kann nur PF2e-Charaktere öffnen.",
+      "GMOnly": "Die Mehrcharakter-Konsole ist nur für die Spielleitung verfügbar.",
       "DetachUnavailable": "Diese Foundry-Distribution stellt keine ausgelagerten Anwendungsfenster bereit.",
       "NotEditable": "Du kannst diesen Charakter nicht bearbeiten.",
       "NameRequired": "Der Charaktername darf nicht leer sein.",

@@ -14,6 +14,7 @@
     },
     "Actions": {
       "OpenSheet": "Open V2 Character Sheet",
+      "AddToConsole": "Add to GM Character Console",
       "Detach": "Detach to Browser Window",
       "Save": "Save",
       "SecretPerception": "Secret Perception",
@@ -26,6 +27,16 @@
       "NoStrikes": "No prepared strikes",
       "Ammo": "Ammunition",
       "Cancel": "Cancel"
+    },
+    "Console": {
+      "Title": "GM Character Console",
+      "Characters": "Characters",
+      "Layout": "Pane layout",
+      "Grid": "Grid",
+      "Columns": "Columns",
+      "Rows": "Rows",
+      "Remove": "Remove character from console",
+      "Empty": "Add PF2e characters from the Actor Directory context menu."
     },
     "Labels": {
       "CharacterName": "Character name",
@@ -41,6 +52,7 @@
     },
     "Errors": {
       "CharacterOnly": "PF2e V2 Player Console can only open PF2e characters.",
+      "GMOnly": "The multi-character console is available only to GMs.",
       "DetachUnavailable": "This Foundry distribution does not expose detached Application windows.",
       "NotEditable": "You cannot edit this character.",
       "NameRequired": "Character name cannot be empty.",

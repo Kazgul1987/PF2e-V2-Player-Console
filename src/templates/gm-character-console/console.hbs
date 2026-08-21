@@ -1,0 +1,19 @@
+<header class="gm-console-toolbar">
+    <strong>{{localize "PF2E_V2_PLAYER_CONSOLE.Console.Characters"}}</strong>
+    <div role="group" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Console.Layout'}}">
+        <button type="button" data-action="setLayout" data-layout="grid"><i class="fa-solid fa-table-cells"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Console.Grid"}}</button>
+        <button type="button" data-action="setLayout" data-layout="columns"><i class="fa-solid fa-columns"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Console.Columns"}}</button>
+        <button type="button" data-action="setLayout" data-layout="rows"><i class="fa-solid fa-bars"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Console.Rows"}}</button>
+    </div>
+</header>
+<main class="gm-console-panes" data-layout="{{layout}}">
+    {{#each panes}}
+        <section class="gm-character-pane" data-actor-id="{{actorId}}" data-pane-id="{{paneId}}">
+            <button type="button" class="gm-pane-remove" data-action="removePane" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.Console.Remove'}}"><i class="fa-solid fa-xmark"></i></button>
+            {{> "modules/pf2e-v2-player-console/src/templates/character-sheet/header.hbs" view}}
+            {{> "modules/pf2e-v2-player-console/src/templates/character-sheet/sidebar.hbs" view}}
+            {{> "modules/pf2e-v2-player-console/src/templates/character-sheet/navigation.hbs" view}}
+            {{> template view}}
+        </section>
+    {{else}}<p class="gm-console-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Console.Empty"}}</p>{{/each}}
+</main>
