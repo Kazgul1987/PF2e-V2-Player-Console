@@ -182,11 +182,17 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     async _preparePartContext(partId, context, options) {
         const partContext = await super._preparePartContext(partId, context, options);
-        if (TABS.includes(partId)) Object.assign(partContext, await prepareCharacterView(this.actor, {
-            activeTab: partId,
-            editable: this.isEditable,
-        }));
         if (TABS.includes(partId)) {
+            const activeTab = Object.values(context.tabs).find((tab) => tab.active)?.id ?? this.tabGroups.primary;
+            const view = await prepareCharacterView(this.actor, {
+                activeTab,
+                editable: this.isEditable,
+            });
+            const safeView = { ...view };
+            delete safeView.tabs;
+            delete safeView.tab;
+            delete safeView.activeTab;
+            Object.assign(partContext, safeView);
             partContext.tab = context.tabs[partId];
         }
         return partContext;
