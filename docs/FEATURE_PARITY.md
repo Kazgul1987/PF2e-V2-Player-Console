@@ -384,3 +384,6 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Targeted Actor/Item refresh and independent pane tabs | Complete |
 | Biography editing in GM panes | Complete |
 | Prepared spell management with pane Actor context | Complete |
+| Biography cross-pane isolation | Complete |
+| Intentionally empty selection persistence | Complete |
+| Targeted refresh interaction/listener safety | Complete |

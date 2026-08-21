@@ -206,7 +206,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     }
 
     async _onClose(options) {
-        BiographyEditor.close(this);
+        BiographyEditor.close({ owner: this });
         for (const [hook, id] of this.#hooks) Hooks.off(hook, id);
         this.#hooks.length = 0;
         await super._onClose(options);
@@ -416,13 +416,13 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         return BiographyEditor.open({ actor: this.actor, root: this.element, owner: this, target, editable: this.isEditable });
     }
 
-    async #saveBiographyEditor(target) { return BiographyEditor.save({ owner: this, target }); }
-    #closeBiographyEditor() { BiographyEditor.close(this); }
+    async #saveBiographyEditor(target) { return BiographyEditor.save({ owner: this, actorId: this.actor.id, target }); }
+    #closeBiographyEditor() { BiographyEditor.close({ owner: this, actorId: this.actor.id }); }
 
     async _onRender(context, options) {
         // An explicit Application render disconnects the V14 form element, whose callback destroys ProseMirror.
         // Document hooks are deferred while editing, but other render callers still get a clean cancellation.
-        if (BiographyEditor.isEditing(this) && !this.element?.isConnected) BiographyEditor.close(this);
+        if (BiographyEditor.isEditing(this, this.actor.id) && !this.element?.isConnected) BiographyEditor.close({ owner: this, actorId: this.actor.id });
         await super._onRender(context, options);
         this.#applyPresentationSettings();
         this.#renderListeners?.abort();

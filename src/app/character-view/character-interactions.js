@@ -206,10 +206,20 @@ export function bindCharacterPaneListeners({ actor, root, rerender = async () =>
 export class BiographyEditor {
     static #active = new WeakMap();
 
-    static isEditing(owner) { return this.#active.has(owner); }
+    static #editors(owner, { create = false } = {}) {
+        let editors = this.#active.get(owner);
+        if (!editors && create) { editors = new Map(); this.#active.set(owner, editors); }
+        return editors;
+    }
+
+    static isEditing(owner, actorId = null) {
+        const editors = this.#editors(owner);
+        return actorId === null ? Boolean(editors?.size) : editors?.has(actorId) ?? false;
+    }
 
     static async open({ actor, root, owner, target, editable }) {
-        if (this.#active.has(owner) || !editable) return;
+        const editors = this.#editors(owner, { create: true });
+        if (editors.has(actor.id) || !editable) return;
         const container = target.closest("[data-richtext-field]");
         if (!root.contains(container)) return;
         const field = container?.dataset.richtextField;
@@ -222,24 +232,30 @@ export class BiographyEditor {
             name: `system.details.biography.${field}`, value: raw, documentUUID: actor.uuid,
             collaborate: false, toggled: false,
         });
-        this.#active.set(owner, { actor, container, display, editor, field, host });
+        editors.set(actor.id, { actor, container, display, editor, field, host });
         display.hidden = true; host.hidden = false; mount.replaceChildren(editor); editor.focus();
     }
 
-    static async save({ owner, target }) {
-        const active = this.#active.get(owner);
+    static async save({ owner, actorId, target }) {
+        const active = this.#editors(owner)?.get(actorId);
         if (!active || target.closest("[data-richtext-field]") !== active.container) return;
         active.editor.save();
         const value = active.editor.value;
-        this.close(owner);
+        this.close({ owner, actorId });
         await BiographyController.updateRichText(active.actor, active.field, value);
     }
 
-    static close(owner) {
-        const active = this.#active.get(owner);
-        if (!active) return;
-        active.editor.remove(); active.host.hidden = true; active.display.hidden = false;
-        this.#active.delete(owner);
+    static close({ owner, actorId } = {}) {
+        const editors = this.#editors(owner);
+        if (!editors) return;
+        const ids = actorId ? [actorId] : [...editors.keys()];
+        for (const id of ids) {
+            const active = editors.get(id);
+            if (!active) continue;
+            active.editor.remove(); active.host.hidden = true; active.display.hidden = false;
+            editors.delete(id);
+        }
+        if (!editors.size) this.#active.delete(owner);
     }
 }
 
@@ -252,8 +268,14 @@ export class CharacterActionDispatcher {
             case "addBiographyListEntry": return BiographyController.addListEntry(actor, row?.dataset.biographyList);
             case "deleteBiographyListEntry": return BiographyController.deleteListEntry(actor, row?.dataset.biographyList, Number(target.dataset.index));
             case "editBiographyRichText": return BiographyEditor.open({ actor, root: paneRoot, owner: app, target, editable: actor.canUserModify(game.user, "update") });
-            case "saveBiographyRichText": return BiographyEditor.save({ owner: app, target });
-            case "cancelBiographyRichText": return BiographyEditor.close(app);
+            case "saveBiographyRichText": {
+                await BiographyEditor.save({ owner: app, actorId: actor.id, target });
+                return app.refreshPane?.(actor.id);
+            }
+            case "cancelBiographyRichText": {
+                BiographyEditor.close({ owner: app, actorId: actor.id });
+                return app.refreshPane?.(actor.id);
+            }
         }
         const handler = actions[action];
         if (typeof handler === "function") return handler.call({ actor, document: actor, isEditable: actor.canUserModify(game.user, "update") }, event, target);

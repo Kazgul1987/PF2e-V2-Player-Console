@@ -19,5 +19,5 @@
 </header>
 <main class="gm-console-panes" data-layout="{{layout}}">
     {{#each panes}}{{> "modules/pf2e-v2-player-console/src/templates/gm-character-console/pane.hbs" this}}
-    {{else}}<p class="gm-console-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.Console.Empty"}}</p>{{/each}}
+    {{else}}<div class="gm-console-empty"><p>{{localize "PF2E_V2_PLAYER_CONSOLE.Console.Empty"}}</p><button type="button" data-action="selectCharacters">{{localize "PF2E_V2_PLAYER_CONSOLE.Console.SelectCharacters"}}</button></div>{{/each}}
 </main>
