@@ -4,9 +4,12 @@ export const THEME_SETTING = "theme";
 export const DENSITY_SETTING = "density";
 export const ORNAMENTATION_SETTING = "ornamentation";
 export const SIDEBAR_SETTING = "showSidebar";
+export const GM_LAYOUT_SETTING = "gmConsoleLayout";
+export const GM_ACTORS_SETTING = "gmConsoleActors";
+export const GM_FOCUSED_SETTING = "gmConsoleFocusedActor";
 
 /** Register client-owned presentation preferences. */
-export function registerSettings(onPresentationChange, onSidebarChange) {
+export function registerSettings(onPresentationChange, onSidebarChange, onConsoleStructureChange) {
     game.settings.register(MODULE_ID, THEME_SETTING, {
         name: "PF2E_V2_PLAYER_CONSOLE.Settings.Theme.Name",
         hint: "PF2E_V2_PLAYER_CONSOLE.Settings.Theme.Hint",
@@ -60,6 +63,21 @@ export function registerSettings(onPresentationChange, onSidebarChange) {
         default: true,
         onChange: onSidebarChange,
     });
+
+    game.settings.register(MODULE_ID, GM_LAYOUT_SETTING, {
+        name: "PF2E_V2_PLAYER_CONSOLE.Settings.GMLayout.Name",
+        hint: "PF2E_V2_PLAYER_CONSOLE.Settings.GMLayout.Hint",
+        scope: "client", config: true, type: String,
+        choices: { columns: "PF2E_V2_PLAYER_CONSOLE.Console.Columns", grid: "PF2E_V2_PLAYER_CONSOLE.Console.Grid", focused: "PF2E_V2_PLAYER_CONSOLE.Console.Focused" },
+        default: "columns", onChange: onConsoleStructureChange,
+    });
+    game.settings.register(MODULE_ID, GM_ACTORS_SETTING, {
+        name: "PF2E_V2_PLAYER_CONSOLE.Console.SelectCharacters", scope: "client", config: false, type: Array, default: [],
+    });
+    game.settings.register(MODULE_ID, GM_FOCUSED_SETTING, {
+        name: "PF2E_V2_PLAYER_CONSOLE.Console.Focus", scope: "client", config: false, type: String, default: "",
+    });
+
 }
 
 export function getPresentationSettings() {
