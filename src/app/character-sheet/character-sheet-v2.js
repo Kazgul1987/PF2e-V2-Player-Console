@@ -21,6 +21,7 @@ import { PFSAdapter } from "../../pf2e/pfs-adapter.js";
 import { PFSController } from "../../controllers/pfs-controller.js";
 import { getPresentationSettings } from "../../settings.js";
 import { SidebarController } from "../../controllers/sidebar-controller.js";
+import { prepareCharacterView } from "../character-view/character-view-context.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -154,11 +155,11 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     async _prepareContext(options) {
         const presentation = getPresentationSettings();
+        const view = await prepareCharacterView(this.actor, { activeTab: this.tabGroups.primary, editable: this.isEditable });
         return {
             ...(await super._prepareContext(options)),
-            actor: CharacterAdapter.prepare(this.actor),
+            ...view,
             tabs: this._prepareTabs("primary"),
-            editable: this.isEditable,
             ...presentation,
         };
     }
@@ -180,18 +181,13 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     async _preparePartContext(partId, context, options) {
         const partContext = await super._preparePartContext(partId, context, options);
+        if (TABS.includes(partId)) Object.assign(partContext, await prepareCharacterView(this.actor, {
+            activeTab: partId,
+            editable: this.isEditable,
+        }));
         if (TABS.includes(partId)) {
             partContext.tab = context.tabs[partId];
         }
-        if (partId === "inventory") partContext.inventory = InventoryAdapter.prepare(this.actor);
-        if (partId === "actions") partContext.actions = ActionsAdapter.prepare(this.actor);
-        if (partId === "feats") partContext.feats = FeatsAdapter.prepare(this.actor);
-        if (partId === "spellcasting") partContext.spellcasting = await SpellcastingAdapter.prepare(this.actor);
-        if (partId === "crafting") partContext.crafting = await CraftingAdapter.prepare(this.actor);
-        if (partId === "proficiencies") partContext.proficiencies = ProficienciesAdapter.prepare(this.actor, this.isEditable);
-        if (partId === "effects") partContext.effects = EffectsAdapter.prepare(this.actor, this.isEditable);
-        if (partId === "biography") partContext.biography = await BiographyAdapter.prepare(this.actor, this.isEditable);
-        if (partId === "pfs") partContext.pfs = PFSAdapter.prepare(this.actor);
         return partContext;
     }
 
@@ -695,3 +691,6 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     #renderListeners = null;
     #biographyEditor = null;
 }
+
+/** Shared ApplicationV2 action semantics consumed by actor-explicit GM panes. */
+export const CHARACTER_ACTIONS = PF2eCharacterSheetV2.DEFAULT_OPTIONS.actions;
