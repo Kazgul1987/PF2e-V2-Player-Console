@@ -2,7 +2,7 @@
   "id": "pf2e-v2-player-console",
   "title": "PF2e V2 Player Console",
   "description": "An Application V2 character sheet for Pathfinder Second Edition.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "url": "https://github.com/Kazgul1987/PF2e-V2-Player-Console",
 "manifest": "https://github.com/Kazgul1987/PF2e-V2-Player-Console/releases/latest/download/module.json",
 "download": "https://github.com/Kazgul1987/PF2e-V2-Player-Console/releases/latest/download/pf2e-v2-player-console.zip",
