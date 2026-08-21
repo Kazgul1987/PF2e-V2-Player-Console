@@ -78,7 +78,6 @@
 .pf2e-v2-gm-console .gm-console-panes { display: grid; flex: 1 1 auto; gap: .75rem; min-height: 0; overflow: auto; padding-top: .65rem; }
 .pf2e-v2-gm-console .gm-console-panes[data-layout="grid"] { grid-template-columns: repeat(auto-fit, minmax(min(38rem, 100%), 1fr)); }
 .pf2e-v2-gm-console .gm-console-panes[data-layout="columns"] { grid-auto-columns: minmax(38rem, 1fr); grid-auto-flow: column; }
-.pf2e-v2-gm-console .gm-console-panes[data-layout="rows"] { grid-template-columns: minmax(0, 1fr); }
 .pf2e-v2-gm-console .gm-character-pane { background: var(--pf2e-v2-bg); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); container-type: inline-size; display: grid; gap: .5rem; grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr); grid-template-rows: auto auto minmax(20rem, 1fr); min-height: 34rem; min-width: 0; overflow: hidden; padding: .65rem; position: relative; }
 .pf2e-v2-gm-console .gm-character-pane .pc-header { grid-column: 1 / -1; }
 .pf2e-v2-gm-console .gm-character-pane .character-sidebar { grid-column: 1; grid-row: 2 / 4; }

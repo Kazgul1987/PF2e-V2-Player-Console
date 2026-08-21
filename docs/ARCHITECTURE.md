@@ -153,3 +153,15 @@ Eligibility uses Core's prepared-entry flags only: `isPrepared === true`, with `
 `CharacterActionDispatcher` resolves every GM-pane action from an explicit Actor and pane root; the GM Application is never used as a character sheet action receiver. `bindCharacterPaneListeners` binds HP, resources, inventory, spellcasting, crafting, proficiencies, feats, effects, biography, and PFS listeners only beneath the supplied root. Both the normal V2 sheet and GM panes use this binder.
 
 `BiographyEditor` owns editor state independently of `DocumentSheetV2` private fields. Both surfaces call it with an explicit Actor, root, and owner, eliminating private-brand calls on the GM console. Actor/item hooks and independent tab changes are coalesced through `refreshPane(actorId)`, which prepares and replaces only the affected pane; full renders are reserved for selection, layout, focus, and presentation changes.
+
+### Biography Editor Isolation
+
+Biography editor state is scoped by application owner and Actor ID (`WeakMap<owner, Map<actorId, state>>`), so a console may safely host simultaneous editors for different Actors while the normal V2 sheet uses the same implementation. A targeted pane refresh never closes an unrelated Actor's editor. Refresh of the edited Actor is deferred until Save or Cancel, protecting unsaved DOM state; either action then requests the deferred actor-local refresh.
+
+### GM Console Persistence
+
+The client-scoped, hidden `gmConsoleActorsInitialized` flag distinguishes first use from an intentionally empty `gmConsoleActors` selection. First use discovers player-owned Characters, persists that initial selection, and sets the flag. Later opens accept the stored list exactly (including `[]`), prune and persist deleted/invalid IDs, and add only Actors explicitly requested by the launcher API.
+
+### Targeted Refresh Runtime Safety
+
+Normal Actor and Item hooks use actor-local DOM replacement rather than a full console render. ApplicationV2 `data-action` handling is delegated from the unchanged application root and therefore covers replacement panes. Native change, context-menu, keyboard, drag/drop, biography, summary, and spell-preparation listeners are owned by an Actor-specific `AbortController`: the old controller is aborted and removed before replacement, then `bindCharacterPaneListeners(...)` runs exactly once on the new root. Per-Actor refresh queues mark updates arriving during preparation and repeat after the current replacement, while different Actors remain independent.

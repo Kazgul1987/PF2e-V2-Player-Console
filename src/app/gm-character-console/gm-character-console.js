@@ -3,7 +3,7 @@ import { CharacterActionDispatcher, BiographyEditor, bindCharacterPaneListeners 
 import { CHARACTER_TEMPLATE, prepareCharacterView } from "../character-view/character-view-context.js";
 import { LOG_PREFIX, MODULE_ID, TABS } from "../../constants.js";
 import { CharacterAdapter } from "../../pf2e/character-adapter.js";
-import { GM_ACTORS_SETTING, GM_FOCUSED_SETTING, GM_LAYOUT_SETTING, getPresentationSettings } from "../../settings.js";
+import { GM_ACTORS_INITIALIZED_SETTING, GM_ACTORS_SETTING, GM_FOCUSED_SETTING, GM_LAYOUT_SETTING, getPresentationSettings } from "../../settings.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const PANE_TEMPLATE = `modules/${MODULE_ID}/src/templates/gm-character-console/pane.hbs`;
@@ -39,6 +39,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             focusPane: GMCharacterConsole.#focusPane,
             selectFocused: GMCharacterConsole.#selectFocused,
             openSheet: GMCharacterConsole.#openSheet,
+            selectCharacters: GMCharacterConsole.#selectCharacters,
         },
     };
 
@@ -50,21 +51,27 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     #hooks = [];
     #paneListeners = new Map();
     #pendingRefresh = new Map();
+    #refreshAgain = new Set();
 
     constructor({ actors = [], ...options } = {}) {
         if (!gmOnly()) throw new Error(`${LOG_PREFIX} GM Character Console is GM-only`);
         super(options);
         const saved = game.settings.get(MODULE_ID, GM_ACTORS_SETTING);
-        const discovered = playerOwnedCharacters().map((actor) => actor.id);
+        const initialized = game.settings.get(MODULE_ID, GM_ACTORS_INITIALIZED_SETTING);
+        const initial = initialized ? saved : playerOwnedCharacters().map((actor) => actor.id);
         const requested = actors.filter(CharacterAdapter.supports).map((actor) => actor.id);
-        this.#actorIds = this.#validIds([...new Set([...(saved.length ? saved : discovered), ...requested])]);
+        this.#actorIds = this.#validIds([...new Set([...initial, ...requested])]);
         this.#layout = game.settings.get(MODULE_ID, GM_LAYOUT_SETTING);
         this.#focusedActorId = game.settings.get(MODULE_ID, GM_FOCUSED_SETTING) || this.#actorIds[0] || null;
-        void this.#persistActors();
+        void this.#initializeActors(initialized);
     }
 
     get title() { return game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Console.Title"); }
     #validIds(ids) { return ids.filter((id) => CharacterAdapter.supports(game.actors.get(id))); }
+    async #initializeActors(initialized) {
+        await this.#persistActors();
+        if (!initialized) await game.settings.set(MODULE_ID, GM_ACTORS_INITIALIZED_SETTING, true);
+    }
 
     addActor(actor, { render = true } = {}) {
         if (!gmOnly() || !CharacterAdapter.supports(actor)) return false;
@@ -85,8 +92,15 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
 
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
-        this.#actorIds = this.#validIds(this.#actorIds);
-        if (!this.#actorIds.includes(this.#focusedActorId)) this.#focusedActorId = this.#actorIds[0] ?? null;
+        const validIds = this.#validIds(this.#actorIds);
+        if (validIds.length !== this.#actorIds.length) {
+            this.#actorIds = validIds;
+            void this.#persistActors();
+        }
+        if (!this.#actorIds.includes(this.#focusedActorId)) {
+            this.#focusedActorId = this.#actorIds[0] ?? null;
+            void game.settings.set(MODULE_ID, GM_FOCUSED_SETTING, this.#focusedActorId ?? "");
+        }
         const renderedIds = this.#layout === "focused" ? this.#actorIds.filter((id) => id === this.#focusedActorId) : this.#actorIds;
         const panes = (await Promise.all(renderedIds.map((id) => this.#paneContext(id)))).filter(Boolean);
         const ownedIds = new Set(playerOwnedCharacters().map((actor) => actor.id));
@@ -104,6 +118,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         for (const [hook, callback] of [["updateActor", refreshActor], ["createItem", refreshItem], ["updateItem", refreshItem], ["deleteItem", refreshItem]]) {
             this.#hooks.push([hook, Hooks.on(hook, callback)]);
         }
+        this.#hooks.push(["deleteActor", Hooks.on("deleteActor", (actor) => void this.#removeActor(actor.id))]);
     }
 
     async _onRender(context, options) {
@@ -131,18 +146,33 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
 
     refreshPane(actorId) {
         if (this.#layout === "focused" && actorId !== this.#focusedActorId) return Promise.resolve();
-        if (this.#pendingRefresh.has(actorId)) return this.#pendingRefresh.get(actorId);
+        if (BiographyEditor.isEditing(this, actorId)) {
+            this.#refreshAgain.add(actorId);
+            return Promise.resolve();
+        }
+        if (this.#pendingRefresh.has(actorId)) {
+            this.#refreshAgain.add(actorId);
+            return this.#pendingRefresh.get(actorId);
+        }
         const pending = Promise.resolve().then(async () => {
-            const current = this.element?.querySelector(`.gm-character-pane[data-actor-id="${CSS.escape(actorId)}"]`);
-            const pane = await this.#paneContext(actorId);
-            if (!current || !pane) return;
-            BiographyEditor.close(this);
-            const html = await foundry.applications.handlebars.renderTemplate(PANE_TEMPLATE, pane);
-            const template = current.ownerDocument.createElement("template");
-            template.innerHTML = html.trim();
-            const replacement = template.content.firstElementChild;
-            current.replaceWith(replacement);
-            this.#bindPane(replacement);
+            do {
+                this.#refreshAgain.delete(actorId);
+                const current = this.element?.querySelector(`.gm-character-pane[data-actor-id="${CSS.escape(actorId)}"]`);
+                const pane = await this.#paneContext(actorId);
+                if (!current || !pane || BiographyEditor.isEditing(this, actorId)) {
+                    if (BiographyEditor.isEditing(this, actorId)) this.#refreshAgain.add(actorId);
+                    return;
+                }
+                const html = await foundry.applications.handlebars.renderTemplate(PANE_TEMPLATE, pane);
+                const template = current.ownerDocument.createElement("template");
+                template.innerHTML = html.trim();
+                const replacement = template.content.firstElementChild;
+                this.#paneListeners.get(actorId)?.abort();
+                this.#paneListeners.delete(actorId);
+                current.replaceWith(replacement);
+                // ApplicationV2 actions are delegated from the application root; native pane listeners are rebound here.
+                this.#bindPane(replacement);
+            } while (this.#refreshAgain.has(actorId));
         }).finally(() => this.#pendingRefresh.delete(actorId));
         this.#pendingRefresh.set(actorId, pending);
         return pending;
@@ -158,7 +188,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     }
 
     async _onClose(options) {
-        BiographyEditor.close(this);
+        BiographyEditor.close({ owner: this });
         for (const controller of this.#paneListeners.values()) controller.abort();
         for (const [hook, id] of this.#hooks) Hooks.off(hook, id);
         this.#hooks.length = 0;
@@ -169,9 +199,19 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
 
     static async #removePane(_event, target) {
         const id = target.closest("[data-actor-id]")?.dataset.actorId;
+        return this.#removeActor(id);
+    }
+    async #removeActor(id) {
+        BiographyEditor.close({ owner: this, actorId: id });
+        this.#paneListeners.get(id)?.abort();
+        this.#paneListeners.delete(id);
+        this.#pendingRefresh.delete(id);
+        this.#refreshAgain.delete(id);
         this.#actorIds = this.#actorIds.filter((actorId) => actorId !== id);
         this.#tabs.delete(id);
+        if (this.#focusedActorId === id) this.#focusedActorId = this.#actorIds[0] ?? null;
         await this.#persistActors();
+        await game.settings.set(MODULE_ID, GM_FOCUSED_SETTING, this.#focusedActorId ?? "");
         return this.render(true);
     }
     static async #setLayout(_event, target) {
@@ -197,6 +237,10 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     static #openSheet(_event, target) {
         const actor = game.actors.get(target.closest("[data-actor-id]")?.dataset.actorId ?? "");
         return game.modules.get(MODULE_ID)?.api?.openCharacterSheet(actor);
+    }
+    static #selectCharacters() {
+        const selector = this.element?.querySelector(".gm-character-selector");
+        if (selector) selector.open = true;
     }
 }
 
