@@ -372,18 +372,3 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Deity display | implemented | Prepared `actor.deity?.name`, with an em dash when no deity is present |
 | XP display | implemented | Read-only prepared `actor.system.details.xp` current and maximum values |
 | Segmented XP progress | implemented | Exactly ten presentation-only segments, including partial fill from prepared percentage |
-
-## M15.1 GM Console finalization
-
-| Capability | Status |
-| --- | --- |
-| Player-owned character discovery and manual persistent selection | Complete |
-| Persistent columns/grid/focused layouts (columns default) | Complete |
-| Focused lazy rendering | Complete |
-| Shared actor-explicit interaction layer | Complete |
-| Targeted Actor/Item refresh and independent pane tabs | Complete |
-| Biography editing in GM panes | Complete |
-| Prepared spell management with pane Actor context | Complete |
-| Biography cross-pane isolation | Complete |
-| Intentionally empty selection persistence | Complete |
-| Targeted refresh interaction/listener safety | Complete |
