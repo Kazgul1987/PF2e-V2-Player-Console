@@ -1214,3 +1214,14 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **ROLLBACK-07 – Remaining Tabs:** Verify Actions, Crafting, Proficiencies, Feats, Effects, and PFS interactions.
 - **ROLLBACK-08 – Presentation:** Exercise Remaster, Classic, and Dark themes, both densities, all ornamentation modes, sidebar visibility, native tabs, and native resize.
 - **ROLLBACK-09 – Detached:** Detach the normal V2 character sheet and repeat Sidebar, Inventory, Spellcasting/prepared-spell, Biography, tab, presentation, and resize checks in the popout.
+
+## Native tab rendering regression
+
+- **TAB-REGRESSION-01 – Initial Render:** Open the V2 character sheet. Verify exactly one primary tab is active, the default or saved tab is visible, and every other tab panel is hidden.
+- **TAB-REGRESSION-02 – Character → Actions:** Click Actions from Character. Verify Character disappears and only Actions is visible.
+- **TAB-REGRESSION-03 – Actions → Inventory:** Click Inventory from Actions. Verify only Inventory is visible.
+- **TAB-REGRESSION-04 – Spellcasting:** Click Spellcasting. Verify only Spellcasting is visible and no other tab content is displayed at the same time.
+- **TAB-REGRESSION-05 – All Tabs:** Visit Character, Actions, Inventory, Spellcasting, Crafting, Proficiencies, Feats, Effects, Biography, and PFS in sequence. Verify exactly one primary tab is visible at every point.
+- **TAB-REGRESSION-06 – Sidebar:** Switch through the tabs. Verify the sidebar remains stable and visible, the grid/height does not expand unexpectedly, and hidden tabs create no additional scroll containers.
+- **TAB-REGRESSION-07 – Detached:** Detach the V2 sheet and visit every tab. Verify exactly one tab is visible and the layout remains stable.
+- **TAB-REGRESSION-08 – Theme/Density/Ornamentation:** Repeat tab switching with Remaster, Classic, and Dark themes; Comfortable and Compact density; and Off, Subtle, and Ornate ornamentation. Verify presentation settings do not change tab behavior.
