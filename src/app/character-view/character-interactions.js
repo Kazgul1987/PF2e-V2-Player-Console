@@ -258,26 +258,3 @@ export class BiographyEditor {
         if (!editors.size) this.#active.delete(owner);
     }
 }
-
-export class CharacterActionDispatcher {
-    static async run({ actor, action, event, target, app, paneRoot, actions }) {
-        if (!actor || !paneRoot?.contains(target)) return;
-        const row = target.closest("[data-biography-list]");
-        switch (action) {
-            case "toggleBiographyVisibility": return BiographyController.toggleVisibility(actor, target.dataset.section);
-            case "addBiographyListEntry": return BiographyController.addListEntry(actor, row?.dataset.biographyList);
-            case "deleteBiographyListEntry": return BiographyController.deleteListEntry(actor, row?.dataset.biographyList, Number(target.dataset.index));
-            case "editBiographyRichText": return BiographyEditor.open({ actor, root: paneRoot, owner: app, target, editable: actor.canUserModify(game.user, "update") });
-            case "saveBiographyRichText": {
-                await BiographyEditor.save({ owner: app, actorId: actor.id, target });
-                return app.refreshPane?.(actor.id);
-            }
-            case "cancelBiographyRichText": {
-                BiographyEditor.close({ owner: app, actorId: actor.id });
-                return app.refreshPane?.(actor.id);
-            }
-        }
-        const handler = actions[action];
-        if (typeof handler === "function") return handler.call({ actor, document: actor, isEditable: actor.canUserModify(game.user, "update") }, event, target);
-    }
-}

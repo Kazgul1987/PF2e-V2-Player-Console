@@ -14,7 +14,6 @@
     },
     "Actions": {
       "OpenSheet": "V2-Charakterbogen öffnen",
-      "AddToConsole": "Zur SL-Charakterkonsole hinzufügen",
       "Detach": "In Browserfenster auslagern",
       "Save": "Speichern",
       "SecretPerception": "Geheime Wahrnehmung",
@@ -27,22 +26,6 @@
       "NoStrikes": "Keine vorbereiteten Angriffe",
       "Ammo": "Munition",
       "Cancel": "Abbrechen"
-    },
-    "Console": {
-      "Title": "SL-Charakterkonsole",
-      "Characters": "Charaktere",
-      "Layout": "Bereichslayout",
-      "Grid": "Raster",
-      "Columns": "Spalten",
-      "Remove": "Charakter aus der Konsole entfernen",
-      "Empty": "Keine Charaktere ausgewählt. Wähle über „Charaktere auswählen“ die Spielercharaktere aus, die in der GM-Konsole angezeigt werden sollen.",
-      "SelectCharacters": "Charaktere auswählen",
-      "PlayerOwned": "Charaktere im Besitz von Spielern",
-      "Focused": "Fokussiert",
-      "Focus": "Charakter fokussieren",
-      "OpenSheet": "Charakterbogen öffnen",
-      "ApplySelection": "Auswahl anwenden",
-      "NoPlayerCharacters": "Keine Spielercharaktere"
     },
     "Labels": {
       "CharacterName": "Charaktername",
@@ -58,7 +41,6 @@
     },
     "Errors": {
       "CharacterOnly": "PF2e V2 Player Console kann nur PF2e-Charaktere öffnen.",
-      "GMOnly": "Die Mehrcharakter-Konsole ist nur für die Spielleitung verfügbar.",
       "DetachUnavailable": "Diese Foundry-Distribution stellt keine ausgelagerten Anwendungsfenster bereit.",
       "NotEditable": "Du kannst diesen Charakter nicht bearbeiten.",
       "NameRequired": "Der Charaktername darf nicht leer sein.",
@@ -178,10 +160,6 @@
         "Off": "Aus",
         "Subtle": "Dezent",
         "Ornate": "Ornamentiert"
-      },
-      "GMLayout": {
-        "Name": "Layout der SL-Konsole",
-        "Hint": "Wählt das persistente Bereichslayout der SL-Konsole."
       }
     },
     "Character": {

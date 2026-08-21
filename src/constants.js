@@ -21,11 +21,7 @@ export const TABS = Object.freeze([
     "proficiencies", "feats", "effects", "biography", "pfs",
 ]);
 
-/** Sheet parts are also partials so the GM console composes the exact same views. */
+/** Handlebars templates which are invoked as partials rather than Application V2 parts. */
 export const HANDLEBARS_PARTIALS = Object.freeze([
-    ...["header", "sidebar", "navigation", ...TABS].map(
-        (name) => `modules/${MODULE_ID}/src/templates/character-sheet/${name}.hbs`,
-    ),
     `modules/${MODULE_ID}/src/templates/character-sheet/inventory-item.hbs`,
-    `modules/${MODULE_ID}/src/templates/gm-character-console/pane.hbs`,
 ]);

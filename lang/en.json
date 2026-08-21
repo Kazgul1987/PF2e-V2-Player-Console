@@ -14,7 +14,6 @@
     },
     "Actions": {
       "OpenSheet": "Open V2 Character Sheet",
-      "AddToConsole": "Add to GM Character Console",
       "Detach": "Detach to Browser Window",
       "Save": "Save",
       "SecretPerception": "Secret Perception",
@@ -27,22 +26,6 @@
       "NoStrikes": "No prepared strikes",
       "Ammo": "Ammunition",
       "Cancel": "Cancel"
-    },
-    "Console": {
-      "Title": "GM Character Console",
-      "Characters": "Characters",
-      "Layout": "Pane layout",
-      "Grid": "Grid",
-      "Columns": "Columns",
-      "Remove": "Remove character from console",
-      "Empty": "No characters selected. Use “Select Characters” to choose which player characters should appear in the GM Console.",
-      "SelectCharacters": "Select Characters",
-      "PlayerOwned": "Player-Owned Characters",
-      "Focused": "Focused",
-      "Focus": "Focus Character",
-      "OpenSheet": "Open Character Sheet",
-      "ApplySelection": "Apply Selection",
-      "NoPlayerCharacters": "No Player Characters"
     },
     "Labels": {
       "CharacterName": "Character name",
@@ -58,7 +41,6 @@
     },
     "Errors": {
       "CharacterOnly": "PF2e V2 Player Console can only open PF2e characters.",
-      "GMOnly": "The multi-character console is available only to GMs.",
       "DetachUnavailable": "This Foundry distribution does not expose detached Application windows.",
       "NotEditable": "You cannot edit this character.",
       "NameRequired": "Character name cannot be empty.",
@@ -178,10 +160,6 @@
         "Off": "Off",
         "Subtle": "Subtle",
         "Ornate": "Ornate"
-      },
-      "GMLayout": {
-        "Name": "GM console layout",
-        "Hint": "Choose the persistent GM console pane layout."
       }
     },
     "Character": {

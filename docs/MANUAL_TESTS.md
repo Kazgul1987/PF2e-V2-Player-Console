@@ -1203,45 +1203,14 @@ Exercise the manager in Remaster, Classic, and Dark with ornamentation Off, Subt
 ### M14.4-PREPUI-17 – Compact
 Resize the manager narrowly and test both density settings. Verify the two panes stack, rows stay compact, and no horizontal scrollbar or collision is normal.
 
-## M15.1 GM Multi-Character Console
+## Post-M15 rollback: normal V2 sheet regression
 
-- **M15.1-GM-01 – Player-Owned Discovery:** Open as GM with player-owned characters and NPCs; characters are discovered and NPCs excluded.
-- **M15.1-GM-02 – Manual Selection:** Toggle selector checkboxes and apply; panes and client-persisted selection match.
-- **M15.1-GM-03 – Layout Persistence:** Select columns and reload; columns remains selected.
-- **M15.1-GM-04 – Focused Mode:** Focus Actor A; only A has a full pane and others remain selector buttons.
-- **M15.1-GM-05 – Independent Tabs:** Set Actor A to Inventory and B to Spellcasting; states remain independent.
-- **M15.1-GM-06 – Targeted Actor Update:** Change A's HP; only A's pane node is replaced.
-- **M15.1-GM-07 – Targeted Item Update:** Change B's item; only B refreshes.
-- **M15.1-GM-08 – Hero Points:** Adjust A's hero points; A changes without a full-console render.
-- **M15.1-GM-09 – Focus Points:** Adjust B's focus; B changes.
-- **M15.1-GM-10 – Inventory Change:** Test quantity, carry state, and D&D; only the destination pane Actor changes.
-- **M15.1-GM-11 – Spellcasting:** Cast, expend a slot, and prepare a spell; the pane Actor changes.
-- **M15.1-GM-12 – Prepare Spells:** Open preparation manager; it receives the pane Actor and entry and remains functional.
-- **M15.1-GM-13 – Biography:** Open, save, and cancel rich text; no private-brand error occurs and the pane Actor updates.
-- **M15.1-GM-14 – Proficiencies:** Change a rank; the correct Actor and pane refresh.
-- **M15.1-GM-15 – Effects:** Change a condition/effect; the correct Actor updates.
-- **M15.1-GM-16 – PFS:** Exercise PFS controls; the correct Actor updates.
-- **M15.1-GM-17 – Open Normal Sheet:** Use pane control; the Actor's normal configured sheet opens.
-- **M15.1-GM-18 – Remove:** Remove a pane; Actor remains and persisted selection changes.
-- **M15.1-GM-19 – Non-GM API:** Call `openGMConsole()` as player; no console opens.
-- **M15.1-GM-20 – Detached:** Pop out console; buttons, D&D, biography, and spell manager work.
-- **M15.1-GM-21 – Performance:** With four characters repeatedly change HP/items/tabs; no full render occurs and UI remains responsive.
-
-## M15.2 GM Console Runtime Safety
-
-- **M15.2-BIO-01 – Cross-Pane Biography Isolation:** Edit unsaved Wizard biography text, then change Fighter HP. Fighter refreshes; Wizard's editor and complete input remain open and Save works.
-- **M15.2-BIO-02 – Same Actor Update While Editing:** Edit Wizard biography and update Wizard externally. The pane refresh is deferred without exception or text loss; Save or Cancel completes and refreshes safely.
-- **M15.2-BIO-03 – Two Actors:** Open Wizard and Cleric biography editors simultaneously. Both remain independent; saving/cancelling one does not close or alter the other.
-- **M15.2-BIO-04 – Normal Sheet Regression:** In the normal V2 sheet, verify biography Open, Save, and Cancel.
-- **M15.2-SELECT-01 – First Open:** Set `gmConsoleActorsInitialized` false. Verify player-owned Characters are selected and persisted and the flag becomes true.
-- **M15.2-SELECT-02 – Empty Selection:** Deselect all, close, and reopen. Verify the console stays empty and discovery does not run again.
-- **M15.2-SELECT-03 – Explicit Add:** From an empty selection, add one Actor through the API/context action. Verify only that Actor is selected.
-- **M15.2-SELECT-04 – Deleted Saved Actor:** Delete a saved Actor. Verify its ID is pruned and persisted without discovery or exceptions.
-- **M15.2-EMPTY-01 – Empty UX:** Verify the current empty-state guidance and direct Select Characters button are visible and the button opens the selector.
-- **M15.2-REFRESH-01 – Actions:** Trigger a targeted refresh, then roll Perception and a save, adjust a Hero Point, open an item summary, cast a spell, and open Prepare Spells. Each action works exactly once.
-- **M15.2-REFRESH-02 – Change Listeners:** After refresh, test HP, proficiency rank, slot, and inventory quantity inputs. Each updates the correct Actor once.
-- **M15.2-REFRESH-03 – D&D:** After refresh, test inventory, spellcasting, and feat drag/drop. Each targets the correct Actor without exception.
-- **M15.2-REFRESH-04 – No Double Binding:** Refresh one pane repeatedly, then click Hero Point + once. Verify exactly +1.
-- **M15.2-REFRESH-05 – Two Actor Updates:** Update Actors A and B in quick succession, including a second update during A's refresh. Both panes reach current state without a full render or lost update.
-- **M15.2-DELETE-01 – Focused Delete:** Delete the focused Actor. Verify the next valid Actor is focused, or the empty state appears, with no stale editor/listener state.
-- **M15.2-DETACHED-01 – Detached Runtime:** Repeat all targeted refresh, action, input, D&D, biography, and deletion cases in a detached console.
+- **ROLLBACK-01 – Actor Directory Open:** Open a Character through the Actor Directory V2 action and verify the normal V2 character sheet opens.
+- **ROLLBACK-02 – Sidebar:** Verify HP editing and bar, Hero Points, Dying/Wounded, AC, shield, Perception, Initiative, saves, immunities, weaknesses, and resistances.
+- **ROLLBACK-03 – Character:** Verify deity and the ten-segment XP display, attributes, speed, and languages.
+- **ROLLBACK-04 – Inventory:** Verify quantity, carry state, summaries, compact layout, and drag/drop.
+- **ROLLBACK-05 – Spellcasting:** Verify cast, slot handling, Focus Points, prepared-spell management, left-aligned spell names, and compact trait overflow.
+- **ROLLBACK-06 – Biography:** Open the rich-text editor, Save an edit, reopen it, and Cancel an edit without losing the saved value.
+- **ROLLBACK-07 – Remaining Tabs:** Verify Actions, Crafting, Proficiencies, Feats, Effects, and PFS interactions.
+- **ROLLBACK-08 – Presentation:** Exercise Remaster, Classic, and Dark themes, both densities, all ornamentation modes, sidebar visibility, native tabs, and native resize.
+- **ROLLBACK-09 – Detached:** Detach the normal V2 character sheet and repeat Sidebar, Inventory, Spellcasting/prepared-spell, Biography, tab, presentation, and resize checks in the popout.
