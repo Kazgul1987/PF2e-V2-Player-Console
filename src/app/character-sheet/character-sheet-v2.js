@@ -72,6 +72,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             openSpell: PF2eCharacterSheetV2.#spellAction,
             spellToChat: PF2eCharacterSheetV2.#spellAction,
             spellSummary: PF2eCharacterSheetV2.#spellAction,
+            prepareSpell: PF2eCharacterSheetV2.#spellAction,
             unprepareSpell: PF2eCharacterSheetV2.#spellAction,
             toggleSlotExpended: PF2eCharacterSheetV2.#spellAction,
             spellAttack: PF2eCharacterSheetV2.#spellAction,
@@ -312,6 +313,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             case "castSpell": return SpellcastingController.cast(this.actor, data);
             case "openSpell": return SpellcastingController.open(this.actor, data.spellId);
             case "spellToChat": return SpellcastingController.chat(this.actor, data.spellId, event);
+            case "prepareSpell": return SpellcastingController.prepare(this.actor, data);
             case "unprepareSpell": return SpellcastingController.unprepare(this.actor, data);
             case "toggleSlotExpended": return SpellcastingController.expend(this.actor, data);
             case "spellAttack": return SpellcastingController.attack(this.actor, data.entryId, event);

@@ -19,6 +19,7 @@ export class SpellcastingAdapter {
     static #entry(data, focusPool) {
         const statistic = data.statistic;
         const isFocusPool = !!data.isFocusPool;
+        const canPrepareSlots = data.isPrepared === true && data.isFlexible !== true && data.isRitual !== true;
         return {
             id: data.id, name: data.name, sort: data.sort ?? 0, category: game.i18n.localize(CONFIG.PF2E.preparationType?.[data.category] ?? data.category),
             tradition: data.tradition ? game.i18n.localize(CONFIG.PF2E.magicTraditions?.[data.tradition] ?? data.tradition) : null,
@@ -27,6 +28,7 @@ export class SpellcastingAdapter {
             dc: statistic?.dc?.value ?? null,
             rank: statistic?.rank ?? null,
             isPrepared: !!data.isPrepared, isFlexible: !!data.isFlexible, isRitual: !!data.isRitual,
+            canPrepareSlots,
             isFocusPool,
             isEphemeral: !!data.isEphemeral, persisted: !data.isEphemeral && !data.isRitual,
             canAttack: !!statistic?.check,
@@ -39,7 +41,7 @@ export class SpellcastingAdapter {
                 editableUses: !!group.uses && !data.isFocusPool && !data.isInnate && !data.isRitual &&
                     !data.isEphemeral && Number.isInteger(group.number),
                 editableValue: group.uses?.value !== undefined && group.uses?.value !== null,
-                slots: group.active.map((active, slotIndex) => this.#slot(active, slotIndex, group, data)),
+                slots: group.active.map((active, slotIndex) => this.#slot(active, slotIndex, group, canPrepareSlots)),
             })),
         };
     }
@@ -57,8 +59,11 @@ export class SpellcastingAdapter {
         };
     }
 
-    static #slot(active, slotIndex, group, entry) {
-        if (!active) return { empty: true, slotIndex, expended: false };
+    static #slot(active, slotIndex, group, canPrepareSlots) {
+        if (!active) return {
+            empty: true, slotIndex, expended: false, isPreparedSlot: canPrepareSlots,
+            canPrepare: canPrepareSlots, canUnprepare: false,
+        };
         const spell = active.spell;
         const traits = [...(spell.system?.traits?.value ?? [])].map((slug) =>
             game.i18n.localize(CONFIG.PF2E.spellTraits?.[slug] ?? slug));
@@ -70,7 +75,7 @@ export class SpellcastingAdapter {
             uses: active.uses ? { value: active.uses.value, max: active.uses.max } : null,
             traits, visibleTraits, hiddenTraits, hiddenTraitCount: hiddenTraits.length,
             hiddenTraitLabels: hiddenTraits.join(", "), actionCost: spell.system?.time?.value ?? null,
-            preparedSlot: entry.isPrepared && !entry.isFlexible,
+            isPreparedSlot: canPrepareSlots, canPrepare: false, canUnprepare: canPrepareSlots,
         };
     }
 }

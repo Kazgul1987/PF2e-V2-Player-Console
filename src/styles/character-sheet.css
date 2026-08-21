@@ -258,9 +258,13 @@
 .spell-row { align-items: center; border-bottom: 1px solid color-mix(in srgb, var(--color-border-light-primary) 55%, transparent); display: grid; gap: .5rem; grid-template-columns: minmax(13rem, 2fr) minmax(8rem, 1fr) auto auto; min-height: 2.6rem; padding: .35rem; }
 .spell-row[draggable=true] { cursor: grab; }
 .spell-row.expended { opacity: .65; }
-.spell-name { align-items: center; background: none; border: 0; color: inherit; display: flex; gap: .5rem; padding: 0; text-align: left; }
+.spell-name { align-items: center; background: none; border: 0; color: inherit; display: flex; gap: .5rem; justify-content: flex-start; justify-self: start; min-width: 0; padding: 0; text-align: left; width: 100%; }
 .spell-name img { height: 2rem; object-fit: cover; width: 2rem; }
-.spell-name span { display: flex; flex-direction: column; }
+.spell-name span { align-items: flex-start; display: flex; flex-direction: column; min-width: 0; text-align: left; }
+.spell-name strong, .spell-name small { text-align: left; }
+.spell-row.prepared-slot.empty { border: 1px dashed color-mix(in srgb, var(--pf2e-v2-accent) 45%, transparent); }
+.spell-row.prepared-slot.empty > .slot-state { grid-column: 1 / 4; justify-self: start; }
+.spell-row.prepared-slot:not(.empty):not(.expended) > .slot-state { opacity: .9; }
 .slot-state { font-size: .8rem; }
 .spell-row > .item-summary { grid-column: 1 / -1; }
 .spell-empty { opacity: .75; text-align: center; }
@@ -442,7 +446,7 @@
 .pf2e-v2-character-sheet .spell-rank > header { margin-top: var(--pf2e-v2-gap-xs); min-height: 1.75rem; padding-bottom: 2px; }
 .pf2e-v2-character-sheet .spell-rank .slot-count { font-size: .72rem; }
 .pf2e-v2-character-sheet .spell-rank .slot-count input { min-height: 1.5rem; padding: 0 .2rem; width: 2.25rem; }
-.pf2e-v2-character-sheet .spell-row { gap: var(--pf2e-v2-gap-xs); grid-template-columns: minmax(11rem, 3fr) minmax(8rem, auto) auto auto; min-height: 2rem; padding: 2px var(--pf2e-v2-gap-sm); }
+.pf2e-v2-character-sheet .spell-row { gap: var(--pf2e-v2-gap-xs); grid-template-columns: minmax(0, 3fr) minmax(8rem, auto) auto auto; min-height: 2rem; padding: 2px var(--pf2e-v2-gap-sm); }
 .pf2e-v2-character-sheet .spell-name { gap: var(--pf2e-v2-gap-xs); line-height: 1.15; }
 .pf2e-v2-character-sheet .spell-name img { height: 1.625rem; width: 1.625rem; }
 .pf2e-v2-character-sheet .spell-name small, .pf2e-v2-character-sheet .spell-meta { font-size: .68rem; }

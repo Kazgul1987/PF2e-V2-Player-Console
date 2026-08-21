@@ -564,6 +564,22 @@ Keep Feats active while creating, updating, and deleting Feat Items. Confirm the
 - **M6-SLOT-08 – Observer:** Verify counters are visible without editable inputs.
 - **M6-SLOT-09 – Detached:** Edit by blur and Enter, cancel with Escape, and verify no reload or tab change.
 
+## Milestone 14.2 – Prepared Spellcasting Parity
+
+- **M14.2-PREP-01 – Empty Prepared Slot:** Open a prepared, non-flexible caster. Verify empty slots are visible as compact dashed “Empty prepared slot” drop targets with a plus control.
+- **M14.2-PREP-02 – Prepare Spell:** Use the plus control, select an eligible known collection spell, and verify it appears in the slot and persists after render.
+- **M14.2-PREP-03 – Unprepare:** Use the compact remove control. Verify the slot becomes empty while the known Spell Item remains in the collection.
+- **M14.2-PREP-04 – Drag to Slot:** Drag a collection spell onto an empty prepared slot. Verify Core prepares it and no exception occurs.
+- **M14.2-PREP-05 – Swap:** Drag between two occupied slots in the same rank. Verify `swapSlotPositions` is used and the order persists.
+- **M14.2-PREP-06 – Expended:** Toggle a prepared slot's expended state. Verify the Spell stays visible/prepared and only the expended state changes.
+- **M14.2-PREP-07 – Flexible:** Open a flexible prepared caster. Verify no classic non-cantrip slot preparation UI, dashed targets, or unprepare controls appear.
+- **M14.2-PREP-08 – Spontaneous:** Verify no classic prepare controls appear.
+- **M14.2-PREP-09 – Innate:** Verify no classic prepare controls appear and per-spell uses still work.
+- **M14.2-PREP-10 – Focus:** Verify no classic prepare controls appear and Focus Points still work.
+- **M14.2-PREP-11 – Left Alignment:** Across all spell rows verify the icon, name, and action cost form a left-aligned information block while traits, state, and compact controls retain their columns and the trait `+N` remains unchanged.
+- **M14.2-PREP-12 – Detached:** Detach the sheet and exercise button preparation, unprepare, spell-to-slot D&D, and slot swapping. Verify the picker and handlers use app-local/event-local DOM and neither window logs an exception.
+- **M14.2-PREP-13 – Ritual:** Verify rituals receive no classic preparation controls and their existing chat-only cast flow remains available.
+
 ## Milestone 7 – Crafting
 
 - **M7-CRAFT-01:** Character without abilities/formulas shows the localized empty state without errors.

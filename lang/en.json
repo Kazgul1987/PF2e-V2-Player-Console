@@ -74,7 +74,13 @@
       "Unprepare": "Unprepare spell",
       "CurrentSlots": "Current spell slots",
       "MaximumSlots": "Maximum spell slots",
-      "AdditionalTraits": "{count} additional traits: {traits}"
+      "AdditionalTraits": "{count} additional traits: {traits}",
+      "EmptyPreparedSlot": "Empty prepared slot",
+      "DropToPrepare": "Drop a known spell here to prepare it",
+      "Prepare": "Prepare spell",
+      "KnownSpell": "Known spell",
+      "NoKnownSpells": "No eligible known spells are available for this slot.",
+      "Rank": "Rank {rank}"
     },
     "Crafting": {
       "Empty": "No crafting abilities or known formulas",
