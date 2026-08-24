@@ -3,6 +3,7 @@ import {
     GM_CONSOLE_ACTORS_SETTING, GM_CONSOLE_COLLAPSED_ACTORS_SETTING, GM_CONSOLE_INITIALIZED_SETTING,
     GM_CONSOLE_LAYOUT_SETTING,
 } from "../../settings.js";
+import { prepareGMInventory } from "./gm-inventory-view.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const TEMPLATE_ROOT = `modules/${MODULE_ID}/src/templates/gm-console`;
@@ -22,6 +23,10 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             adjustFocus: GMCharacterConsole.#adjustFocus,
             rollStatistic: GMCharacterConsole.#rollStatistic,
             rollInitiative: GMCharacterConsole.#rollInitiative,
+            switchView: GMCharacterConsole.#switchView,
+            toggleItemSummary: GMCharacterConsole.#toggleItemSummary,
+            openItem: GMCharacterConsole.#openItem,
+            toggleInvested: GMCharacterConsole.#toggleInvested,
         },
         form: { closeOnSubmit: false },
     };
@@ -35,6 +40,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     constructor({ openCharacterSheet, ...options } = {}) {
         super(options);
         this.openCharacterSheet = openCharacterSheet;
+        this.paneViews = new Map();
     }
 
     get title() { return game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.GMConsole.Title"); }
@@ -83,8 +89,12 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         }));
         const statistic = (slug) => actor.getStatistic?.(slug)?.mod ?? 0;
         const owners = game.users.filter((user) => !user.isGM && actor.testUserPermission(user, "OWNER")).map((user) => user.name).join(", ");
+        const activeView = this.paneViews.get(actor.id) ?? "overview";
         return {
             id: actor.id, name: actor.name, img: actor.img, owners, collapsed,
+            isOverview: activeView === "overview",
+            isInventory: activeView === "inventory",
+            inventory: activeView === "inventory" && !collapsed ? prepareGMInventory(actor) : null,
             level: actor.system.details.level.value,
             hp: { value: hp.value, max: hp.max, pct: hp.max > 0 ? Math.clamp((hp.value / hp.max) * 100, 0, 100) : 0 },
             ac: actor.system.attributes.ac.value,
@@ -103,7 +113,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             ...["createItem", "updateItem", "deleteItem"].map((hook) => [
                 hook,
                 Hooks.on(hook, (item) => {
-                    if (item.type === "condition" && item.parent?.type === "character") void this.#refreshActor(item.parent);
+                    if (item.parent?.type === "character") void this.#refreshActor(item.parent);
                 }),
             ]),
         ];
@@ -116,6 +126,8 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         this.element.addEventListener("change", (event) => {
             const input = event.target.closest?.("[data-field]");
             if (input) void this.#updateField(input);
+            const inventoryInput = event.target.closest?.("[data-inventory-field]");
+            if (inventoryInput) void this.#updateInventoryField(inventoryInput);
         }, { signal: this.#listeners.signal });
         this.element.addEventListener("contextmenu", (event) => {
             const control = event.target.closest?.('[data-action="adjustFocus"]');
@@ -139,6 +151,12 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         const id = target.closest("[data-actor-id]")?.dataset.actorId;
         const actor = game.actors.get(id ?? "");
         return actor?.type === "character" ? actor : null;
+    }
+
+    #itemFor(target) {
+        const actor = this.#actorFor(target);
+        const itemId = target.closest("[data-item-id]")?.dataset.itemId;
+        return actor?.inventory?.get(itemId ?? "") ?? null;
     }
 
     async #updateField(input) {
@@ -167,6 +185,18 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         if (replacement) current.replaceWith(replacement);
     }
 
+    async #updateInventoryField(input) {
+        const actor = this.#actorFor(input);
+        const item = this.#itemFor(input);
+        if (!actor?.isOwner || !item) return;
+        if (input.dataset.inventoryField === "quantity") {
+            const quantity = Number(input.value);
+            if (Number.isFinite(quantity)) await item.update({ "system.quantity": quantity });
+        } else if (input.dataset.inventoryField === "carry") {
+            await actor.changeCarryType(item, { carryType: input.value, handsHeld: input.value === "held" ? 1 : 0 });
+        }
+    }
+
     static async #applySelection(_event, target) {
         const root = target.closest("form") ?? this.element;
         const ids = [...root.querySelectorAll('input[name="gm-console-actor"]:checked')].map((input) => input.value);
@@ -192,6 +222,38 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         else collapsed.add(actor.id);
         await game.settings.set(MODULE_ID, GM_CONSOLE_COLLAPSED_ACTORS_SETTING, [...collapsed]);
         await this.#refreshActor(actor);
+    }
+
+    static async #switchView(_event, target) {
+        const actor = this.#actorFor(target);
+        const view = target.dataset.view;
+        if (!actor || !["overview", "inventory"].includes(view)) return;
+        this.paneViews.set(actor.id, view);
+        await this.#refreshActor(actor);
+    }
+
+    static async #toggleItemSummary(_event, target) {
+        const item = this.#itemFor(target);
+        const row = target.closest("[data-item-id]");
+        const summary = row?.querySelector(".gm-item-summary");
+        if (!item || !summary) return;
+        if (!summary.hidden) {
+            summary.hidden = true;
+            return;
+        }
+        const description = await item.getDescription({ secrets: item.isOwner });
+        summary.innerHTML = description.value;
+        summary.hidden = false;
+    }
+
+    static #openItem(_event, target) {
+        this.#itemFor(target)?.sheet.render(true);
+    }
+
+    static async #toggleInvested(_event, target) {
+        const actor = this.#actorFor(target);
+        const item = this.#itemFor(target);
+        if (actor?.isOwner && item?.isInvested !== null) await actor.toggleInvested(item.id);
     }
 
     static async #adjustFocus(_event, target) {

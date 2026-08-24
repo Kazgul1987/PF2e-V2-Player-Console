@@ -50,6 +50,7 @@ export async function openGMConsole() {
     }
     gmConsole = new GMCharacterConsole({ openCharacterSheet });
     await gmConsole.initializeSelection();
+    await preloadHandlebarsPartials();
     await gmConsole.render(true);
     return gmConsole;
 }

@@ -16,6 +16,11 @@
         </header>
         {{#unless collapsed}}
         <div class="gm-pane-body">
+        <nav class="gm-pane-navigation" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Views'}}">
+            <button type="button" data-action="switchView" data-view="overview" class="{{#if isOverview}}active{{/if}}" aria-pressed="{{isOverview}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Overview"}}</button>
+            <button type="button" data-action="switchView" data-view="inventory" class="{{#if isInventory}}active{{/if}}" aria-pressed="{{isInventory}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Inventory"}}</button>
+        </nav>
+        {{#if isOverview}}
         <dl class="gm-summary">
             <div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Level"}}</dt><dd>{{level}}</dd></div>
             <div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.AC"}}</dt><dd>{{ac}}</dd></div>
@@ -44,6 +49,9 @@
             <button type="button" data-action="rollStatistic" data-statistic="will" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollWill'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Will"}} <strong>{{numberFormat will sign=true}}</strong></button>
             <button type="button" data-action="rollInitiative" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollInitiative'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Initiative"}} <strong>{{numberFormat initiative sign=true}}</strong></button>
         </div>
+        {{else if isInventory}}
+            {{> "modules/pf2e-v2-player-console/src/templates/gm-console/inventory.hbs"}}
+        {{/if}}
         </div>
         {{/unless}}
     </article>

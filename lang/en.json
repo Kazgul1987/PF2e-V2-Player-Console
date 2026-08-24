@@ -223,7 +223,18 @@
       "Conditions": "Conditions",
       "NoConditions": "No Conditions",
       "HPShort": "HP",
-      "ACShort": "AC"
+      "ACShort": "AC",
+      "Views": "Character pane views",
+      "Overview": "Overview",
+      "Inventory": "Inventory",
+      "Coins": "Coins",
+      "Item": "Item",
+      "Quantity": "Qty.",
+      "Bulk": "Bulk",
+      "CarryState": "Carry state",
+      "Invested": "Invested",
+      "OpenItem": "Open item",
+      "ItemSummary": "Toggle item summary"
     }
   }
 }

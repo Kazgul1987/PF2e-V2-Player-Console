@@ -4,6 +4,8 @@ export const LOG_PREFIX = "PF2e V2 Player Console |";
 /** Handlebars templates which are invoked as partials rather than Application V2 PARTS. */
 export const HANDLEBARS_PARTIALS = Object.freeze([
     `modules/${MODULE_ID}/src/templates/character-sheet/inventory-item.hbs`,
+    `modules/${MODULE_ID}/src/templates/gm-console/inventory.hbs`,
+    `modules/${MODULE_ID}/src/templates/gm-console/inventory-row.hbs`,
 ]);
 
 /**
