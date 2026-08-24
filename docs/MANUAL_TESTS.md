@@ -1220,3 +1220,12 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **GM-RESTART-13 – Actor Isolation:** Change Actor A's HP and verify Actor B remains unchanged.
 - **GM-RESTART-14 – Targeted Refresh:** Update Actor A externally and verify only Actor A's GM pane is replaced.
 - **GM-RESTART-15 – Player Sheet Regression:** After using the console, execute the complete existing player-sheet manual suite and verify no regression.
+
+## M15 Restart Hotfix – Foundry V14 and Core-owned resources
+
+- **GM-HOTFIX-01 – Scene Control Visible:** As a GM, open Token controls and verify the GM Character Console tool is visible.
+- **GM-HOTFIX-02 – Scene Control Opens Console:** Click the tool and verify the console opens without an exception and repeated clicks retain exactly one instance.
+- **GM-HOTFIX-03 – Non-GM:** As a player, verify the tool is not visible and the direct module API remains blocked.
+- **GM-HOTFIX-04 – HP Mutation:** Change HP and verify the correct Actor is updated and PF2e/Core accepts or clamps the raw value without a local minimum or maximum rule.
+- **GM-HOTFIX-05 – Hero Points:** Left-click to add one Hero Point and right-click to subtract one; verify `updateResource("hero-points", ...)` is used and PF2e/Core handles the boundaries.
+- **GM-HOTFIX-06 – Player Sheet Regression:** Open the normal V2 player sheet and verify it remains visually and functionally unchanged.
