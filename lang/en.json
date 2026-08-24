@@ -235,7 +235,17 @@
       "UnsupportedCarryState": "Unsupported carry state: {state}",
       "Invested": "Invested",
       "OpenItem": "Open item",
-      "ItemSummary": "Toggle item summary"
+      "ItemSummary": "Toggle item summary",
+      "Spellcasting": "Spellcasting",
+      "SpellAttack": "Attack",
+      "SpellDC": "DC",
+      "Cast": "Cast spell",
+      "OpenSpell": "Open spell",
+      "SpellSummary": "Toggle spell summary",
+      "NoSpellcasting": "No spellcasting entries.",
+      "NoSpells": "No visible spells.",
+      "Slots": "Slots",
+      "Expended": "Expended"
     }
   }
 }

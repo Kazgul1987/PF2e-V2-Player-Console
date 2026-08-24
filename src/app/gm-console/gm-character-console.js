@@ -4,6 +4,7 @@ import {
     GM_CONSOLE_LAYOUT_SETTING,
 } from "../../settings.js";
 import { prepareGMInventory } from "./gm-inventory-view.js";
+import { prepareGMSpellcasting } from "./gm-spellcasting-view.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const TEMPLATE_ROOT = `modules/${MODULE_ID}/src/templates/gm-console`;
@@ -27,6 +28,9 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             toggleItemSummary: GMCharacterConsole.#toggleItemSummary,
             openItem: GMCharacterConsole.#openItem,
             toggleInvested: GMCharacterConsole.#toggleInvested,
+            toggleSpellSummary: GMCharacterConsole.#toggleSpellSummary,
+            openSpell: GMCharacterConsole.#openSpell,
+            castSpell: GMCharacterConsole.#castSpell,
         },
         form: { closeOnSubmit: false },
     };
@@ -68,13 +72,13 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         const candidates = GMCharacterConsole.discoverPlayerCharacters();
         const actors = [...selected].map((id) => game.actors.get(id)).filter((actor) => actor?.type === "character");
         return {
-            actors: actors.map((actor) => this.#prepareActor(actor, collapsed.has(actor.id))),
+            actors: await Promise.all(actors.map((actor) => this.#prepareActor(actor, collapsed.has(actor.id)))),
             candidates: candidates.map((actor) => ({ id: actor.id, name: actor.name, selected: selected.has(actor.id) })),
             layout: game.settings.get(MODULE_ID, GM_CONSOLE_LAYOUT_SETTING),
         };
     }
 
-    #prepareActor(actor, collapsed = false) {
+    async #prepareActor(actor, collapsed = false) {
         const hp = actor.system.attributes.hp;
         const hero = actor.getResource?.("hero-points") ?? actor.system.resources?.heroPoints ?? { value: 0, max: 3 };
         const focusResource = actor.getResource?.("focus");
@@ -94,7 +98,9 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             id: actor.id, name: actor.name, img: actor.img, owners, collapsed,
             isOverview: activeView === "overview",
             isInventory: activeView === "inventory",
+            isSpellcasting: activeView === "spellcasting",
             inventory: activeView === "inventory" && !collapsed ? prepareGMInventory(actor) : null,
+            spellcasting: activeView === "spellcasting" && !collapsed ? await prepareGMSpellcasting(actor) : null,
             level: actor.system.details.level.value,
             hp: { value: hp.value, max: hp.max, pct: hp.max > 0 ? Math.clamp((hp.value / hp.max) * 100, 0, 100) : 0 },
             ac: actor.system.attributes.ac.value,
@@ -159,6 +165,14 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         return actor?.inventory?.get(itemId ?? "") ?? null;
     }
 
+    #spellFor(target) {
+        const actor = this.#actorFor(target);
+        const row = target.closest("[data-spell-id]");
+        const collection = actor?.spellcasting?.collections.get(row?.dataset.entryId ?? "");
+        const spell = collection?.get(row?.dataset.spellId ?? "");
+        return actor && collection && spell ? { actor, collection, spell, row } : null;
+    }
+
     async #updateField(input) {
         const actor = this.#actorFor(input);
         if (!actor) return;
@@ -178,7 +192,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         const current = this.element.querySelector(`.gm-character-pane[data-actor-id="${CSS.escape(actor.id)}"]`);
         if (!current) return;
         const collapsed = game.settings.get(MODULE_ID, GM_CONSOLE_COLLAPSED_ACTORS_SETTING).includes(actor.id);
-        const html = await foundry.applications.handlebars.renderTemplate(`${TEMPLATE_ROOT}/character-pane.hbs`, { actors: [this.#prepareActor(actor, collapsed)], layout: "targeted" });
+        const html = await foundry.applications.handlebars.renderTemplate(`${TEMPLATE_ROOT}/character-pane.hbs`, { actors: [await this.#prepareActor(actor, collapsed)], layout: "targeted" });
         const wrapper = current.ownerDocument.createElement("div");
         wrapper.innerHTML = html.trim();
         const replacement = wrapper.querySelector(".gm-character-pane");
@@ -239,7 +253,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     static async #switchView(_event, target) {
         const actor = this.#actorFor(target);
         const view = target.dataset.view;
-        if (!actor || !["overview", "inventory"].includes(view)) return;
+        if (!actor || !["overview", "inventory", "spellcasting"].includes(view)) return;
         this.paneViews.set(actor.id, view);
         await this.#refreshActor(actor);
     }
@@ -260,6 +274,36 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
 
     static #openItem(_event, target) {
         this.#itemFor(target)?.sheet.render(true);
+    }
+
+    static async #toggleSpellSummary(_event, target) {
+        const resolved = this.#spellFor(target);
+        const summary = resolved?.row.querySelector(".gm-spell-summary");
+        if (!resolved || !summary) return;
+        if (!summary.hidden) {
+            summary.hidden = true;
+            return;
+        }
+        const description = await resolved.spell.getDescription({ secrets: resolved.spell.isOwner });
+        summary.innerHTML = description.value;
+        summary.hidden = false;
+    }
+
+    static #openSpell(_event, target) {
+        this.#spellFor(target)?.spell.sheet.render(true);
+    }
+
+    static async #castSpell(_event, target) {
+        const resolved = this.#spellFor(target);
+        if (!resolved?.actor.isOwner || !resolved.spell.isOwner) return;
+        const rank = Number(resolved.row.dataset.rank);
+        const slotId = Number(resolved.row.dataset.slotId);
+        if (!Number.isInteger(rank) || rank < 1 || rank > 10) return;
+        await resolved.collection.entry.cast(resolved.spell, {
+            rank,
+            ...(Number.isInteger(slotId) ? { slotId } : {}),
+        });
+        await this.#refreshActor(resolved.actor);
     }
 
     static async #toggleInvested(_event, target) {

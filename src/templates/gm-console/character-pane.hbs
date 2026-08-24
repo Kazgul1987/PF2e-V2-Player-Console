@@ -1,6 +1,6 @@
 <section class="gm-panes gm-layout-{{layout}}">
 {{#each actors}}
-    <article class="gm-character-pane{{#if collapsed}} is-collapsed{{/if}}{{#if isInventory}} is-inventory{{/if}}" data-actor-id="{{id}}">
+    <article class="gm-character-pane{{#if collapsed}} is-collapsed{{/if}}{{#if isInventory}} is-inventory{{/if}}{{#if isSpellcasting}} is-spellcasting{{/if}}" data-actor-id="{{id}}">
         <header class="gm-pane-header">
             <img src="{{img}}" alt="{{name}}" width="48" height="48">
             <div class="gm-pane-identity">
@@ -19,6 +19,7 @@
         <nav class="gm-pane-navigation" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Views'}}">
             <button type="button" data-action="switchView" data-view="overview" class="{{#if isOverview}}active{{/if}}" aria-pressed="{{isOverview}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Overview"}}</button>
             <button type="button" data-action="switchView" data-view="inventory" class="{{#if isInventory}}active{{/if}}" aria-pressed="{{isInventory}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Inventory"}}</button>
+            <button type="button" data-action="switchView" data-view="spellcasting" class="{{#if isSpellcasting}}active{{/if}}" aria-pressed="{{isSpellcasting}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Spellcasting"}}</button>
         </nav>
         {{#if isOverview}}
         <dl class="gm-summary">
@@ -51,6 +52,8 @@
         </div>
         {{else if isInventory}}
             {{> "modules/pf2e-v2-player-console/src/templates/gm-console/inventory.hbs"}}
+        {{else if isSpellcasting}}
+            {{> "modules/pf2e-v2-player-console/src/templates/gm-console/spellcasting.hbs"}}
         {{/if}}
         </div>
         {{/unless}}
