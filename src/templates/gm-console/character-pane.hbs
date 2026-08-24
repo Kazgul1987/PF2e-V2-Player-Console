@@ -1,6 +1,6 @@
 <section class="gm-panes gm-layout-{{layout}}">
 {{#each actors}}
-    <article class="gm-character-pane{{#if collapsed}} is-collapsed{{/if}}" data-actor-id="{{id}}">
+    <article class="gm-character-pane{{#if collapsed}} is-collapsed{{/if}}{{#if isInventory}} is-inventory{{/if}}" data-actor-id="{{id}}">
         <header class="gm-pane-header">
             <img src="{{img}}" alt="{{name}}" width="48" height="48">
             <div class="gm-pane-identity">

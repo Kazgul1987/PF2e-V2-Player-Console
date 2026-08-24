@@ -11,9 +11,10 @@
 .pf2e-v2-gm-console .gm-selector-actors { display: flex; gap: .4rem 1rem; flex-wrap: wrap; }
 .pf2e-v2-gm-console .gm-layout-label { display: grid; gap: .2rem; }
 .pf2e-v2-gm-console .gm-panes { display: flex; gap: .75rem; overflow: auto; flex: 1; align-items: start; padding: .25rem; }
-.pf2e-v2-gm-console .gm-panes.gm-layout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.pf2e-v2-gm-console .gm-panes.gm-layout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr)); }
 .pf2e-v2-gm-console .gm-character-pane { flex: 0 0 320px; min-width: 280px; padding: .65rem; border: 1px solid var(--gm-border); border-radius: 6px; background: var(--gm-panel); }
-.pf2e-v2-gm-console .gm-character-pane.is-collapsed { flex-basis: 280px; }
+.pf2e-v2-gm-console .gm-character-pane.is-inventory { flex-basis: 430px; min-width: 430px; }
+.pf2e-v2-gm-console .gm-character-pane.is-collapsed { flex-basis: 280px; min-width: 280px; max-width: 280px; }
 .pf2e-v2-gm-console .gm-pane-header { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: .5rem; align-items: center; }
 .pf2e-v2-gm-console .gm-pane-header img { object-fit: cover; border: 1px solid var(--gm-border); border-radius: 4px; }
 .pf2e-v2-gm-console .gm-pane-header h3 { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -45,14 +46,15 @@
 .pf2e-v2-gm-console .gm-coins { display: flex; align-items: center; flex-wrap: wrap; gap: .25rem .65rem; padding: .3rem .4rem; border: 1px solid var(--gm-border); border-radius: 4px; }
 .pf2e-v2-gm-console .gm-inventory-section h4 { margin: 0; padding: .25rem .35rem; background: color-mix(in srgb, var(--gm-accent) 18%, transparent); font-size: .78rem; text-transform: uppercase; }
 .pf2e-v2-gm-console .gm-inventory-columns,
-.pf2e-v2-gm-console .gm-inventory-row { display: grid; grid-template-columns: minmax(7.5rem, 1fr) 2.7rem 2rem minmax(5rem, auto) auto; gap: .25rem; align-items: center; }
+.pf2e-v2-gm-console .gm-inventory-row { display: grid; grid-template-columns: minmax(8rem, 1fr) 2.7rem 2rem 5.8rem auto; gap: .25rem; align-items: center; }
 .pf2e-v2-gm-console .gm-inventory-columns { padding: .2rem .25rem; color: var(--color-text-subtle, #aaa); font-size: .65rem; }
 .pf2e-v2-gm-console .gm-inventory-row { padding: .2rem .25rem; border-top: 1px solid color-mix(in srgb, var(--gm-border) 45%, transparent); }
 .pf2e-v2-gm-console .gm-item-identity { display: flex; min-width: 0; align-items: center; gap: .3rem; }
 .pf2e-v2-gm-console .gm-item-identity img { flex: 0 0 24px; width: 24px; height: 24px; object-fit: cover; border: 0; }
 .pf2e-v2-gm-console .gm-item-name { min-width: 0; padding: 0; border: 0; background: transparent; overflow: hidden; color: inherit; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .pf2e-v2-gm-console .gm-item-quantity input { width: 2.5rem; height: 1.5rem; padding: 0 .2rem; text-align: center; }
-.pf2e-v2-gm-console .gm-item-carry select { max-width: 6.8rem; height: 1.5rem; padding: 0 .15rem; font-size: .7rem; }
+.pf2e-v2-gm-console .gm-item-carry { min-width: 0; }
+.pf2e-v2-gm-console .gm-item-carry select { width: 100%; height: 1.5rem; padding: 0 .15rem; font-size: .7rem; }
 .pf2e-v2-gm-console .gm-item-actions { display: flex; gap: .1rem; }
 .pf2e-v2-gm-console .gm-item-actions button { width: 1.45rem; min-width: 1.45rem; height: 1.45rem; padding: 0; font-size: .68rem; }
 .pf2e-v2-gm-console .gm-item-actions button.active { color: var(--gm-accent); }
