@@ -235,7 +235,17 @@
       "UnsupportedCarryState": "Nicht unterstützter Tragezustand: {state}",
       "Invested": "Investiert",
       "OpenItem": "Gegenstand öffnen",
-      "ItemSummary": "Gegenstandsbeschreibung umschalten"
+      "ItemSummary": "Gegenstandsbeschreibung umschalten",
+      "Spellcasting": "Zauberwirken",
+      "SpellAttack": "Angriff",
+      "SpellDC": "SG",
+      "Cast": "Zauber wirken",
+      "OpenSpell": "Zauber öffnen",
+      "SpellSummary": "Zauberbeschreibung umschalten",
+      "NoSpellcasting": "Keine Zauberwirken-Einträge.",
+      "NoSpells": "Keine sichtbaren Zauber.",
+      "Slots": "Plätze",
+      "Expended": "Verbraucht"
     }
   }
 }

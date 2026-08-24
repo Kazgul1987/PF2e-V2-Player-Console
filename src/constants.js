@@ -6,6 +6,8 @@ export const HANDLEBARS_PARTIALS = Object.freeze([
     `modules/${MODULE_ID}/src/templates/character-sheet/inventory-item.hbs`,
     `modules/${MODULE_ID}/src/templates/gm-console/inventory.hbs`,
     `modules/${MODULE_ID}/src/templates/gm-console/inventory-row.hbs`,
+    `modules/${MODULE_ID}/src/templates/gm-console/spellcasting.hbs`,
+    `modules/${MODULE_ID}/src/templates/gm-console/spellcasting-entry.hbs`,
 ]);
 
 /**

@@ -1291,3 +1291,24 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **GM15.2.2-06 – Long Item Names:** Use items with long names and verify names ellipsize while Quantity, Bulk, Carry State, and Actions remain visible.
 - **GM15.2.2-07 – Grid Layout:** Open Inventory in Grid layout and verify the pane is not compressed to 280px and no Inventory column is clipped.
 - **GM15.2.2-08 – Player Sheet Regression:** Open the normal V2 player sheet and verify it remains completely unchanged.
+
+## M15.3 – Isolated GM Spellcasting View
+
+- **GM15.3-01 – Navigation:** Set Actor A to Spellcasting, Actor B to Overview, and Actor C to Inventory; verify every pane retains its own view state.
+- **GM15.3-02 – No Spellcasting:** Open a martial character without spellcasting; verify the clean empty state and no exception.
+- **GM15.3-03 – Prepared Caster:** Open a wizard or cleric; verify entries, non-empty ranks, prepared allocations, expended state, and slot counts match PF2e Core.
+- **GM15.3-04 – Spontaneous Caster:** Open a sorcerer or bard; verify its repertoire and remaining slots, with no prepared-slot semantics.
+- **GM15.3-05 – Innate Spells:** Open a character with innate spells; verify spells and per-spell uses display without exceptions.
+- **GM15.3-06 – Focus Spells:** Verify focus spells appear and their Focus resource agrees with Overview.
+- **GM15.3-07 – Cantrips:** Verify cantrips are clearly grouped and do not show false slot controls.
+- **GM15.3-08 – Spell Summary:** Open a summary; verify the correct Core description appears and no other Actor pane changes.
+- **GM15.3-09 – Open Spell:** Open a spell and verify the correct normal PF2e Spell sheet appears.
+- **GM15.3-10 – Cast Prepared Spell:** Cast a prepared spell; verify the entry, rank and slot are correct, Core creates the chat output and consumes the resource, and only its Actor pane refreshes.
+- **GM15.3-11 – Cast Spontaneous Spell:** Cast a spontaneous spell and verify PF2e Core handles its ranked slot.
+- **GM15.3-12 – Cast Innate Spell:** Cast an innate spell and verify Core handles its per-spell use or frequency.
+- **GM15.3-13 – Focus Cast:** Cast a focus spell and verify Core-owned casting updates the shared Focus resource.
+- **GM15.3-14 – Actor Isolation:** Cast for Actor A and verify Actors B and C remain unchanged.
+- **GM15.3-15 – External Spell Update:** Externally update a spell or spellcasting entry and verify only its Actor pane refreshes.
+- **GM15.3-16 – Width:** Verify spell rows and buttons are not clipped or overlapped and horizontal console scrolling works with multiple panes.
+- **GM15.3-17 – Collapse:** Collapse a Spellcasting pane; verify its body is absent and the pane returns to compact width.
+- **GM15.3-18 – Player Sheet Regression:** Run the complete normal V2 Player Sheet suite and verify no change.

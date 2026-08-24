@@ -1,0 +1,25 @@
+<section class="gm-spellcasting-entry" data-entry-id="{{id}}">
+    <header class="gm-spellcasting-header">
+        <div><h4>{{name}}</h4><small>{{#if tradition}}{{tradition}} · {{/if}}{{categoryLabel}}</small></div>
+        {{#if hasStatistic}}<span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.SpellAttack"}} {{numberFormat attack sign=true}} · {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.SpellDC"}} {{dc}}</span>{{/if}}
+    </header>
+    {{#each groups}}
+    <section class="gm-spell-rank">
+        <header><strong>{{label}}</strong>{{#if usesLabel}}<span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Slots"}} {{usesLabel}}</span>{{/if}}</header>
+        {{#each spells}}
+        <div class="gm-spell-row{{#if expended}} is-expended{{/if}}" data-actor-id="{{../../actorId}}" data-entry-id="{{../../id}}" data-spell-id="{{id}}" data-rank="{{rank}}" data-slot-id="{{slotId}}">
+            <div class="gm-spell-identity"><img src="{{img}}" alt=""><button type="button" class="gm-spell-name" data-action="toggleSpellSummary">{{name}}</button></div>
+            <span class="gm-spell-state">{{#if usesLabel}}{{usesLabel}}{{else if expended}}{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Expended"}}{{/if}}</span>
+            <div class="gm-spell-actions">
+                <button type="button" data-action="toggleSpellSummary" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.SpellSummary'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.SpellSummary'}}"><i class="fa-solid fa-circle-info" inert></i></button>
+                <button type="button" data-action="openSpell" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenSpell'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenSpell'}}"><i class="fa-solid fa-book-open" inert></i></button>
+                {{#if canCast}}<button type="button" data-action="castSpell" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Cast'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Cast'}}"><i class="fa-solid fa-wand-magic-sparkles" inert></i></button>{{/if}}
+            </div>
+            <div class="gm-spell-summary" hidden></div>
+        </div>
+        {{/each}}
+    </section>
+    {{else}}
+        <p class="gm-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.NoSpells"}}</p>
+    {{/each}}
+</section>

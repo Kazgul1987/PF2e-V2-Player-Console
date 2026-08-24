@@ -1,0 +1,7 @@
+<section class="gm-spellcasting">
+{{#each spellcasting.entries}}
+    {{> "modules/pf2e-v2-player-console/src/templates/gm-console/spellcasting-entry.hbs" actorId=../id}}
+{{else}}
+    <p class="gm-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.NoSpellcasting"}}</p>
+{{/each}}
+</section>
