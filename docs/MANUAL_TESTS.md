@@ -1261,3 +1261,22 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **GM15.2-11 – Actor Isolation:** Change an Actor A quantity and verify Actor B remains unchanged.
 - **GM15.2-12 – Collapsed:** Collapse Actor A with Inventory active; verify no navigation or inventory body is rendered.
 - **GM15.2-13 – Read-only:** Inspect an Actor that cannot be edited; verify inventory information and item-sheet access remain while quantity, carry, and invested mutation controls are absent.
+
+## M15.2.1 – GM Inventory carry-state, invested, and validation hotfix
+
+- **GM15.2.1-01 – Held 1H:** Set an item to Held 1H; verify the GM UI shows Held 1H and PF2e Actor data has `carryType = held` and `handsHeld = 1`.
+- **GM15.2.1-02 – Held 2H:** Set an item to Held 2H; verify the GM UI shows Held 2H and PF2e Actor data has `carryType = held` and `handsHeld = 2`.
+- **GM15.2.1-03 – Existing 2H State:** Set an item to two-handed outside the GM Console, then open Inventory; verify it is not shown as Held 1H and its state is unchanged.
+- **GM15.2.1-04 – Worn:** Change a held item to Worn; verify PF2e `changeCarryType(...)` persists the state without unintended loss of an existing slot state.
+- **GM15.2.1-05 – Stowed:** Set an item to Stowed and verify the state persists correctly.
+- **GM15.2.1-06 – Dropped:** Set an item to Dropped and verify the state persists correctly.
+- **GM15.2.1-07 – Unsupported Core State:** Open an item whose Core carry state is not editable in the GM UI; verify the actual state is shown as unsupported, the select is disabled, and Actor data is unchanged.
+- **GM15.2.1-08 – Invested On:** Toggle an investable item on; verify PF2e `toggleInvested(itemId)` persists the state without a console error.
+- **GM15.2.1-09 – Invested Off:** Toggle the same item again and verify the state is cleanly removed.
+- **GM15.2.1-10 – Non-investable Item:** Verify an item that cannot currently be invested has no Invested control.
+- **GM15.2.1-11 – Quantity Positive:** Enter quantity `3` and verify the correct item updates.
+- **GM15.2.1-12 – Quantity Negative:** Enter a negative quantity and record the result chosen by the PF2e/Core schema; verify the GM UI applies no local clamp.
+- **GM15.2.1-13 – Quantity Decimal:** Enter quantity `1.5` and record the result chosen by the PF2e/Core schema; verify the GM UI applies no local quantity rule.
+- **GM15.2.1-14 – Actor Isolation:** Change Actor A's carry state and verify Actor B remains completely unchanged.
+- **GM15.2.1-15 – Targeted Refresh:** Change a carry state and verify only the affected Actor pane refreshes.
+- **GM15.2.1-16 – Player Sheet Regression:** Open the normal V2 player sheet before and after the tests and verify it remains completely unchanged.

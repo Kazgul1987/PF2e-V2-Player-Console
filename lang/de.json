@@ -232,6 +232,7 @@
       "Quantity": "Anz.",
       "Bulk": "Last",
       "CarryState": "Tragezustand",
+      "UnsupportedCarryState": "Nicht unterstützter Tragezustand: {state}",
       "Invested": "Investiert",
       "OpenItem": "Gegenstand öffnen",
       "ItemSummary": "Gegenstandsbeschreibung umschalten"

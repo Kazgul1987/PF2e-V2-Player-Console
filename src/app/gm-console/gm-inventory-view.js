@@ -30,23 +30,38 @@ export function prepareGMInventory(actor) {
 function prepareItem(item, editable) {
     const carryType = item.carryType ?? item.system.equipped?.carryType ?? "worn";
     const handsHeld = item.handsHeld ?? item.system.equipped?.handsHeld ?? 0;
-    const carryKey = carryType === "held" ? `PF2E.CarryType.held${handsHeld || 1}` : `PF2E.CarryType.${carryType}`;
-    const isInvestable = item.isInvested !== null;
+    const carryState = carryType === "held" && [1, 2].includes(handsHeld) ? `held-${handsHeld}` : carryType;
+    const carryKey = carryType === "held" && [1, 2].includes(handsHeld)
+        ? `PF2E.CarryType.held${handsHeld}`
+        : `PF2E.CarryType.${carryType}`;
+    const carryLabel = game.i18n.has(carryKey) ? game.i18n.localize(carryKey) : carryType;
+    const supportedCarryStates = ["held-1", "held-2", "worn", "stowed", "dropped"];
+    const carryEditable = editable && supportedCarryStates.includes(carryState);
+    const isInvestable = !item.isStowed && item.isIdentified && item.isInvested !== null;
+    const carryOptions = carryEditable
+        ? [
+            { value: "held-1", label: game.i18n.localize("PF2E.CarryType.held1"), selected: carryState === "held-1" },
+            { value: "held-2", label: game.i18n.localize("PF2E.CarryType.held2"), selected: carryState === "held-2" },
+            { value: "worn", label: game.i18n.localize("PF2E.CarryType.worn"), selected: carryState === "worn" },
+            { value: "stowed", label: game.i18n.localize("PF2E.CarryType.stowed"), selected: carryState === "stowed" },
+            { value: "dropped", label: game.i18n.localize("PF2E.CarryType.dropped"), selected: carryState === "dropped" },
+        ]
+        : [{
+            value: carryState,
+            label: game.i18n.format("PF2E_V2_PLAYER_CONSOLE.GMConsole.UnsupportedCarryState", { state: carryLabel }),
+            selected: true,
+        }];
     return {
         id: item.id,
         img: item.img,
         name: item.name,
         quantity: item.quantity,
         bulk: item.bulk?.toString?.() ?? "—",
-        carryLabel: game.i18n.localize(carryKey),
+        carryLabel,
+        carryEditable,
         isInvestable,
         invested: item.isInvested === true,
         editable,
-        carryOptions: [
-            { value: "held", label: game.i18n.localize("PF2E.CarryType.held1"), selected: carryType === "held" },
-            { value: "worn", label: game.i18n.localize("PF2E.CarryType.worn"), selected: carryType === "worn" },
-            { value: "stowed", label: game.i18n.localize("PF2E.CarryType.stowed"), selected: carryType === "stowed" },
-            { value: "dropped", label: game.i18n.localize("PF2E.CarryType.dropped"), selected: carryType === "dropped" },
-        ],
+        carryOptions,
     };
 }

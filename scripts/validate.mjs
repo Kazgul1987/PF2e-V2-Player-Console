@@ -28,7 +28,7 @@ for (const language of manifest.languages) {
 for (const template of ["header", "navigation", "character", "actions", "inventory", "spellcasting", "crafting", "proficiencies", "feats", "effects", "biography", "pfs", "inventory-item"]) {
     await access(new URL(`../src/templates/character-sheet/${template}.hbs`, import.meta.url));
 }
-for (const template of ["console", "selector", "character-pane"]) {
+for (const template of ["console", "selector", "character-pane", "inventory", "inventory-row"]) {
     await access(new URL(`../src/templates/gm-console/${template}.hbs`, import.meta.url));
 }
 console.log("Manifest and module paths are valid.");
