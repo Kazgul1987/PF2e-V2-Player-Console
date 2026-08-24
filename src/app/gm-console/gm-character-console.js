@@ -193,7 +193,19 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             const quantity = Number(input.value);
             if (Number.isFinite(quantity)) await item.update({ "system.quantity": quantity });
         } else if (input.dataset.inventoryField === "carry") {
-            await actor.changeCarryType(item, { carryType: input.value, handsHeld: input.value === "held" ? 1 : 0 });
+            const carryStates = {
+                "held-1": { carryType: "held", handsHeld: 1 },
+                "held-2": { carryType: "held", handsHeld: 2 },
+                worn: {
+                    carryType: "worn",
+                    handsHeld: 0,
+                    inSlot: item.system.equipped?.inSlot === true,
+                },
+                stowed: { carryType: "stowed", handsHeld: 0 },
+                dropped: { carryType: "dropped", handsHeld: 0 },
+            };
+            const carryState = carryStates[input.value];
+            if (carryState) await actor.changeCarryType(item, carryState);
         }
     }
 
@@ -253,7 +265,9 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     static async #toggleInvested(_event, target) {
         const actor = this.#actorFor(target);
         const item = this.#itemFor(target);
-        if (actor?.isOwner && item?.isInvested !== null) await actor.toggleInvested(item.id);
+        if (actor?.isOwner && !item?.isStowed && item?.isIdentified && item.isInvested !== null) {
+            await actor.toggleInvested(item.id);
+        }
     }
 
     static async #adjustFocus(_event, target) {

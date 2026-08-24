@@ -232,6 +232,7 @@
       "Quantity": "Qty.",
       "Bulk": "Bulk",
       "CarryState": "Carry state",
+      "UnsupportedCarryState": "Unsupported carry state: {state}",
       "Invested": "Invested",
       "OpenItem": "Open item",
       "ItemSummary": "Toggle item summary"
