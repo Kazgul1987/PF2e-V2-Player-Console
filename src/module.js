@@ -82,17 +82,17 @@ Hooks.once("init", () => {
 
 Hooks.on("getSceneControlButtons", (controls) => {
     if (!game.user?.isGM) return;
-    const actors = Array.isArray(controls) ? controls.find((control) => control.name === "token") : controls.tokens;
-    const tools = actors?.tools;
-    const action = {
+    const tokenControls = controls.tokens;
+    if (!tokenControls?.tools) return;
+    tokenControls.tools.gmCharacterConsole = {
         name: "gmCharacterConsole",
         title: "PF2E_V2_PLAYER_CONSOLE.GMConsole.Open",
         icon: "fa-solid fa-users-gear",
+        order: Object.keys(tokenControls.tools).length,
         button: true,
-        onClick: () => void openGMConsole(),
+        visible: true,
+        onChange: () => void openGMConsole(),
     };
-    if (Array.isArray(tools)) tools.push(action);
-    else if (tools) tools.gmCharacterConsole = action;
 });
 
 Hooks.on("getActorContextOptions", (_application, entries) => {

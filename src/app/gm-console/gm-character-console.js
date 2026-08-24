@@ -113,10 +113,11 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         const value = Number(input.value);
         if (!Number.isFinite(value)) return;
         if (input.dataset.field === "hp") {
-            await actor.update({ "system.attributes.hp.value": Math.clamp(value, 0, actor.system.attributes.hp.max) });
+            await actor.update({ "system.attributes.hp.value": value });
         } else if (input.dataset.field === "hero") {
             const resource = actor.getResource?.("hero-points");
-            await actor.updateResource("hero-points", Math.clamp(value, 0, resource?.max ?? 3));
+            if (!resource) return;
+            await actor.updateResource("hero-points", value);
         }
     }
 
