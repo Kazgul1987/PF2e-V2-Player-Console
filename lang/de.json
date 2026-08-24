@@ -214,7 +214,16 @@
       "RollInitiative": "Initiative würfeln",
       "Errors": {
         "GMOnly": "Nur die Spielleitung kann die SL-Charakterkonsole öffnen."
-      }
+      },
+      "Collapse": "Charakterbereich einklappen",
+      "Expand": "Charakterbereich ausklappen",
+      "FocusPoints": "Fokuspunkte",
+      "FocusLabel": "Fokuspunkte: {value} von {max}",
+      "FocusAdjustHint": "Linksklick: 1 Fokuspunkt hinzufügen. Rechtsklick: 1 Fokuspunkt entfernen.",
+      "Conditions": "Zustände",
+      "NoConditions": "Keine Zustände",
+      "HPShort": "TP",
+      "ACShort": "RK"
     }
   }
 }

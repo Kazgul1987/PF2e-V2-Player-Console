@@ -12,11 +12,17 @@
 .pf2e-v2-gm-console .gm-layout-label { display: grid; gap: .2rem; }
 .pf2e-v2-gm-console .gm-panes { display: flex; gap: .75rem; overflow: auto; flex: 1; align-items: start; padding: .25rem; }
 .pf2e-v2-gm-console .gm-panes.gm-layout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-.pf2e-v2-gm-console .gm-character-pane { flex: 0 0 300px; min-width: 280px; padding: .75rem; border: 1px solid var(--gm-border); border-radius: 6px; background: var(--gm-panel); }
-.pf2e-v2-gm-console .gm-pane-header { display: grid; grid-template-columns: 64px 1fr auto; gap: .6rem; align-items: center; }
+.pf2e-v2-gm-console .gm-character-pane { flex: 0 0 320px; min-width: 280px; padding: .65rem; border: 1px solid var(--gm-border); border-radius: 6px; background: var(--gm-panel); }
+.pf2e-v2-gm-console .gm-character-pane.is-collapsed { flex-basis: 280px; }
+.pf2e-v2-gm-console .gm-pane-header { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: .5rem; align-items: center; }
 .pf2e-v2-gm-console .gm-pane-header img { object-fit: cover; border: 1px solid var(--gm-border); border-radius: 4px; }
-.pf2e-v2-gm-console .gm-pane-header h3 { margin: 0; }
-.pf2e-v2-gm-console .gm-pane-actions { display: flex; gap: .25rem; }
+.pf2e-v2-gm-console .gm-pane-header h3 { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf2e-v2-gm-console .gm-pane-identity { min-width: 0; }
+.pf2e-v2-gm-console .gm-pane-identity small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf2e-v2-gm-console .gm-header-status { display: flex; gap: .55rem; color: var(--color-text-light-highlight, #eee); font-size: .75rem; font-weight: 600; }
+.pf2e-v2-gm-console .gm-pane-actions { display: flex; gap: .2rem; }
+.pf2e-v2-gm-console .gm-pane-actions button { width: 1.75rem; min-width: 1.75rem; height: 1.75rem; padding: 0; }
+.pf2e-v2-gm-console .gm-pane-body { margin-top: .55rem; }
 .pf2e-v2-gm-console .gm-summary { display: grid; grid-template-columns: 1fr 1fr; }
 .pf2e-v2-gm-console .gm-summary div { display: flex; justify-content: space-between; padding: .35rem; }
 .pf2e-v2-gm-console .gm-resource label, .pf2e-v2-gm-console .gm-hero { display: flex; align-items: center; gap: .3rem; }
@@ -25,4 +31,10 @@
 .pf2e-v2-gm-console .gm-hp-bar span { display: block; height: 100%; background: #3f9b58; }
 .pf2e-v2-gm-console .gm-statistics { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; margin-top: .7rem; }
 .pf2e-v2-gm-console .gm-statistics button { display: flex; justify-content: space-between; }
+.pf2e-v2-gm-console .gm-focus { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: .45rem; padding: .35rem .5rem; }
+.pf2e-v2-gm-console .gm-focus-pips { display: flex; gap: .25rem; color: var(--gm-accent); font-size: .75rem; }
+.pf2e-v2-gm-console .gm-conditions { margin-top: .65rem; }
+.pf2e-v2-gm-console .gm-conditions h4 { margin: 0 0 .3rem; font-size: .8rem; text-transform: uppercase; }
+.pf2e-v2-gm-console .gm-condition-list { display: flex; flex-wrap: wrap; gap: .25rem; }
+.pf2e-v2-gm-console .gm-condition-chip { padding: .15rem .4rem; border: 1px solid var(--gm-border); border-radius: 1rem; background: color-mix(in srgb, var(--gm-accent) 18%, transparent); font-size: .75rem; line-height: 1.25; }
 .pf2e-v2-gm-console .gm-empty { margin: auto; font-style: italic; }

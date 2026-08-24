@@ -1,6 +1,7 @@
 import { LOG_PREFIX, MODULE_ID } from "../../constants.js";
 import {
-    GM_CONSOLE_ACTORS_SETTING, GM_CONSOLE_INITIALIZED_SETTING, GM_CONSOLE_LAYOUT_SETTING,
+    GM_CONSOLE_ACTORS_SETTING, GM_CONSOLE_COLLAPSED_ACTORS_SETTING, GM_CONSOLE_INITIALIZED_SETTING,
+    GM_CONSOLE_LAYOUT_SETTING,
 } from "../../settings.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -17,6 +18,8 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             applySelection: GMCharacterConsole.#applySelection,
             removeActor: GMCharacterConsole.#removeActor,
             openSheet: GMCharacterConsole.#openSheet,
+            toggleActor: GMCharacterConsole.#toggleActor,
+            adjustFocus: GMCharacterConsole.#adjustFocus,
             rollStatistic: GMCharacterConsole.#rollStatistic,
             rollInitiative: GMCharacterConsole.#rollInitiative,
         },
@@ -51,34 +54,59 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     async _prepareContext() {
         if (!game.user?.isGM) throw new Error(`${LOG_PREFIX} GM Console is restricted to GMs`);
         const selected = new Set(game.settings.get(MODULE_ID, GM_CONSOLE_ACTORS_SETTING));
+        const storedCollapsed = game.settings.get(MODULE_ID, GM_CONSOLE_COLLAPSED_ACTORS_SETTING);
+        const collapsed = new Set(storedCollapsed.filter((id) => game.actors.get(id)?.type === "character"));
+        if (collapsed.size !== storedCollapsed.length) {
+            await game.settings.set(MODULE_ID, GM_CONSOLE_COLLAPSED_ACTORS_SETTING, [...collapsed]);
+        }
         const candidates = GMCharacterConsole.discoverPlayerCharacters();
         const actors = [...selected].map((id) => game.actors.get(id)).filter((actor) => actor?.type === "character");
         return {
-            actors: actors.map((actor) => this.#prepareActor(actor)),
+            actors: actors.map((actor) => this.#prepareActor(actor, collapsed.has(actor.id))),
             candidates: candidates.map((actor) => ({ id: actor.id, name: actor.name, selected: selected.has(actor.id) })),
             layout: game.settings.get(MODULE_ID, GM_CONSOLE_LAYOUT_SETTING),
         };
     }
 
-    #prepareActor(actor) {
+    #prepareActor(actor, collapsed = false) {
         const hp = actor.system.attributes.hp;
         const hero = actor.getResource?.("hero-points") ?? actor.system.resources?.heroPoints ?? { value: 0, max: 3 };
+        const focusResource = actor.getResource?.("focus");
+        const focus = focusResource?.max > 0 ? {
+            value: focusResource.value,
+            max: focusResource.max,
+            pips: Array.from({ length: focusResource.max }, (_, index) => ({ filled: index < focusResource.value })),
+        } : null;
+        const conditions = (actor.conditions?.active ?? []).map((condition) => ({
+            id: condition.id,
+            name: condition.name,
+        }));
         const statistic = (slug) => actor.getStatistic?.(slug)?.mod ?? 0;
         const owners = game.users.filter((user) => !user.isGM && actor.testUserPermission(user, "OWNER")).map((user) => user.name).join(", ");
         return {
-            id: actor.id, name: actor.name, img: actor.img, owners,
+            id: actor.id, name: actor.name, img: actor.img, owners, collapsed,
             level: actor.system.details.level.value,
             hp: { value: hp.value, max: hp.max, pct: hp.max > 0 ? Math.clamp((hp.value / hp.max) * 100, 0, 100) : 0 },
             ac: actor.system.attributes.ac.value,
             perception: statistic("perception"), fortitude: statistic("fortitude"), reflex: statistic("reflex"), will: statistic("will"),
             hero: { value: hero.value, max: hero.max },
+            focus,
+            conditions,
             initiative: actor.initiative?.statistic?.mod ?? actor.system.attributes.initiative?.totalModifier ?? 0,
         };
     }
 
     async _onFirstRender(context, options) {
         await super._onFirstRender(context, options);
-        this.#hookId = Hooks.on("updateActor", (actor) => void this.#refreshActor(actor));
+        this.#hookIds = [
+            ["updateActor", Hooks.on("updateActor", (actor) => void this.#refreshActor(actor))],
+            ...["createItem", "updateItem", "deleteItem"].map((hook) => [
+                hook,
+                Hooks.on(hook, (item) => {
+                    if (item.type === "condition" && item.parent?.type === "character") void this.#refreshActor(item.parent);
+                }),
+            ]),
+        ];
     }
 
     async _onRender(context, options) {
@@ -89,17 +117,23 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             const input = event.target.closest?.("[data-field]");
             if (input) void this.#updateField(input);
         }, { signal: this.#listeners.signal });
+        this.element.addEventListener("contextmenu", (event) => {
+            const control = event.target.closest?.('[data-action="adjustFocus"]');
+            if (!control) return;
+            event.preventDefault();
+            void this.#changeFocus(control, -1);
+        }, { signal: this.#listeners.signal });
     }
 
     _tearDown(options) {
         this.#listeners.abort();
-        if (this.#hookId !== undefined) Hooks.off("updateActor", this.#hookId);
-        this.#hookId = undefined;
+        for (const [hook, id] of this.#hookIds) Hooks.off(hook, id);
+        this.#hookIds = [];
         super._tearDown(options);
     }
 
     #listeners = new AbortController();
-    #hookId;
+    #hookIds = [];
 
     #actorFor(target) {
         const id = target.closest("[data-actor-id]")?.dataset.actorId;
@@ -125,7 +159,8 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         if (!this.rendered) return;
         const current = this.element.querySelector(`.gm-character-pane[data-actor-id="${CSS.escape(actor.id)}"]`);
         if (!current) return;
-        const html = await foundry.applications.handlebars.renderTemplate(`${TEMPLATE_ROOT}/character-pane.hbs`, { actors: [this.#prepareActor(actor)], layout: "targeted" });
+        const collapsed = game.settings.get(MODULE_ID, GM_CONSOLE_COLLAPSED_ACTORS_SETTING).includes(actor.id);
+        const html = await foundry.applications.handlebars.renderTemplate(`${TEMPLATE_ROOT}/character-pane.hbs`, { actors: [this.#prepareActor(actor, collapsed)], layout: "targeted" });
         const wrapper = current.ownerDocument.createElement("div");
         wrapper.innerHTML = html.trim();
         const replacement = wrapper.querySelector(".gm-character-pane");
@@ -147,6 +182,27 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         const ids = game.settings.get(MODULE_ID, GM_CONSOLE_ACTORS_SETTING).filter((id) => id !== actor.id);
         await game.settings.set(MODULE_ID, GM_CONSOLE_ACTORS_SETTING, ids);
         await this.render();
+    }
+
+    static async #toggleActor(_event, target) {
+        const actor = this.#actorFor(target);
+        if (!actor) return;
+        const collapsed = new Set(game.settings.get(MODULE_ID, GM_CONSOLE_COLLAPSED_ACTORS_SETTING));
+        if (collapsed.has(actor.id)) collapsed.delete(actor.id);
+        else collapsed.add(actor.id);
+        await game.settings.set(MODULE_ID, GM_CONSOLE_COLLAPSED_ACTORS_SETTING, [...collapsed]);
+        await this.#refreshActor(actor);
+    }
+
+    static async #adjustFocus(_event, target) {
+        await this.#changeFocus(target, 1);
+    }
+
+    async #changeFocus(target, delta) {
+        const actor = this.#actorFor(target);
+        const resource = actor?.getResource?.("focus");
+        if (!actor || !resource || resource.max <= 0) return;
+        await actor.updateResource("focus", resource.value + delta);
     }
 
     static #openSheet(_event, target) {
