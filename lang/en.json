@@ -214,7 +214,16 @@
       "RollInitiative": "Roll Initiative",
       "Errors": {
         "GMOnly": "Only a GM can open the GM Character Console."
-      }
+      },
+      "Collapse": "Collapse character pane",
+      "Expand": "Expand character pane",
+      "FocusPoints": "Focus Points",
+      "FocusLabel": "Focus Points: {value} of {max}",
+      "FocusAdjustHint": "Left click: add 1 Focus Point. Right click: remove 1 Focus Point.",
+      "Conditions": "Conditions",
+      "NoConditions": "No Conditions",
+      "HPShort": "HP",
+      "ACShort": "AC"
     }
   }
 }

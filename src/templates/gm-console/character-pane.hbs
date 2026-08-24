@@ -1,14 +1,21 @@
 <section class="gm-panes gm-layout-{{layout}}">
 {{#each actors}}
-    <article class="gm-character-pane" data-actor-id="{{id}}">
+    <article class="gm-character-pane{{#if collapsed}} is-collapsed{{/if}}" data-actor-id="{{id}}">
         <header class="gm-pane-header">
-            <img src="{{img}}" alt="{{name}}" width="64" height="64">
-            <div><h3>{{name}}</h3><small>{{owners}}</small></div>
+            <img src="{{img}}" alt="{{name}}" width="48" height="48">
+            <div class="gm-pane-identity">
+                <h3>{{name}}</h3>
+                <small>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Level"}} {{level}}{{#if owners}} · {{owners}}{{/if}}</small>
+                <span class="gm-header-status"><span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.HPShort"}} {{hp.value}}/{{hp.max}}</span><span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.ACShort"}} {{ac}}</span></span>
+            </div>
             <div class="gm-pane-actions">
+                <button type="button" data-action="toggleActor" title="{{#if collapsed}}{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Expand'}}{{else}}{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Collapse'}}{{/if}}" aria-label="{{#if collapsed}}{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Expand'}}{{else}}{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Collapse'}}{{/if}}" aria-expanded="{{#unless collapsed}}true{{else}}false{{/unless}}"><i class="fa-solid {{#if collapsed}}fa-plus{{else}}fa-minus{{/if}}" inert></i></button>
                 <button type="button" data-action="openSheet" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenSheet'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenSheet'}}"><i class="fa-solid fa-window-restore" inert></i></button>
                 <button type="button" data-action="removeActor" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Remove'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Remove'}}"><i class="fa-solid fa-xmark" inert></i></button>
             </div>
         </header>
+        {{#unless collapsed}}
+        <div class="gm-pane-body">
         <dl class="gm-summary">
             <div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Level"}}</dt><dd>{{level}}</dd></div>
             <div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.AC"}}</dt><dd>{{ac}}</dd></div>
@@ -18,6 +25,18 @@
             <div class="gm-hp-bar" role="progressbar" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.HP'}}" aria-valuenow="{{hp.value}}" aria-valuemin="0" aria-valuemax="{{hp.max}}"><span style="width: {{hp.pct}}%"></span></div>
         </section>
         <label class="gm-hero">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.HeroPoints"}} <input type="number" data-field="hero" value="{{hero.value}}" min="0" max="{{hero.max}}"> / {{hero.max}}</label>
+        {{#if focus}}
+        <button type="button" class="gm-focus" data-action="adjustFocus" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.FocusAdjustHint'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.FocusLabel' value=focus.value max=focus.max}}">
+            <span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.FocusPoints"}}</span>
+            <span class="gm-focus-pips" aria-hidden="true">{{#each focus.pips}}<i class="fa-{{#if filled}}solid{{else}}regular{{/if}} fa-circle" inert></i>{{/each}}</span>
+        </button>
+        {{/if}}
+        {{#if conditions.length}}
+        <section class="gm-conditions" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Conditions'}}">
+            <h4>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Conditions"}}</h4>
+            <div class="gm-condition-list">{{#each conditions}}<span class="gm-condition-chip" data-condition-id="{{id}}">{{name}}</span>{{/each}}</div>
+        </section>
+        {{/if}}
         <div class="gm-statistics">
             <button type="button" data-action="rollStatistic" data-statistic="perception" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollPerception'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Perception"}} <strong>{{numberFormat perception sign=true}}</strong></button>
             <button type="button" data-action="rollStatistic" data-statistic="fortitude" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollFortitude'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Fortitude"}} <strong>{{numberFormat fortitude sign=true}}</strong></button>
@@ -25,6 +44,8 @@
             <button type="button" data-action="rollStatistic" data-statistic="will" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollWill'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Will"}} <strong>{{numberFormat will sign=true}}</strong></button>
             <button type="button" data-action="rollInitiative" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollInitiative'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Initiative"}} <strong>{{numberFormat initiative sign=true}}</strong></button>
         </div>
+        </div>
+        {{/unless}}
     </article>
 {{else}}
     <p class="gm-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.NoCharacters"}}</p>

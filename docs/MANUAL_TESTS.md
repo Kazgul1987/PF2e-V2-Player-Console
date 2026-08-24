@@ -1229,3 +1229,19 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **GM-HOTFIX-04 – HP Mutation:** Change HP and verify the correct Actor is updated and PF2e/Core accepts or clamps the raw value without a local minimum or maximum rule.
 - **GM-HOTFIX-05 – Hero Points:** Left-click to add one Hero Point and right-click to subtract one; verify `updateResource("hero-points", ...)` is used and PF2e/Core handles the boundaries.
 - **GM-HOTFIX-06 – Player Sheet Regression:** Open the normal V2 player sheet and verify it remains visually and functionally unchanged.
+
+## M15.1 – GM pane polish, Focus Points, Conditions, and collapse
+
+- **GM15.1-01 – Player Sheet Baseline:** Open the normal V2 sheet before and after using the GM Console; verify it remains unchanged.
+- **GM15.1-02 – Collapse:** Collapse a pane and verify only its header and mini-status remain in the DOM.
+- **GM15.1-03 – Expand:** Expand the pane and verify its complete summary returns.
+- **GM15.1-04 – Collapse Persistence:** Collapse a pane, close the console, and reopen it; verify the state persists.
+- **GM15.1-05 – Focus Display:** Use an Actor with a Focus pool and verify its filled and empty pips match the prepared resource.
+- **GM15.1-06 – Focus +1:** Left-click Focus and verify `updateResource("focus", current + 1)` targets the correct Actor.
+- **GM15.1-07 – Focus -1:** Right-click Focus and verify `updateResource("focus", current - 1)` targets the correct Actor and suppresses the browser context menu.
+- **GM15.1-08 – Actor without Focus:** Use an Actor without a Focus pool and verify no empty Focus section appears.
+- **GM15.1-09 – Conditions:** Apply Frightened, Prone, and Slowed and verify compact, read-only chips appear.
+- **GM15.1-10 – Condition Value:** Apply Frightened 2 and verify the prepared Core condition name includes the correct value.
+- **GM15.1-11 – Condition External Update:** Create, update, and delete a Condition externally; verify only its Actor pane refreshes.
+- **GM15.1-12 – Multiple Actors:** Change Actor A's Focus and verify Actor B remains unchanged.
+- **GM15.1-13 – Collapsed Targeted Refresh:** Collapse Actor A, change its HP externally, and verify its header mini-status refreshes without rendering the body.
