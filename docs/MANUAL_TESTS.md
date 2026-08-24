@@ -1245,3 +1245,19 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **GM15.1-11 – Condition External Update:** Create, update, and delete a Condition externally; verify only its Actor pane refreshes.
 - **GM15.1-12 – Multiple Actors:** Change Actor A's Focus and verify Actor B remains unchanged.
 - **GM15.1-13 – Collapsed Targeted Refresh:** Collapse Actor A, change its HP externally, and verify its header mini-status refreshes without rendering the body.
+
+## M15.2 – Isolated GM Inventory View
+
+- **GM15.2-01 – Player Sheet Baseline:** Open the normal player sheet before and after using Inventory; verify it remains unchanged.
+- **GM15.2-02 – Inventory Tab:** Set Actor A to Inventory and Actor B to Overview; verify the pane view states are independent.
+- **GM15.2-03 – Inventory Sections:** Use a character with several physical item types; verify Core categories are correct and empty categories are absent.
+- **GM15.2-04 – Quantity:** Change an item quantity; verify the correct owned item is updated through `system.quantity`.
+- **GM15.2-05 – Carry State:** Change held, worn, stowed, and dropped states; verify PF2e `changeCarryType(...)` handles the correct Actor and item.
+- **GM15.2-06 – Invested:** Toggle an investable item; verify PF2e `toggleInvested(...)` handles it.
+- **GM15.2-07 – Item Summary:** Toggle a summary; verify the correct item's owner-aware Core description appears.
+- **GM15.2-08 – Open Item:** Open an item and verify its normal PF2e item sheet appears.
+- **GM15.2-09 – Coins:** Compare the read-only PP, GP, SP, and CP summary with PF2e's prepared inventory currency.
+- **GM15.2-10 – Targeted Refresh:** Change Actor A's item externally; verify only Actor A's pane refreshes.
+- **GM15.2-11 – Actor Isolation:** Change an Actor A quantity and verify Actor B remains unchanged.
+- **GM15.2-12 – Collapsed:** Collapse Actor A with Inventory active; verify no navigation or inventory body is rendered.
+- **GM15.2-13 – Read-only:** Inspect an Actor that cannot be edited; verify inventory information and item-sheet access remain while quantity, carry, and invested mutation controls are absent.

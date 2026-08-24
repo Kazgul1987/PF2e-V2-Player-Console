@@ -223,7 +223,18 @@
       "Conditions": "Zustände",
       "NoConditions": "Keine Zustände",
       "HPShort": "TP",
-      "ACShort": "RK"
+      "ACShort": "RK",
+      "Views": "Ansichten des Charakterbereichs",
+      "Overview": "Übersicht",
+      "Inventory": "Inventar",
+      "Coins": "Münzen",
+      "Item": "Gegenstand",
+      "Quantity": "Anz.",
+      "Bulk": "Last",
+      "CarryState": "Tragezustand",
+      "Invested": "Investiert",
+      "OpenItem": "Gegenstand öffnen",
+      "ItemSummary": "Gegenstandsbeschreibung umschalten"
     }
   }
 }

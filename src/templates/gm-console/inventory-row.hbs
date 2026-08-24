@@ -1,0 +1,27 @@
+<div class="gm-inventory-row" data-item-id="{{id}}">
+    <div class="gm-item-identity">
+        <img src="{{img}}" alt="" width="24" height="24">
+        <button type="button" class="gm-item-name" data-action="toggleItemSummary" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.ItemSummary'}}">{{name}}</button>
+    </div>
+    <div class="gm-item-quantity">
+        {{#if editable}}
+        <input type="number" data-inventory-field="quantity" value="{{quantity}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Quantity'}}">
+        {{else}}{{quantity}}{{/if}}
+    </div>
+    <span class="gm-item-bulk">{{bulk}}</span>
+    <div class="gm-item-carry">
+        {{#if editable}}
+        <select data-inventory-field="carry" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.CarryState'}}">
+            {{#each carryOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+        {{else}}{{carryLabel}}{{/if}}
+    </div>
+    <div class="gm-item-actions">
+        {{#if isInvestable}}
+        {{#if editable}}<button type="button" data-action="toggleInvested" class="{{#if invested}}active{{/if}}" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Invested'}}" aria-pressed="{{invested}}"><i class="fa-solid fa-gem" inert></i></button>
+        {{else if invested}}<i class="fa-solid fa-gem" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Invested'}}"></i>{{/if}}
+        {{/if}}
+        <button type="button" data-action="openItem" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenItem'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenItem'}}"><i class="fa-solid fa-pen-to-square" inert></i></button>
+    </div>
+    <div class="gm-item-summary" hidden></div>
+</div>

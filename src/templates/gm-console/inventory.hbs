@@ -1,0 +1,21 @@
+<section class="gm-inventory" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Inventory'}}">
+    <div class="gm-coins" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Coins'}}">
+        <strong>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Coins"}}</strong>
+        {{#each inventory.coins}}<span><b>{{denomination}}</b> {{value}}</span>{{/each}}
+    </div>
+    {{#each inventory.sections}}
+    <section class="gm-inventory-section">
+        <h4>{{label}}</h4>
+        <div class="gm-inventory-columns" aria-hidden="true">
+            <span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Item"}}</span>
+            <span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Quantity"}}</span>
+            <span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Bulk"}}</span>
+            <span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.CarryState"}}</span>
+            <span></span>
+        </div>
+        {{#each items}}
+            {{> "modules/pf2e-v2-player-console/src/templates/gm-console/inventory-row.hbs"}}
+        {{/each}}
+    </section>
+    {{/each}}
+</section>
