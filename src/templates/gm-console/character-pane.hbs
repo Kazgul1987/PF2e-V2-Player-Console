@@ -1,0 +1,32 @@
+<section class="gm-panes gm-layout-{{layout}}">
+{{#each actors}}
+    <article class="gm-character-pane" data-actor-id="{{id}}">
+        <header class="gm-pane-header">
+            <img src="{{img}}" alt="{{name}}" width="64" height="64">
+            <div><h3>{{name}}</h3><small>{{owners}}</small></div>
+            <div class="gm-pane-actions">
+                <button type="button" data-action="openSheet" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenSheet'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenSheet'}}"><i class="fa-solid fa-window-restore" inert></i></button>
+                <button type="button" data-action="removeActor" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Remove'}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Remove'}}"><i class="fa-solid fa-xmark" inert></i></button>
+            </div>
+        </header>
+        <dl class="gm-summary">
+            <div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Level"}}</dt><dd>{{level}}</dd></div>
+            <div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.AC"}}</dt><dd>{{ac}}</dd></div>
+        </dl>
+        <section class="gm-resource">
+            <label>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.HP"}} <input type="number" data-field="hp" value="{{hp.value}}" min="0" max="{{hp.max}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.HP'}}"> / {{hp.max}}</label>
+            <div class="gm-hp-bar" role="progressbar" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.HP'}}" aria-valuenow="{{hp.value}}" aria-valuemin="0" aria-valuemax="{{hp.max}}"><span style="width: {{hp.pct}}%"></span></div>
+        </section>
+        <label class="gm-hero">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.HeroPoints"}} <input type="number" data-field="hero" value="{{hero.value}}" min="0" max="{{hero.max}}"> / {{hero.max}}</label>
+        <div class="gm-statistics">
+            <button type="button" data-action="rollStatistic" data-statistic="perception" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollPerception'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Perception"}} <strong>{{numberFormat perception sign=true}}</strong></button>
+            <button type="button" data-action="rollStatistic" data-statistic="fortitude" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollFortitude'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Fortitude"}} <strong>{{numberFormat fortitude sign=true}}</strong></button>
+            <button type="button" data-action="rollStatistic" data-statistic="reflex" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollReflex'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Reflex"}} <strong>{{numberFormat reflex sign=true}}</strong></button>
+            <button type="button" data-action="rollStatistic" data-statistic="will" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollWill'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Will"}} <strong>{{numberFormat will sign=true}}</strong></button>
+            <button type="button" data-action="rollInitiative" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.RollInitiative'}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Initiative"}} <strong>{{numberFormat initiative sign=true}}</strong></button>
+        </div>
+    </article>
+{{else}}
+    <p class="gm-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.NoCharacters"}}</p>
+{{/each}}
+</section>

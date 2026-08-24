@@ -1,0 +1,28 @@
+.pf2e-v2-gm-console {
+    --gm-accent: var(--color-warm-2, #9d6b25);
+    --gm-panel: var(--color-cool-5-90, #242831);
+    --gm-border: var(--color-border-light-2, #7a7971);
+    min-width: 620px;
+}
+.pf2e-v2-gm-console .window-content { display: flex; flex-direction: column; gap: .65rem; }
+.pf2e-v2-gm-console .gm-console-header h2 { margin: 0; }
+.pf2e-v2-gm-console .gm-selector { display: flex; align-items: end; gap: .65rem; flex-wrap: wrap; }
+.pf2e-v2-gm-console .gm-selector fieldset { flex: 1 1 420px; }
+.pf2e-v2-gm-console .gm-selector-actors { display: flex; gap: .4rem 1rem; flex-wrap: wrap; }
+.pf2e-v2-gm-console .gm-layout-label { display: grid; gap: .2rem; }
+.pf2e-v2-gm-console .gm-panes { display: flex; gap: .75rem; overflow: auto; flex: 1; align-items: start; padding: .25rem; }
+.pf2e-v2-gm-console .gm-panes.gm-layout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.pf2e-v2-gm-console .gm-character-pane { flex: 0 0 300px; min-width: 280px; padding: .75rem; border: 1px solid var(--gm-border); border-radius: 6px; background: var(--gm-panel); }
+.pf2e-v2-gm-console .gm-pane-header { display: grid; grid-template-columns: 64px 1fr auto; gap: .6rem; align-items: center; }
+.pf2e-v2-gm-console .gm-pane-header img { object-fit: cover; border: 1px solid var(--gm-border); border-radius: 4px; }
+.pf2e-v2-gm-console .gm-pane-header h3 { margin: 0; }
+.pf2e-v2-gm-console .gm-pane-actions { display: flex; gap: .25rem; }
+.pf2e-v2-gm-console .gm-summary { display: grid; grid-template-columns: 1fr 1fr; }
+.pf2e-v2-gm-console .gm-summary div { display: flex; justify-content: space-between; padding: .35rem; }
+.pf2e-v2-gm-console .gm-resource label, .pf2e-v2-gm-console .gm-hero { display: flex; align-items: center; gap: .3rem; }
+.pf2e-v2-gm-console input[type="number"] { width: 4.2rem; }
+.pf2e-v2-gm-console .gm-hp-bar { height: .7rem; border: 1px solid var(--gm-border); border-radius: 1rem; overflow: hidden; margin: .3rem 0 .7rem; }
+.pf2e-v2-gm-console .gm-hp-bar span { display: block; height: 100%; background: #3f9b58; }
+.pf2e-v2-gm-console .gm-statistics { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; margin-top: .7rem; }
+.pf2e-v2-gm-console .gm-statistics button { display: flex; justify-content: space-between; }
+.pf2e-v2-gm-console .gm-empty { margin: auto; font-style: italic; }

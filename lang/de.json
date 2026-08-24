@@ -185,6 +185,36 @@
       "Broken": "Beschädigt",
       "Destroyed": "Zerstört",
       "HPBarLabel": "Trefferpunkte: {value} von {max}"
+    },
+    "GMConsole": {
+      "Title": "SL-Charakterkonsole",
+      "Open": "SL-Charakterkonsole öffnen",
+      "SelectCharacters": "Charaktere auswählen",
+      "ApplySelection": "Auswahl anwenden",
+      "Remove": "Entfernen",
+      "OpenSheet": "V2-Bogen öffnen",
+      "NoCharacters": "Keine Charaktere ausgewählt",
+      "PlayerCharacters": "Spielercharaktere",
+      "Layout": "Layout",
+      "Columns": "Spalten",
+      "Grid": "Raster",
+      "Level": "Stufe",
+      "HP": "Trefferpunkte",
+      "AC": "Rüstungsklasse",
+      "HeroPoints": "Heldenpunkte",
+      "Perception": "Wahrnehmung",
+      "Fortitude": "Zähigkeit",
+      "Reflex": "Reflex",
+      "Will": "Willen",
+      "Initiative": "Initiative",
+      "RollPerception": "Wahrnehmung würfeln",
+      "RollFortitude": "Zähigkeitswurf würfeln",
+      "RollReflex": "Reflexwurf würfeln",
+      "RollWill": "Willenswurf würfeln",
+      "RollInitiative": "Initiative würfeln",
+      "Errors": {
+        "GMOnly": "Nur die Spielleitung kann die SL-Charakterkonsole öffnen."
+      }
     }
   }
 }

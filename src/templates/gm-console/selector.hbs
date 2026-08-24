@@ -1,0 +1,20 @@
+<form class="gm-selector">
+    <fieldset>
+        <legend>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.PlayerCharacters"}}</legend>
+        <div class="gm-selector-actors">
+            {{#each candidates}}
+                <label><input type="checkbox" name="gm-console-actor" value="{{id}}" {{checked selected}}> {{name}}</label>
+            {{/each}}
+        </div>
+    </fieldset>
+    <label class="gm-layout-label">
+        {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Layout"}}
+        <select name="gm-console-layout">
+            <option value="columns" {{#if (eq layout "columns")}}selected{{/if}}>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Columns"}}</option>
+            <option value="grid" {{#if (eq layout "grid")}}selected{{/if}}>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Grid"}}</option>
+        </select>
+    </label>
+    <button type="button" data-action="applySelection" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.ApplySelection'}}">
+        <i class="fa-solid fa-check" inert></i> {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.ApplySelection"}}
+    </button>
+</form>

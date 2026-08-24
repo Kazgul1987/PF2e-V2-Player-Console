@@ -2,9 +2,11 @@ import { HANDLEBARS_PARTIALS, LOG_PREFIX, MODULE_ID } from "./constants.js";
 import { PF2eCharacterSheetV2 } from "./app/character-sheet/character-sheet-v2.js";
 import { CharacterAdapter } from "./pf2e/character-adapter.js";
 import { registerSettings } from "./settings.js";
+import { GMCharacterConsole } from "./app/gm-console/gm-character-console.js";
 
 const applications = new Map();
 let partialsPromise;
+let gmConsole;
 
 function preloadHandlebarsPartials() {
     partialsPromise ??= foundry.applications.handlebars.loadTemplates(HANDLEBARS_PARTIALS).catch((error) => {
@@ -37,6 +39,33 @@ export function openCharacterSheet(actor) {
     return application;
 }
 
+export async function openGMConsole() {
+    if (!game.user?.isGM) {
+        ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.GMConsole.Errors.GMOnly"));
+        return null;
+    }
+    if (gmConsole?.rendered) {
+        gmConsole.bringToFront();
+        return gmConsole;
+    }
+    gmConsole = new GMCharacterConsole({ openCharacterSheet });
+    await gmConsole.initializeSelection();
+    await gmConsole.render(true);
+    return gmConsole;
+}
+
+export async function closeGMConsole() {
+    if (!game.user?.isGM || !gmConsole) return false;
+    await gmConsole.close();
+    gmConsole = undefined;
+    return true;
+}
+
+export async function toggleGMConsole() {
+    if (gmConsole?.rendered) return closeGMConsole();
+    return openGMConsole();
+}
+
 Hooks.once("init", () => {
     const renderedApplications = () => [...applications.values()].filter((application) => application.rendered);
     registerSettings(() => {
@@ -44,9 +73,26 @@ Hooks.once("init", () => {
     }, () => {
         for (const application of renderedApplications()) void application.render();
     });
-    game.modules.get(MODULE_ID).api = { openCharacterSheet, PF2eCharacterSheetV2 };
+    game.modules.get(MODULE_ID).api = {
+        openCharacterSheet, PF2eCharacterSheetV2, openGMConsole, closeGMConsole, toggleGMConsole,
+    };
     void preloadHandlebarsPartials().catch(() => undefined);
     console.info(`${LOG_PREFIX} Initialised`);
+});
+
+Hooks.on("getSceneControlButtons", (controls) => {
+    if (!game.user?.isGM) return;
+    const actors = Array.isArray(controls) ? controls.find((control) => control.name === "token") : controls.tokens;
+    const tools = actors?.tools;
+    const action = {
+        name: "gmCharacterConsole",
+        title: "PF2E_V2_PLAYER_CONSOLE.GMConsole.Open",
+        icon: "fa-solid fa-users-gear",
+        button: true,
+        onClick: () => void openGMConsole(),
+    };
+    if (Array.isArray(tools)) tools.push(action);
+    else if (tools) tools.gmCharacterConsole = action;
 });
 
 Hooks.on("getActorContextOptions", (_application, entries) => {
