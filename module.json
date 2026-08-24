@@ -20,7 +20,8 @@
     "src/module.js"
   ],
   "styles": [
-    "src/styles/character-sheet.css"
+    "src/styles/character-sheet.css",
+    "src/styles/gm-console.css"
   ],
   "languages": [
     {

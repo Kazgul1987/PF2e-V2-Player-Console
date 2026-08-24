@@ -185,6 +185,36 @@
       "Broken": "Broken",
       "Destroyed": "Destroyed",
       "HPBarLabel": "Hit Points: {value} of {max}"
+    },
+    "GMConsole": {
+      "Title": "GM Character Console",
+      "Open": "Open GM Character Console",
+      "SelectCharacters": "Select Characters",
+      "ApplySelection": "Apply Selection",
+      "Remove": "Remove",
+      "OpenSheet": "Open V2 Sheet",
+      "NoCharacters": "No Characters Selected",
+      "PlayerCharacters": "Player Characters",
+      "Layout": "Layout",
+      "Columns": "Columns",
+      "Grid": "Grid",
+      "Level": "Level",
+      "HP": "Hit Points",
+      "AC": "Armor Class",
+      "HeroPoints": "Hero Points",
+      "Perception": "Perception",
+      "Fortitude": "Fortitude",
+      "Reflex": "Reflex",
+      "Will": "Will",
+      "Initiative": "Initiative",
+      "RollPerception": "Roll Perception",
+      "RollFortitude": "Roll Fortitude save",
+      "RollReflex": "Roll Reflex save",
+      "RollWill": "Roll Will save",
+      "RollInitiative": "Roll Initiative",
+      "Errors": {
+        "GMOnly": "Only a GM can open the GM Character Console."
+      }
     }
   }
 }

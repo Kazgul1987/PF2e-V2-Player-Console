@@ -1202,3 +1202,21 @@ Exercise the manager in Remaster, Classic, and Dark with ornamentation Off, Subt
 
 ### M14.4-PREPUI-17 – Compact
 Resize the manager narrowly and test both density settings. Verify the two panes stack, rows stay compact, and no horizontal scrollbar or collision is normal.
+
+## M15 Restart – Isolated GM Character Console
+
+- **GM-RESTART-01 – Player Sheet Baseline:** Before opening the console, open the normal V2 player sheet and verify it is visually and functionally identical to the pre-M15 baseline.
+- **GM-RESTART-02 – GM-only:** As a player, verify there is no scene-control entry point and `openGMConsole()` is blocked with a notification.
+- **GM-RESTART-03 – Open Console:** As a GM, open the console from Token scene controls and through the module API; verify repeated opens focus one instance.
+- **GM-RESTART-04 – Discovery:** Verify only character Actors owned by at least one non-GM user are initially selected.
+- **GM-RESTART-05 – Selector:** Select and deselect Actors, apply the selection, and verify the panes match.
+- **GM-RESTART-06 – Empty Selection:** Deselect all Actors, close and reopen the console, and verify the selection remains empty.
+- **GM-RESTART-07 – HP:** Change HP in one pane and verify the correct Actor is updated through PF2e prepared data.
+- **GM-RESTART-08 – Hero Points:** Change Hero Points and verify the correct PF2e resource is updated and bounded.
+- **GM-RESTART-09 – Perception:** Roll Perception from a pane and verify PF2e Core performs the roll.
+- **GM-RESTART-10 – Saves:** Roll Fortitude, Reflex, and Will from each pane and verify PF2e Core performs each roll.
+- **GM-RESTART-11 – Initiative:** Roll initiative and verify PF2e Core performs the roll for the pane Actor.
+- **GM-RESTART-12 – Open Player Sheet:** Click **Open V2 Sheet** and verify the existing normal V2 sheet opens with unchanged functionality.
+- **GM-RESTART-13 – Actor Isolation:** Change Actor A's HP and verify Actor B remains unchanged.
+- **GM-RESTART-14 – Targeted Refresh:** Update Actor A externally and verify only Actor A's GM pane is replaced.
+- **GM-RESTART-15 – Player Sheet Regression:** After using the console, execute the complete existing player-sheet manual suite and verify no regression.

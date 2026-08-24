@@ -4,9 +4,22 @@ export const THEME_SETTING = "theme";
 export const DENSITY_SETTING = "density";
 export const ORNAMENTATION_SETTING = "ornamentation";
 export const SIDEBAR_SETTING = "showSidebar";
+export const GM_CONSOLE_ACTORS_SETTING = "gmConsoleActors";
+export const GM_CONSOLE_INITIALIZED_SETTING = "gmConsoleActorsInitialized";
+export const GM_CONSOLE_LAYOUT_SETTING = "gmConsoleLayout";
 
 /** Register client-owned presentation preferences. */
 export function registerSettings(onPresentationChange, onSidebarChange) {
+    game.settings.register(MODULE_ID, GM_CONSOLE_ACTORS_SETTING, {
+        scope: "client", config: false, type: Array, default: [],
+    });
+    game.settings.register(MODULE_ID, GM_CONSOLE_INITIALIZED_SETTING, {
+        scope: "client", config: false, type: Boolean, default: false,
+    });
+    game.settings.register(MODULE_ID, GM_CONSOLE_LAYOUT_SETTING, {
+        scope: "client", config: false, type: String, default: "columns",
+    });
+
     game.settings.register(MODULE_ID, THEME_SETTING, {
         name: "PF2E_V2_PLAYER_CONSOLE.Settings.Theme.Name",
         hint: "PF2E_V2_PLAYER_CONSOLE.Settings.Theme.Hint",
