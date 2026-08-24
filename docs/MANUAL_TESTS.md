@@ -1280,3 +1280,14 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **GM15.2.1-14 – Actor Isolation:** Change Actor A's carry state and verify Actor B remains completely unchanged.
 - **GM15.2.1-15 – Targeted Refresh:** Change a carry state and verify only the affected Actor pane refreshes.
 - **GM15.2.1-16 – Player Sheet Regression:** Open the normal V2 player sheet before and after the tests and verify it remains completely unchanged.
+
+## M15.2.2 – GM Inventory pane width and overflow layout hotfix
+
+- **GM15.2.2-01 – Inventory Width:** Open Inventory and verify every column, the Carry State select, and all action buttons are visible without clipping or overlap from the next pane.
+- **GM15.2.2-02 – Mixed Views:** Show Actor A's Inventory beside Actor B's Overview; verify Actor A is wider, Actor B remains compact, and neither pane overlaps the other.
+- **GM15.2.2-03 – Horizontal Overflow:** Open enough character panes to exceed the window width; verify `.gm-panes` scrolls horizontally while panes retain their minimum widths and their contents are not compressed.
+- **GM15.2.2-04 – Collapse Inventory:** Collapse an Inventory pane and verify it returns to the compact width rather than retaining the Inventory width.
+- **GM15.2.2-05 – Expand Again:** Expand the pane and verify Inventory returns to its full width with every column visible.
+- **GM15.2.2-06 – Long Item Names:** Use items with long names and verify names ellipsize while Quantity, Bulk, Carry State, and Actions remain visible.
+- **GM15.2.2-07 – Grid Layout:** Open Inventory in Grid layout and verify the pane is not compressed to 280px and no Inventory column is clipped.
+- **GM15.2.2-08 – Player Sheet Regression:** Open the normal V2 player sheet and verify it remains completely unchanged.
