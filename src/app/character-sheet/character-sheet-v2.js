@@ -21,6 +21,7 @@ import { PFSAdapter } from "../../pf2e/pfs-adapter.js";
 import { PFSController } from "../../controllers/pfs-controller.js";
 import { getPresentationSettings } from "../../settings.js";
 import { SidebarController } from "../../controllers/sidebar-controller.js";
+import { TargetedRollFeed } from "./targeted-roll-feed.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -109,6 +110,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             pfsBoonSummary: PF2eCharacterSheetV2.#pfsAction,
             deletePFSBoon: PF2eCharacterSheetV2.#pfsAction,
             browsePFSBoons: PF2eCharacterSheetV2.#pfsAction,
+            toggleRollFeed: PF2eCharacterSheetV2.#toggleRollFeed,
         },
     };
 
@@ -134,6 +136,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         effects: { template: `modules/${MODULE_ID}/src/templates/character-sheet/effects.hbs`, scrollable: [""] },
         biography: { template: `modules/${MODULE_ID}/src/templates/character-sheet/biography.hbs`, scrollable: [""] },
         pfs: { template: `modules/${MODULE_ID}/src/templates/character-sheet/pfs.hbs`, scrollable: [""] },
+        rollFeed: { template: `modules/${MODULE_ID}/src/templates/character-sheet/roll-feed.hbs` },
     };
 
     tabGroups = { primary: "character" };
@@ -192,6 +195,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "effects") partContext.effects = EffectsAdapter.prepare(this.actor, this.isEditable);
         if (partId === "biography") partContext.biography = await BiographyAdapter.prepare(this.actor, this.isEditable);
         if (partId === "pfs") partContext.pfs = PFSAdapter.prepare(this.actor);
+        if (partId === "rollFeed") partContext.rollFeed = TargetedRollFeed.prepare(this.actor, this.#rollFeedCollapsed);
         return partContext;
     }
 
@@ -229,6 +233,11 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
 
     static async #rollInitiative(event) {
         return this.actor.initiative?.roll?.(RollController.eventToRollParams(event));
+    }
+
+    static #toggleRollFeed() {
+        this.#rollFeedCollapsed = !this.#rollFeedCollapsed;
+        return this.render({ parts: ["rollFeed"] });
     }
 
     static #openCoreCharacterSheet() {
@@ -688,10 +697,14 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             ["createItem", renderItem],
             ["updateItem", renderItem],
             ["deleteItem", renderItem],
+            ["createChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
+            ["updateChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
+            ["deleteChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
         ]) this.#hooks.push([hook, Hooks.on(hook, callback)]);
     }
 
     #hooks = [];
     #renderListeners = null;
     #biographyEditor = null;
+    #rollFeedCollapsed = false;
 }
