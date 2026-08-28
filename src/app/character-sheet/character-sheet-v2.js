@@ -517,6 +517,11 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             event.preventDefault();
             void SidebarController.adjustHeroPoints(this.actor, -1);
         }, listenerOptions);
+        const rollFeed = this.element.querySelector(".roll-feed");
+        rollFeed?.addEventListener("click", (event) => {
+            const check = event.target?.closest?.("a[data-pf2-check], span[data-pf2-check]");
+            if (check && rollFeed.contains(check)) void TargetedRollFeed.rollCheck(event, check, this.document);
+        }, listenerOptions);
         const actions = getTabPanel("actions");
         actions?.addEventListener("change", (event) => {
             const target = event.target;

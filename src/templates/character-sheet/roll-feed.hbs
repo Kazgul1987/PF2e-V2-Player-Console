@@ -1,4 +1,4 @@
-<section class="roll-feed {{#if rollFeed.collapsed}}collapsed{{/if}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.RollFeed.Title'}}">
+<section class="roll-feed {{#if rollFeed.collapsed}}collapsed{{/if}}" data-actor-uuid="{{rollFeed.actorUuid}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.RollFeed.Title'}}">
     <button type="button" class="roll-feed-heading" data-action="toggleRollFeed" aria-expanded="{{#unless rollFeed.collapsed}}true{{else}}false{{/unless}}">
         <span>{{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.Title"}}</span>
         <i class="fa-solid {{#if rollFeed.collapsed}}fa-chevron-up{{else}}fa-chevron-down{{/if}}" aria-hidden="true"></i>

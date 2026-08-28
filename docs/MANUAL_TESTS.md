@@ -1355,3 +1355,20 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **M16.1-15 – Broken Message Robustness:** Include an unusual old message that cannot be enriched and verify all other feed entries still render.
 - **M16.1-16 – Player Tabs Regression:** Click through every existing player tab and verify all remain functional.
 - **M16.1-17 – GM Screen Regression:** Open the GM Character Console and verify it is completely unchanged.
+
+## M16.2 – Targeted Roll Feed actor binding
+
+- **M16.2-01 – Sheet Actor:** Open Actor A's sheet, click a request for A, and verify A rolls.
+- **M16.2-02 – Wrong Controlled Token:** With Token B controlled, click a request in Sheet A; verify A rolls, B does not, and B remains controlled.
+- **M16.2-03 – No Token:** With no controlled token, click a request in Sheet A and verify A rolls.
+- **M16.2-04 – Assigned Character Mismatch:** Assign Actor B to the user, click a request in Sheet A, and verify A rolls while the assignment remains B.
+- **M16.2-05 – Two Open Sheets:** Open Sheets A and B for the same multi-target request; verify clicking A rolls A and clicking B rolls B.
+- **M16.2-06 – No Double Roll:** Click once and verify exactly one PF2e roll message is created.
+- **M16.2-07 – Basic Save:** Click `@Check[reflex|dc:28|basic]` and verify PF2e's native basic-save behavior remains intact.
+- **M16.2-08 – Multiple Checks:** Put Reflex and Will in one request and verify each link rolls the owning sheet actor.
+- **M16.2-09 – Modifier Keys:** Verify Shift/Ctrl/Alt/Meta retain PF2e's standard check behavior.
+- **M16.2-10 – Pop-out:** Click a request in a detached V2 sheet and verify the correct actor rolls without a realm/DOM error.
+- **M16.2-11 – Partial Refresh:** Create a new relevant ChatMessage, then click after the roll-feed part refresh; verify the handler runs exactly once.
+- **M16.2-12 – Chat Regression:** Click a normal `@Check` in Foundry Chat and verify standard PF2e behavior is unchanged.
+- **M16.2-13 – Result Feed:** Roll from the request and verify the result still appears in the Player Roll Feed.
+- **M16.2-14 – GM Screen Regression:** Open the GM Console and verify it is completely unchanged.
