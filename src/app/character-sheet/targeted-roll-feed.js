@@ -13,12 +13,18 @@ export class TargetedRollFeed {
         });
     }
 
-    static prepare(actor, collapsed = false) {
-        const entries = [...(game.messages?.contents ?? game.messages ?? [])]
-            .filter((message) => this.isVisible(message))
-            .map((message) => this.#entry(message, actor))
-            .filter(Boolean)
+    static async prepare(actor, collapsed = false) {
+        const candidates = [...(game.messages?.contents ?? game.messages ?? [])]
+            .filter((message) => this.#isCandidate(message, actor))
             .slice(-MAX_ROLL_FEED_ENTRIES);
+        const entries = (await Promise.all(candidates.map(async (message) => {
+            try {
+                return await this.#entry(message, actor);
+            } catch (error) {
+                console.warn("PF2e V2 Player Console | Roll Feed: Failed to enrich a chat message", { message, error });
+                return null;
+            }
+        }))).filter(Boolean);
         return { collapsed, entries, empty: entries.length === 0 };
     }
 
@@ -36,10 +42,16 @@ export class TargetedRollFeed {
         return /@Check\s*\[/i.test(String(content ?? "")) || /data-pf2-check(?:\s|=|>)/i.test(String(content ?? ""));
     }
 
-    static #entry(message, actor) {
+    static #isCandidate(message, actor) {
+        if (!this.affectsActor(message, actor)) return false;
+        const targets = message.getFlag?.(MODULE_ID, "rollFeed.targets") ?? [];
+        return targets.includes(actor.uuid) || (message.isCheckRoll === true && !!message.rolls?.[0]);
+    }
+
+    static async #entry(message, actor) {
         const targets = message.getFlag?.(MODULE_ID, "rollFeed.targets") ?? [];
         if (targets.includes(actor.uuid)) {
-            const checks = this.#inlineChecks(message.content);
+            const checks = await this.#inlineChecks(message.content, actor);
             if (!checks) return null;
             return { id: message.id, type: "request", author: message.author?.name ?? game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.RollFeed.GMRequest"), checks };
         }
@@ -63,14 +75,14 @@ export class TargetedRollFeed {
         return message.actor?.uuid ?? message.speakerActor?.uuid ?? null;
     }
 
-    static #inlineChecks(content) {
-        const container = document.createElement("div");
-        container.innerHTML = String(content ?? "");
+    static async #inlineChecks(content, actor) {
+        const enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(String(content ?? ""), {
+            relativeTo: actor,
+            rollData: actor.getRollData(),
+        });
+        const container = foundry.utils.parseHTML(`<div>${enriched}</div>`);
         const checks = [...container.querySelectorAll("a[data-pf2-check], span[data-pf2-check]")];
         if (!checks.length) return null;
-        const output = document.createElement("div");
-        output.className = "roll-feed-checks";
-        for (const check of checks) output.append(check.cloneNode(true));
-        return output.innerHTML;
+        return checks.map((check) => check.outerHTML).join(" ");
     }
 }

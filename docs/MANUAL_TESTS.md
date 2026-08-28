@@ -1335,3 +1335,23 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **M16-18 – Multiple Player Tabs:** Switch through all tabs and verify the feed remains at the bottom.
 - **M16-19 – Detached/Pop-out:** Verify feed collapse and native inline checks in a detached sheet.
 - **M16-20 – GM Console Final Regression:** Reopen the GM console and verify it remains completely unchanged.
+
+## M16.1 – Targeted Roll Feed enrichment and actor-context hotfix
+
+- **M16.1-01 – Raw `@Check` Request:** Target Actor A and post `@Check[reflex|dc:28]`; verify the normal chat message and a fully enriched, non-empty link in A's feed.
+- **M16.1-02 – Rich `@Check` Syntax:** Post `@Check[reflex|dc:28|basic]`; verify PF2e handles the full syntax without module-side parsing.
+- **M16.1-03 – Multiple Checks:** Post `Reflex @Check[reflex|dc:28] Will @Check[will|dc:24]`; verify both checks are visible and clickable.
+- **M16.1-04 – Actor Context:** Own Actor A and Actor B, open both V2 sheets, click A's request, and verify Actor A rolls.
+- **M16.1-05 – Controlled Token Mismatch:** Control Token B, click the request in Sheet A, and verify Actor A, not B, rolls.
+- **M16.1-06 – No Controlled Token:** Control no token, click the request in Sheet A, and verify Actor A rolls when PF2e permits its actor context.
+- **M16.1-07 – Detached Window:** Detach the V2 sheet, click a request, and verify the correct actor rolls without a DOM-realm error.
+- **M16.1-08 – Normal Chat Result:** Click a request and verify PF2e creates its normal roll chat message and the result appears in the feed.
+- **M16.1-09 – Degree of Success:** Roll a check with a degree of success and verify the structured core value is displayed.
+- **M16.1-10 – Visibility:** Create a blind or GM-only request and verify no content leaks into the player's feed.
+- **M16.1-11 – Multi Target:** Target A and B, then verify both feeds receive the request and each sheet rolls its own actor.
+- **M16.1-12 – Target Snapshot:** Change targets after posting and verify the original feed assignment remains unchanged.
+- **M16.1-13 – Closed Sheet:** Post while the sheet is closed, open it later, and verify the enriched request is reconstructed from chat history.
+- **M16.1-14 – Feed Performance:** With at least 20 relevant messages plus older chat history, verify only the limited relevant candidates are enriched and no full-chat slowdown is apparent.
+- **M16.1-15 – Broken Message Robustness:** Include an unusual old message that cannot be enriched and verify all other feed entries still render.
+- **M16.1-16 – Player Tabs Regression:** Click through every existing player tab and verify all remain functional.
+- **M16.1-17 – GM Screen Regression:** Open the GM Character Console and verify it is completely unchanged.
