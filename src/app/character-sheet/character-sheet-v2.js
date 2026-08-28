@@ -28,7 +28,7 @@ const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api
 export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2) {
     static DEFAULT_OPTIONS = {
         id: `${MODULE_ID}-{id}`,
-        classes: [MODULE_ID, "pf2e-v2-character-sheet"],
+        classes: [MODULE_ID, "pf2e-v2-character-sheet", "sheet"],
         window: {
             frame: true,
             positioned: true,
@@ -195,7 +195,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "effects") partContext.effects = EffectsAdapter.prepare(this.actor, this.isEditable);
         if (partId === "biography") partContext.biography = await BiographyAdapter.prepare(this.actor, this.isEditable);
         if (partId === "pfs") partContext.pfs = PFSAdapter.prepare(this.actor);
-        if (partId === "rollFeed") partContext.rollFeed = TargetedRollFeed.prepare(this.actor, this.#rollFeedCollapsed);
+        if (partId === "rollFeed") partContext.rollFeed = await TargetedRollFeed.prepare(this.actor, this.#rollFeedCollapsed);
         return partContext;
     }
 
