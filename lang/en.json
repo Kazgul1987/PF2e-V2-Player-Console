@@ -246,6 +246,19 @@
       "NoSpells": "No visible spells.",
       "Slots": "Slots",
       "Expended": "Expended"
+    },
+    "RollFeed": {
+      "Title": "Roll Requests",
+      "Empty": "No recent roll requests.",
+      "GMRequest": "GM Request",
+      "Result": "Result",
+      "YouRolled": "You rolled",
+      "Degree": {
+        "0": "Critical Failure",
+        "1": "Failure",
+        "2": "Success",
+        "3": "Critical Success"
+      }
     }
   }
 }

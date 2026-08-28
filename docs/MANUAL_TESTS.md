@@ -1312,3 +1312,26 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **GM15.3-16 – Width:** Verify spell rows and buttons are not clipped or overlapped and horizontal console scrolling works with multiple panes.
 - **GM15.3-17 – Collapse:** Collapse a Spellcasting pane; verify its body is absent and the pane returns to compact width.
 - **GM15.3-18 – Player Sheet Regression:** Run the complete normal V2 Player Sheet suite and verify no change.
+
+## M16 – Targeted Roll Feed
+
+- **M16-01 – GM Screen Regression:** Before and after testing, verify Overview, Inventory, and Spellcasting are unchanged and no roll-feed UI appears in the GM console.
+- **M16-02 – Player Sheet Baseline:** Open the V2 sheet and verify every existing primary tab still works.
+- **M16-03 – No Target:** As GM with no targets, post `@Check[type:reflex|dc:28]`; verify normal chat output and no feed request.
+- **M16-04 – Single Target:** Target Character A and post the check; verify it appears only in A's V2 feed.
+- **M16-05 – Wrong Character:** Verify the request does not appear for untargeted Character B.
+- **M16-06 – Multiple Targets:** Target A, B, and C; verify one request appears in each feed.
+- **M16-07 – Duplicate Actor Tokens:** Target two tokens for one Actor; verify only one request is shown.
+- **M16-08 – Target Snapshot:** Post while targeting A, then target B; verify the existing request remains assigned to A.
+- **M16-09 – Inline Roll Click:** Click the feed check; verify PF2e's native workflow runs and posts normally to chat.
+- **M16-10 – Result Feed:** Verify the resulting check appears in A's feed.
+- **M16-11 – Result Isolation:** Verify A's roll result does not appear in B's feed.
+- **M16-12 – Degree of Success:** Verify PF2e's structured degree is displayed when present, with no locally calculated degree.
+- **M16-13 – Blind Message:** Verify content hidden from the player is absent from their feed.
+- **M16-14 – Closed Sheet:** Post with the sheet closed, then open it and verify reconstruction from chat history.
+- **M16-15 – Feed Limit:** Create more than 20 relevant entries and verify only the newest 20 render.
+- **M16-16 – Delete Message:** Delete a relevant message and verify the open feed updates.
+- **M16-17 – Collapse:** Collapse and expand the feed; verify primary tabs remain usable.
+- **M16-18 – Multiple Player Tabs:** Switch through all tabs and verify the feed remains at the bottom.
+- **M16-19 – Detached/Pop-out:** Verify feed collapse and native inline checks in a detached sheet.
+- **M16-20 – GM Console Final Regression:** Reopen the GM console and verify it remains completely unchanged.

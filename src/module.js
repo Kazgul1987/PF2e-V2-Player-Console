@@ -3,6 +3,7 @@ import { PF2eCharacterSheetV2 } from "./app/character-sheet/character-sheet-v2.j
 import { CharacterAdapter } from "./pf2e/character-adapter.js";
 import { registerSettings } from "./settings.js";
 import { GMCharacterConsole } from "./app/gm-console/gm-character-console.js";
+import { TargetedRollFeed } from "./app/character-sheet/targeted-roll-feed.js";
 
 const applications = new Map();
 let partialsPromise;
@@ -68,6 +69,7 @@ export async function toggleGMConsole() {
 }
 
 Hooks.once("init", () => {
+    TargetedRollFeed.registerHooks();
     const renderedApplications = () => [...applications.values()].filter((application) => application.rendered);
     registerSettings(() => {
         for (const application of renderedApplications()) application.applyPresentationSettings();

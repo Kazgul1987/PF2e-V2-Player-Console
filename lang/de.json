@@ -246,6 +246,19 @@
       "NoSpells": "Keine sichtbaren Zauber.",
       "Slots": "Plätze",
       "Expended": "Verbraucht"
+    },
+    "RollFeed": {
+      "Title": "Würfelanfragen",
+      "Empty": "Keine aktuellen Würfelanfragen.",
+      "GMRequest": "SL-Anfrage",
+      "Result": "Ergebnis",
+      "YouRolled": "Du hast gewürfelt",
+      "Degree": {
+        "0": "Kritischer Fehlschlag",
+        "1": "Fehlschlag",
+        "2": "Erfolg",
+        "3": "Kritischer Erfolg"
+      }
     }
   }
 }

@@ -1,0 +1,23 @@
+<section class="roll-feed {{#if rollFeed.collapsed}}collapsed{{/if}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.RollFeed.Title'}}">
+    <button type="button" class="roll-feed-heading" data-action="toggleRollFeed" aria-expanded="{{#unless rollFeed.collapsed}}true{{else}}false{{/unless}}">
+        <span>{{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.Title"}}</span>
+        <i class="fa-solid {{#if rollFeed.collapsed}}fa-chevron-up{{else}}fa-chevron-down{{/if}}" aria-hidden="true"></i>
+    </button>
+    {{#unless rollFeed.collapsed}}
+        <div class="roll-feed-entries">
+            {{#each rollFeed.entries}}
+                <article class="roll-feed-entry roll-feed-{{type}}" data-message-id="{{id}}">
+                    {{#if (eq type "request")}}
+                        <strong>{{author}}</strong>
+                        <div class="roll-feed-request-content">{{{checks}}}</div>
+                    {{else}}
+                        <strong>{{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.YouRolled"}}</strong>
+                        <span>{{label}}{{#if (ne total null)}} <b>{{total}}</b>{{/if}}{{#if degree}} · {{degree}}{{/if}}</span>
+                    {{/if}}
+                </article>
+            {{else}}
+                <p class="roll-feed-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.Empty"}}</p>
+            {{/each}}
+        </div>
+    {{/unless}}
+</section>
