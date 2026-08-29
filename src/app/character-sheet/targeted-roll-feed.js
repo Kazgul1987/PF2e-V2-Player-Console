@@ -1,5 +1,5 @@
 import { MODULE_ID } from "../../constants.js";
-import { ROLL_FEED_CLEARED_AT_SETTING } from "../../settings.js";
+import { ROLL_FEED_CLEARED_AT_SETTING, ROLL_FEED_SHOW_ATTACK_ROLLS_SETTING } from "../../settings.js";
 import { SavesHelperCompat } from "./pf2e-saves-helper-compat.js";
 
 export const MAX_ROLL_FEED_ENTRIES = 20;
@@ -113,7 +113,14 @@ export class TargetedRollFeed {
         if (!this.affectsActor(message, actor)) return false;
         if (SavesHelperCompat.flags(message)) return true;
         const targets = message.getFlag?.(MODULE_ID, "rollFeed.targets") ?? [];
-        return targets.includes(actor.uuid) || (message.isCheckRoll === true && !!message.rolls?.[0]);
+        if (targets.includes(actor.uuid)) return true;
+        if (message.isCheckRoll !== true || !message.rolls?.[0]) return false;
+        return game.settings.get(MODULE_ID, ROLL_FEED_SHOW_ATTACK_ROLLS_SETTING) || !this.#isAttackResult(message);
+    }
+
+    /** PF2e assigns this structured CheckRoll type to strikes and spell attacks. */
+    static #isAttackResult(message) {
+        return message.rolls?.[0]?.options?.type === "attack-roll";
     }
 
     static async #entry(message, actor) {
@@ -145,8 +152,10 @@ export class TargetedRollFeed {
         if (this.#messageActorUuid(message) !== actor.uuid || message.isCheckRoll !== true) return null;
         const roll = message.rolls?.[0];
         if (!roll) return null;
-        const degree = Number.isInteger(roll.degreeOfSuccess)
-            ? game.i18n.localize(`PF2E_V2_PLAYER_CONSOLE.RollFeed.Degree.${roll.degreeOfSuccess}`)
+        const degreeOfSuccess = roll.degreeOfSuccess;
+        const degreeClass = ["critical-failure", "failure", "success", "critical-success"][degreeOfSuccess] ?? null;
+        const degree = degreeClass
+            ? game.i18n.localize(`PF2E_V2_PLAYER_CONSOLE.RollFeed.Degree.${degreeOfSuccess}`)
             : null;
         return {
             id: message.id,
@@ -154,6 +163,7 @@ export class TargetedRollFeed {
             label: roll.options?.label ?? roll.options?.type ?? game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.RollFeed.Result"),
             total: roll.total,
             degree,
+            degreeClass,
         };
     }
 

@@ -154,6 +154,10 @@
         "Name": "Permanente Charakter-Seitenleiste",
         "Hint": "Zeigt zentrale Charakter- und Kampfwerte neben jedem Tab."
       },
+      "RollFeedShowAttackRolls": {
+        "Name": "Angriffswürfe im Roll Feed anzeigen",
+        "Hint": "Zeigt zusätzlich Strike- und Angriffswürfe in der Roll-Historie des V2 Sheets an."
+      },
       "Ornamentation": {
         "Name": "Verzierung",
         "Hint": "Wählt den Umfang der rein mit CSS erzeugten dekorativen Rahmen der PF2e V2 Player Console Sheets.",

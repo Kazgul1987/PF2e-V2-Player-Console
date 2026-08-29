@@ -82,6 +82,10 @@
 .pf2e-v2-character-sheet .roll-feed-entries { display: flex; flex-direction: column; gap: var(--pf2e-v2-gap-xs); max-height: 10rem; overflow: auto; padding: 0 var(--pf2e-v2-gap-md) var(--pf2e-v2-gap-md); }
 .pf2e-v2-character-sheet .roll-feed-entry { align-items: center; background: var(--pf2e-v2-bg-panel-alt); border-left: 3px solid var(--pf2e-v2-accent); display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-sm); padding: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); }
 .pf2e-v2-character-sheet .roll-feed-result { border-left-color: var(--pf2e-v2-success); }
+.pf2e-v2-character-sheet .roll-feed-degree.success { color: var(--color-pf-text-success, #245fc7); }
+.pf2e-v2-character-sheet .roll-feed-degree.critical-success { color: var(--color-pf-text-critical-success, #287a3d); }
+.pf2e-v2-character-sheet .roll-feed-degree.failure { color: var(--color-pf-text-failure, #dc503f); }
+.pf2e-v2-character-sheet .roll-feed-degree.critical-failure { color: var(--color-pf-text-critical-failure, #b3262e); }
 .pf2e-v2-character-sheet .roll-feed-saves-helper-request { flex-wrap: nowrap; justify-content: space-between; }
 .pf2e-v2-character-sheet .roll-feed-saves-helper-content { display: flex; flex-direction: column; min-width: 0; }
 .pf2e-v2-character-sheet .roll-feed-checks { display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-xs); }

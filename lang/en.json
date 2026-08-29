@@ -154,6 +154,10 @@
         "Name": "Persistent character sidebar",
         "Hint": "Show core character and combat resources beside every tab."
       },
+      "RollFeedShowAttackRolls": {
+        "Name": "Show attack rolls in Roll Feed",
+        "Hint": "Include strike and attack roll results in the V2 Sheet roll history."
+      },
       "Ornamentation": {
         "Name": "Ornamentation",
         "Hint": "Choose the amount of CSS-only decorative framing used by PF2e V2 Player Console sheets.",

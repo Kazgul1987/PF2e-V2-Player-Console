@@ -19,7 +19,7 @@ import { BiographyAdapter } from "../../pf2e/biography-adapter.js";
 import { BiographyController } from "../../controllers/biography-controller.js";
 import { PFSAdapter } from "../../pf2e/pfs-adapter.js";
 import { PFSController } from "../../controllers/pfs-controller.js";
-import { getPresentationSettings } from "../../settings.js";
+import { getPresentationSettings, ROLL_FEED_FILTER_CHANGED_HOOK } from "../../settings.js";
 import { SidebarController } from "../../controllers/sidebar-controller.js";
 import { TargetedRollFeed } from "./targeted-roll-feed.js";
 
@@ -715,6 +715,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             ["updateChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
             ["deleteChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
             [`${MODULE_ID}.rollFeedCleared`, (actorUuid) => { if (actorUuid === this.actor.uuid) void this.render({ parts: ["rollFeed"] }); }],
+            [ROLL_FEED_FILTER_CHANGED_HOOK, () => { void this.render({ parts: ["rollFeed"] }); }],
         ]) this.#hooks.push([hook, Hooks.on(hook, callback)]);
     }
 
