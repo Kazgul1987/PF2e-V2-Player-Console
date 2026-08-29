@@ -27,15 +27,13 @@ export class TargetedRollFeed {
         for (const user of game.users ?? []) {
             if (user.isGM) continue;
 
-            let actor = user.character?.type === "character" ? user.character : null;
-            if (!actor && user.active) {
-                actor = (game.actors ?? []).find((candidate) => candidate.type === "character"
-                    && candidate.testUserPermission?.(user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER));
-            }
-            if (actor?.uuid) targets.push(actor.uuid);
+            const actor = user.character;
+            if (actor?.type === "character" && actor.uuid) targets.push(actor.uuid);
         }
 
-        // Requests are stored by Actor UUID, so assigned characters remain relevant even while their user is offline.
+        // Roll requests are stored by Actor UUID, so an assigned character remains a valid target even while its
+        // user is offline. Users without an explicitly assigned character are skipped to avoid ambiguous OWNER-based
+        // fallbacks.
         return [...new Set(targets)];
     }
 
