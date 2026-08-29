@@ -1,4 +1,6 @@
 import { MODULE_ID } from "../../constants.js";
+import { ROLL_FEED_CLEARED_AT_SETTING } from "../../settings.js";
+import { SavesHelperCompat } from "./pf2e-saves-helper-compat.js";
 
 export const MAX_ROLL_FEED_ENTRIES = 20;
 const FLAG_PATH = `flags.${MODULE_ID}.rollFeed`;
@@ -14,7 +16,9 @@ export class TargetedRollFeed {
     }
 
     static async prepare(actor, collapsed = false) {
+        const cutoff = game.settings.get(MODULE_ID, ROLL_FEED_CLEARED_AT_SETTING)?.[actor.uuid] ?? 0;
         const candidates = [...(game.messages?.contents ?? game.messages ?? [])]
+            .filter((message) => (message.timestamp ?? 0) > cutoff)
             .filter((message) => this.#isCandidate(message, actor))
             .slice(-MAX_ROLL_FEED_ENTRIES);
         const entries = (await Promise.all(candidates.map(async (message) => {
@@ -31,7 +35,25 @@ export class TargetedRollFeed {
     static affectsActor(message, actor) {
         if (!message || !actor || !this.isVisible(message)) return false;
         const targets = message.getFlag?.(MODULE_ID, "rollFeed.targets") ?? [];
-        return targets.includes(actor.uuid) || this.#messageActorUuid(message) === actor.uuid;
+        return targets.includes(actor.uuid) || this.#messageActorUuid(message) === actor.uuid || SavesHelperCompat.matchesActor(message, actor);
+    }
+
+    static async clear(actor) {
+        const cutoffs = { ...(game.settings.get(MODULE_ID, ROLL_FEED_CLEARED_AT_SETTING) ?? {}) };
+        cutoffs[actor.uuid] = Date.now();
+        await game.settings.set(MODULE_ID, ROLL_FEED_CLEARED_AT_SETTING, cutoffs);
+        Hooks.callAll(`${MODULE_ID}.rollFeedCleared`, actor.uuid);
+    }
+
+    static async rollSavesHelper(event, messageId, actor) {
+        try {
+            const message = game.messages.get(messageId);
+            if (!message) throw new Error("Prompt message no longer exists");
+            await SavesHelperCompat.roll(event, message, actor);
+        } catch (error) {
+            console.warn("PF2e V2 Player Console | PF2e Saves Helper: Save roll failed", { messageId, actor: actor?.uuid, error });
+            ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.RollFeed.SavesHelperUnavailable"));
+        }
     }
 
     static isVisible(message) {
@@ -89,11 +111,29 @@ export class TargetedRollFeed {
 
     static #isCandidate(message, actor) {
         if (!this.affectsActor(message, actor)) return false;
+        if (SavesHelperCompat.flags(message)) return true;
         const targets = message.getFlag?.(MODULE_ID, "rollFeed.targets") ?? [];
         return targets.includes(actor.uuid) || (message.isCheckRoll === true && !!message.rolls?.[0]);
     }
 
     static async #entry(message, actor) {
+        const savesFlags = SavesHelperCompat.flags(message);
+        if (savesFlags) {
+            const token = await SavesHelperCompat.targetForActor(message, actor);
+            if (!token) return null;
+            const result = SavesHelperCompat.resultFor(savesFlags, token);
+            const saveType = savesFlags.saveInfo?.saveType;
+            return {
+                id: message.id, type: "saves-helper-request",
+                label: (!savesFlags.label?.gmOnly || game.user.isGM) && savesFlags.label?.value
+                    ? savesFlags.label.value
+                    : game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.RollFeed.SavesHelper"),
+                saveLabel: saveType ? game.i18n.localize(CONFIG.PF2E.saves?.[saveType] ?? saveType) : "",
+                dc: savesFlags.saveInfo?.dc, basic: savesFlags.saveInfo?.basic === true,
+                rolled: !!result, total: result?.rollValue ?? null,
+                rollable: !!savesFlags.origin?.uuid && !!token.isOwner && !!token.actor?.getStatistic(saveType),
+            };
+        }
         const targets = message.getFlag?.(MODULE_ID, "rollFeed.targets") ?? [];
         if (targets.includes(actor.uuid)) {
             const checks = await this.#inlineChecks(message.content, actor);

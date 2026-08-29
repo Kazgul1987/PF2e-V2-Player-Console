@@ -1409,3 +1409,27 @@ the original chat link, where PF2e Core retains its complete inline-check behavi
 - **M16.3.1-10 – Result Feed Regression:** Complete a supported roll and verify the Result Feed continues to work.
 - **M16.3.1-11 – Chat Regression:** Click an unsupported Roll Feed check's original link in Foundry Chat and verify complete PF2e standard behavior.
 - **M16.3.1-12 – GM Screen Regression:** Open the GM Character Console and verify it is completely unchanged.
+
+## M16.4 – Roll Feed Clear and PF2e Saves Helper
+
+- **M16.4-01 – Clear:** With several feed entries, click Clear; verify the feed is empty and Chat is unchanged.
+- **M16.4-02 – Reopen After Clear:** Clear, close, and reopen the sheet; verify old entries remain hidden.
+- **M16.4-03 – New Entry After Clear:** Post a new GM request after Clear; verify it appears.
+- **M16.4-04 – Per Actor Clear:** Open A and B, clear A; verify only A is empty.
+- **M16.4-05 – Same Actor Multi Window:** Open two sheets for A and clear one; verify both respect the cutoff after refresh.
+- **M16.4-06 – Saves Helper Prompt Detection:** Create a Saves Helper prompt for A; verify it appears in A's feed.
+- **M16.4-07 – Wrong Actor:** Target only A and verify B's feed has no prompt.
+- **M16.4-08 – Multiple Targets:** Target A and B and verify both feeds show one entry.
+- **M16.4-09 – Basic Reflex Example:** Create Basic Reflex DC 26 and verify the flag values are displayed.
+- **M16.4-10 – Roll From V2 Feed:** Click the feed d20; verify exactly one roll with the correct actor, target token, DC, save type, options, and normal PF2e output.
+- **M16.4-11 – Saves Helper Return:** Verify the original Saves Helper prompt updates exactly as it does from its Chat d20.
+- **M16.4-12 – Results Flag:** Verify `flags["pf2e-saves-helper"].results` contains the same result shape as a Chat-button roll.
+- **M16.4-13 – Compare Chat vs V2:** Compare options, DC, token, origin, identifier, callback, result flag, and prompt UI between equivalent Chat and V2 rolls.
+- **M16.4-14 – Already Rolled:** Verify an existing token result is shown and its prompt roll button is unavailable, matching Saves Helper.
+- **M16.4-15 – Saves Helper Disabled:** Disable Saves Helper; verify the sheet and normal feed still work.
+- **M16.4-16 – Malformed/Old Prompt:** Use a prompt missing expected fields; verify no crash, no active roll, and one compatibility warning.
+- **M16.4-17 – Clear Saves Helper Prompt:** Clear a displayed prompt; verify only the feed entry disappears and Chat remains intact.
+- **M16.4-18 – New Saves Helper Prompt After Clear:** Create a new prompt after Clear and verify it appears.
+- **M16.4-19 – Player Roll Feed Regression:** Verify normal `@Check[reflex|dc:28]` requests still work.
+- **M16.4-20 – Result Feed Regression:** Verify normal roll results remain visible.
+- **M16.4-21 – GM Screen Regression:** Open the GM Character Console and verify it is completely unchanged.

@@ -111,6 +111,8 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             deletePFSBoon: PF2eCharacterSheetV2.#pfsAction,
             browsePFSBoons: PF2eCharacterSheetV2.#pfsAction,
             toggleRollFeed: PF2eCharacterSheetV2.#toggleRollFeed,
+            clearRollFeed: PF2eCharacterSheetV2.#clearRollFeed,
+            rollSavesHelper: PF2eCharacterSheetV2.#rollSavesHelper,
         },
     };
 
@@ -238,6 +240,13 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     static #toggleRollFeed() {
         this.#rollFeedCollapsed = !this.#rollFeedCollapsed;
         return this.render({ parts: ["rollFeed"] });
+    }
+
+    static async #clearRollFeed() { await TargetedRollFeed.clear(this.actor); }
+
+    static async #rollSavesHelper(event, target) {
+        const messageId = target.closest("[data-message-id]")?.dataset.messageId;
+        if (messageId) await TargetedRollFeed.rollSavesHelper(event, messageId, this.actor);
     }
 
     static #openCoreCharacterSheet() {
@@ -705,6 +714,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             ["createChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
             ["updateChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
             ["deleteChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
+            [`${MODULE_ID}.rollFeedCleared`, (actorUuid) => { if (actorUuid === this.actor.uuid) void this.render({ parts: ["rollFeed"] }); }],
         ]) this.#hooks.push([hook, Hooks.on(hook, callback)]);
     }
 
