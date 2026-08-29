@@ -76,10 +76,14 @@
 .pf2e-v2-character-sheet .character-sidebar { grid-column: 1; grid-row: 2 / 4; }
 .pf2e-v2-character-sheet .sheet-tabs, .pf2e-v2-character-sheet .tab-panel { grid-column: 2; max-width: 100%; min-width: 0; }
 .pf2e-v2-character-sheet .roll-feed { background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); grid-column: 1 / -1; min-width: 0; }
-.pf2e-v2-character-sheet .roll-feed-heading { align-items: center; background: transparent; border: 0; color: var(--pf2e-v2-heading); display: flex; font-weight: 700; justify-content: space-between; padding: var(--pf2e-v2-gap-sm) var(--pf2e-v2-gap-md); text-transform: uppercase; width: 100%; }
+.pf2e-v2-character-sheet .roll-feed-heading { align-items: center; color: var(--pf2e-v2-heading); display: flex; font-weight: 700; justify-content: space-between; padding: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); text-transform: uppercase; }
+.pf2e-v2-character-sheet .roll-feed-heading button { background: transparent; border: 0; color: inherit; }
+.pf2e-v2-character-sheet .roll-feed-heading button:first-child { align-items: center; display: flex; flex: 1; justify-content: space-between; }
 .pf2e-v2-character-sheet .roll-feed-entries { display: flex; flex-direction: column; gap: var(--pf2e-v2-gap-xs); max-height: 10rem; overflow: auto; padding: 0 var(--pf2e-v2-gap-md) var(--pf2e-v2-gap-md); }
 .pf2e-v2-character-sheet .roll-feed-entry { align-items: center; background: var(--pf2e-v2-bg-panel-alt); border-left: 3px solid var(--pf2e-v2-accent); display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-sm); padding: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); }
 .pf2e-v2-character-sheet .roll-feed-result { border-left-color: var(--pf2e-v2-success); }
+.pf2e-v2-character-sheet .roll-feed-saves-helper-request { flex-wrap: nowrap; justify-content: space-between; }
+.pf2e-v2-character-sheet .roll-feed-saves-helper-content { display: flex; flex-direction: column; min-width: 0; }
 .pf2e-v2-character-sheet .roll-feed-checks { display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-xs); }
 .pf2e-v2-character-sheet .roll-feed-request-content [data-roll-feed-unsupported] { cursor: not-allowed; opacity: 0.6; }
 .pf2e-v2-character-sheet .roll-feed-empty { color: var(--pf2e-v2-text-muted); margin: 0; }

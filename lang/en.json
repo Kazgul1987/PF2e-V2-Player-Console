@@ -254,6 +254,12 @@
       "Result": "Result",
       "YouRolled": "You rolled",
       "UnsupportedCheck": "Advanced PF2e check — use the original chat link.",
+      "ClearHistory": "Clear roll history",
+      "SavesHelper": "PF2e Saves Helper",
+      "RollSave": "Roll save",
+      "AlreadyRolled": "Already rolled",
+      "SavesHelperUnavailable": "This PF2e Saves Helper prompt cannot be rolled here.",
+      "Basic": "Basic",
       "Degree": {
         "0": "Critical Failure",
         "1": "Failure",

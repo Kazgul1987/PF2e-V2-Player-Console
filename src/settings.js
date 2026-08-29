@@ -8,9 +8,13 @@ export const GM_CONSOLE_ACTORS_SETTING = "gmConsoleActors";
 export const GM_CONSOLE_INITIALIZED_SETTING = "gmConsoleActorsInitialized";
 export const GM_CONSOLE_LAYOUT_SETTING = "gmConsoleLayout";
 export const GM_CONSOLE_COLLAPSED_ACTORS_SETTING = "gmConsoleCollapsedActors";
+export const ROLL_FEED_CLEARED_AT_SETTING = "rollFeedClearedAt";
 
 /** Register client-owned presentation preferences. */
 export function registerSettings(onPresentationChange, onSidebarChange) {
+    game.settings.register(MODULE_ID, ROLL_FEED_CLEARED_AT_SETTING, {
+        scope: "client", config: false, type: Object, default: {},
+    });
     game.settings.register(MODULE_ID, GM_CONSOLE_ACTORS_SETTING, {
         scope: "client", config: false, type: Array, default: [],
     });

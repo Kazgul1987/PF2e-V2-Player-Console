@@ -254,6 +254,12 @@
       "Result": "Ergebnis",
       "YouRolled": "Du hast gewürfelt",
       "UnsupportedCheck": "Erweiterter PF2e-Check — verwende den ursprünglichen Chat-Link.",
+      "ClearHistory": "Wurfverlauf leeren",
+      "SavesHelper": "PF2e Saves Helper",
+      "RollSave": "Rettungswurf würfeln",
+      "AlreadyRolled": "Bereits gewürfelt",
+      "SavesHelperUnavailable": "Dieser PF2e-Saves-Helper-Aufruf kann hier nicht gewürfelt werden.",
+      "Basic": "Einfacher",
       "Degree": {
         "0": "Kritischer Fehlschlag",
         "1": "Fehlschlag",
