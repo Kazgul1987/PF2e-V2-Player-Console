@@ -21,7 +21,7 @@
                         <button type="button" data-action="rollSavesHelper" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.RollFeed.RollSave'}}" {{#unless rollable}}disabled{{/unless}}{{#if rolled}} disabled{{/if}}><i class="fa-solid fa-dice-d20" aria-hidden="true"></i></button>
                     {{else}}
                         <strong>{{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.YouRolled"}}</strong>
-                        <span>{{label}}{{#if (ne total null)}} <b>{{total}}</b>{{/if}}{{#if degree}} · {{degree}}{{/if}}</span>
+                        <span>{{label}}{{#if (ne total null)}} <b>{{total}}</b>{{/if}}{{#if degree}} · <span class="roll-feed-degree {{degreeClass}}">{{degree}}</span>{{/if}}</span>
                     {{/if}}
                 </article>
             {{else}}

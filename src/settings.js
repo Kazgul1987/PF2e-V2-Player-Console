@@ -9,11 +9,22 @@ export const GM_CONSOLE_INITIALIZED_SETTING = "gmConsoleActorsInitialized";
 export const GM_CONSOLE_LAYOUT_SETTING = "gmConsoleLayout";
 export const GM_CONSOLE_COLLAPSED_ACTORS_SETTING = "gmConsoleCollapsedActors";
 export const ROLL_FEED_CLEARED_AT_SETTING = "rollFeedClearedAt";
+export const ROLL_FEED_SHOW_ATTACK_ROLLS_SETTING = "rollFeedShowAttackRolls";
+export const ROLL_FEED_FILTER_CHANGED_HOOK = `${MODULE_ID}.rollFeedFilterChanged`;
 
 /** Register client-owned presentation preferences. */
 export function registerSettings(onPresentationChange, onSidebarChange) {
     game.settings.register(MODULE_ID, ROLL_FEED_CLEARED_AT_SETTING, {
         scope: "client", config: false, type: Object, default: {},
+    });
+    game.settings.register(MODULE_ID, ROLL_FEED_SHOW_ATTACK_ROLLS_SETTING, {
+        name: "PF2E_V2_PLAYER_CONSOLE.Settings.RollFeedShowAttackRolls.Name",
+        hint: "PF2E_V2_PLAYER_CONSOLE.Settings.RollFeedShowAttackRolls.Hint",
+        scope: "client",
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: () => Hooks.callAll(ROLL_FEED_FILTER_CHANGED_HOOK),
     });
     game.settings.register(MODULE_ID, GM_CONSOLE_ACTORS_SETTING, {
         scope: "client", config: false, type: Array, default: [],

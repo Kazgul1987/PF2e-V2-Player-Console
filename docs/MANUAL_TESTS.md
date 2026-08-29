@@ -1446,3 +1446,24 @@ the original chat link, where PF2e Core retains its complete inline-check behavi
 - **M16.4-19 – Player Roll Feed Regression:** Verify normal `@Check[reflex|dc:28]` requests still work.
 - **M16.4-20 – Result Feed Regression:** Verify normal roll results remain visible.
 - **M16.4-21 – GM Screen Regression:** Open the GM Character Console and verify it is completely unchanged.
+
+## M16.5 – Roll Feed attack filter and degree colors
+
+- **M16.5-01 – Default Setting:** On a fresh client, verify `rollFeedShowAttackRolls` defaults to `false`.
+- **M16.5-02 – Save Result:** Roll a Reflex save and verify its result appears in the Roll Feed.
+- **M16.5-03 – Skill Check:** Roll Athletics, Stealth, or another skill and verify its result appears.
+- **M16.5-04 – Perception:** Roll Perception and verify its result appears.
+- **M16.5-05 – Weapon Strike:** With the default setting, roll a weapon Strike; verify its attack result is absent from the Roll Feed and Chat is unchanged.
+- **M16.5-06 – Enable Attack Rolls:** Enable the setting, roll a weapon Strike, and verify its attack result appears.
+- **M16.5-07 – Existing History After Setting Toggle:** With old attacks in `game.messages`, toggle the setting off and on; verify reconstruction hides and restores them respectively.
+- **M16.5-08 – Spell Attack:** Roll a spell attack; verify it is hidden when the setting is off and visible when on.
+- **M16.5-09 – Success:** Produce a Success and verify the complete degree text is blue.
+- **M16.5-10 – Critical Success:** Produce a Critical Success and verify the complete degree text is green.
+- **M16.5-11 – Failure:** Produce a Failure and verify the complete degree text is light red.
+- **M16.5-12 – Critical Failure:** Produce a Critical Failure and verify the complete degree text is dark red.
+- **M16.5-13 – No Degree:** Produce a roll without a degree and verify no degree color is applied.
+- **M16.5-14 – Saves Helper:** Roll a Saves Helper save from the V2 feed; verify roll and return work, its result appears with the correct degree color, and DC privacy is unchanged.
+- **M16.5-15 – Clear:** Clear the feed and verify the cutoff behavior and Chat remain unchanged.
+- **M16.5-16 – Normal @Check:** Roll a supported fixed-DC `@Check` from the feed and verify its behavior is unchanged.
+- **M16.5-17 – Setting Toggle Live:** Change the setting while multiple V2 sheets are open and verify each Roll Feed refreshes without reopening the sheets.
+- **M16.5-18 – GM Screen Regression:** Open the GM Character Console and verify it is completely unchanged.
