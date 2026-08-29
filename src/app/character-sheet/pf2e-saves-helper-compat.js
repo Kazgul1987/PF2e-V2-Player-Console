@@ -10,7 +10,7 @@ function warnOnce(message, reason) {
     console.warn("PF2e V2 Player Console | PF2e Saves Helper: Unsupported prompt", { message: message.id, reason });
 }
 
-/** Compatibility with the flags and public PF2e roll pipeline used by PF2e Saves Helper v3.8.x. */
+/** Compatibility adapter for the current PF2e Saves Helper chat prompt flag/roll contract. */
 export class SavesHelperCompat {
     static get active() { return game.modules.get(MODULE_ID)?.active === true; }
     static flags(message) { return this.active ? message?.flags?.[MODULE_ID] : null; }
@@ -39,6 +39,13 @@ export class SavesHelperCompat {
     }
 
     static resultFor(flags, token) { return flags.results?.[convertedUuid(token.uuid)] ?? null; }
+
+    /** Mirror PF2e's processing of Saves Helper's owner-visible DC element for the current user. */
+    static canSeeDc(message) {
+        if (game.pf2e.settings.metagame.dcs) return true;
+        const document = message.actor ?? message;
+        return document.hasPlayerOwner === true || game.user.isGM;
+    }
 
     static async roll(event, message, actor) {
         event.preventDefault();

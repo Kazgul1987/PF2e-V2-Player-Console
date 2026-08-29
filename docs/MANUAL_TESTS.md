@@ -1424,6 +1424,19 @@ the original chat link, where PF2e Core retains its complete inline-check behavi
 - **M16.4-10 – Roll From V2 Feed:** Click the feed d20; verify exactly one roll with the correct actor, target token, DC, save type, options, and normal PF2e output.
 - **M16.4-11 – Saves Helper Return:** Verify the original Saves Helper prompt updates exactly as it does from its Chat d20.
 - **M16.4-12 – Results Flag:** Verify `flags["pf2e-saves-helper"].results` contains the same result shape as a Chat-button roll.
+
+## M16.4.1 – Saves Helper DC visibility privacy
+
+- **M16.4.1-01 – Metagame DC visible:** Enable PF2e's metagame DC visibility setting and create a Saves Helper prompt. Verify the original prompt and V2 Roll Feed both display the real DC (for example, `Basic Reflex · DC 26`).
+- **M16.4.1-02 – Metagame DC hidden:** Disable PF2e's metagame DC visibility setting and view a Saves Helper prompt as a player for whom its original chat prompt hides the DC. Verify the V2 Roll Feed also omits the DC value entirely.
+- **M16.4.1-03 – Hidden DC roll still works:** With the DC hidden in the feed, click the V2 D20. Verify the correct save uses the real DC internally, produces the normal result, updates the Saves Helper prompt, and does not reveal the DC beforehand.
+- **M16.4.1-04 – Compare Chat/V2 visibility:** View the same Saves Helper message in original chat and the V2 Roll Feed as the same user. Verify the DC is either visible in both surfaces or hidden in both.
+- **M16.4.1-05 – Hidden DC DOM inspection:** As a player with a hidden DC, inspect the Roll Feed DOM. Verify the DC is absent from `textContent`, `title`, `aria-label`, and `data-*` attributes.
+- **M16.4.1-06 – GM visibility:** View the same prompt as a GM. Verify the V2 Roll Feed's DC visibility matches the Saves Helper chat prompt.
+- **M16.4.1-07 – Result callback regression:** Roll a V2 save and verify `flags["pf2e-saves-helper"].results` is still updated correctly.
+- **M16.4.1-08 – Clear regression:** Click Clear and verify the feed clears as before while chat history remains intact.
+- **M16.4.1-09 – Normal RollFeed regression:** Run `@Check[reflex|dc:28]` and verify the normal targeted check works unchanged.
+- **M16.4.1-10 – GM Screen regression:** Open the GM Character Console and verify it is completely unchanged.
 - **M16.4-13 – Compare Chat vs V2:** Compare options, DC, token, origin, identifier, callback, result flag, and prompt UI between equivalent Chat and V2 rolls.
 - **M16.4-14 – Already Rolled:** Verify an existing token result is shown and its prompt roll button is unavailable, matching Saves Helper.
 - **M16.4-15 – Saves Helper Disabled:** Disable Saves Helper; verify the sheet and normal feed still work.
