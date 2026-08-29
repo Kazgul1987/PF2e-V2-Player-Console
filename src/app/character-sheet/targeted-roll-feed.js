@@ -38,86 +38,46 @@ export class TargetedRollFeed {
         return message?.visible !== false && message?.isContentVisible !== false;
     }
 
-    /** Execute an enriched PF2e check with the owning sheet actor, bypassing PF2e's DOM actor resolver. */
+    /**
+     * Execute the deliberately small fixed-DC subset that can be bound to a V2 sheet actor without
+     * reproducing PF2e's private inline-check handler. Everything else stays visible but is inert.
+     */
     static async rollCheck(event, link, actor) {
         event.preventDefault();
         event.stopPropagation();
 
         try {
+            if (!this.#supportedCheck(link)) {
+                ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.RollFeed.UnsupportedCheck"));
+                return;
+            }
             if (!actor?.isOwner || !actor.canUserModify?.(game.user, "update")) {
                 throw new Error("The current user does not own the sheet actor");
             }
 
-            const { pf2Check, pf2Dc, pf2Traits, pf2Label, pf2Adjustment, pf2RollOptions } = link.dataset;
-            if (!pf2Check) throw new Error("The enriched link has no check type");
-
-            // These values were parsed and normalized by PF2e's TextEditor enrichment. Do not parse @Check here.
-            const splitList = (value) => String(value ?? "").split(",").map((part) => part.trim()).filter(Boolean);
-            const traits = splitList(pf2Traits);
-            const actionTraits = traits.filter((trait) => trait in (CONFIG.PF2E.actionTraits ?? {}));
-            const extraRollOptions = [...new Set([
-                ...traits,
-                ...actionTraits.map((trait) => `item:trait:${trait}`),
-                ...splitList(pf2RollOptions),
-            ])];
-            const adjustment = Number(pf2Adjustment) || 0;
-            const article = link.closest?.("[data-message-id]");
-            const message = article?.dataset.messageId ? game.messages.get(article.dataset.messageId) : null;
-            const parentActor = message?.actor ?? message?.speakerActor ?? null;
-            const item = link.dataset.itemUuid ? fromUuidSync(link.dataset.itemUuid) : null;
-            const isSave = pf2Check in (CONFIG.PF2E.saves ?? {});
-            const rollerRole = ["origin", "target"].includes(link.dataset.rollerRole)
-                ? link.dataset.rollerRole
-                : isSave ? "target" : "origin";
-            const targetActor = link.dataset.against && rollerRole === "target"
-                ? actor
-                : "targetOwner" in link.dataset ? parentActor : game.user.targets.first()?.actor ?? null;
-            const opposingActor = rollerRole === "target" ? parentActor : targetActor;
-            const originActor = rollerRole === "origin" ? actor : parentActor;
-            const against = link.dataset.against || link.dataset.pf2Defense;
-            const dcValue = Number(pf2Dc ?? "NaN");
-            const dc = (() => {
-                if (Number.isInteger(dcValue)) return { label: pf2Label, value: dcValue + adjustment };
-                if (!against) return null;
-                const defense = opposingActor?.getStatistic(against)?.clone({
-                    modifiers: adjustment ? [new game.pf2e.Modifier({
-                        label: "PF2E.InlineCheck.DCAdjustment",
-                        modifier: adjustment,
-                    })] : [],
-                });
-                return defense ? { label: defense.dc.label, statistic: defense.dc, scope: "check", value: defense.dc.value } : null;
-            })();
-            const relatedItem = item?.actor?.uuid === actor.uuid ? item : null;
-            const args = {
+            const statistic = actor.getStatistic(link.dataset.pf2Check);
+            if (!statistic) throw new Error(`Sheet actor has no '${link.dataset.pf2Check}' statistic`);
+            await statistic.roll({
                 event,
-                dc,
-                extraRollOptions,
-                item: relatedItem,
-                origin: originActor,
-                target: dc?.statistic ? targetActor : null,
-                traits: isSave ? [] : actionTraits,
-            };
-
-            if (pf2Check === "flat") {
-                const check = new game.pf2e.CheckModifier("flat", { modifiers: [] });
-                await game.pf2e.Check.roll(check, {
-                    actor,
-                    dc,
-                    options: extraRollOptions,
-                    type: "flat-check",
-                }, event);
-                return;
-            }
-
-            const statistic = actor.getStatistic(pf2Check, { item: relatedItem });
-            if (!statistic) throw new Error(`Sheet actor has no '${pf2Check}' statistic`);
-            await statistic.roll(args);
+                dc: { label: link.dataset.pf2Label, value: Number.parseInt(link.dataset.pf2Dc, 10) },
+            });
         } catch (error) {
             console.warn("PF2e V2 Player Console | Roll Feed: Failed to execute inline check", {
                 actor: actor?.uuid,
                 error,
             });
         }
+    }
+
+    static #supportedCheck(link) {
+        const { pf2Check, pf2Dc } = link.dataset;
+        if (!pf2Check || pf2Check === "flat" || !/^\d+$/.test(pf2Dc ?? "")) return false;
+
+        // PF2e's private click handler owns all of these semantics. The feed must not partially reproduce them.
+        return ![
+            "against", "itemUuid", "overrideTraits", "pf2Adjustment", "pf2Defense", "pf2Roller",
+            "pf2RollOptions", "pf2Traits", "targetOwner",
+        ].some((key) => key in link.dataset) && !("invalid" in link.dataset);
     }
 
     static #containsInlineCheck(content) {
@@ -165,6 +125,12 @@ export class TargetedRollFeed {
         const container = foundry.utils.parseHTML(`<div>${enriched}</div>`);
         const checks = [...container.querySelectorAll("a[data-pf2-check], span[data-pf2-check]")];
         if (!checks.length) return null;
+        const unsupported = game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.RollFeed.UnsupportedCheck");
+        for (const check of checks.filter((check) => !this.#supportedCheck(check))) {
+            check.dataset.rollFeedUnsupported = "";
+            check.setAttribute("aria-disabled", "true");
+            check.setAttribute("title", unsupported);
+        }
         return checks.map((check) => check.outerHTML).join(" ");
     }
 }
