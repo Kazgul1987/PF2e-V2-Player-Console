@@ -1372,3 +1372,25 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **M16.2-12 – Chat Regression:** Click a normal `@Check` in Foundry Chat and verify standard PF2e behavior is unchanged.
 - **M16.2-13 – Result Feed:** Roll from the request and verify the result still appears in the Player Roll Feed.
 - **M16.2-14 – GM Screen Regression:** Open the GM Console and verify it is completely unchanged.
+
+## M16.3 – Native PF2e check-pipeline safety
+
+The Roll Feed intentionally executes only unadjusted, fixed integer-DC statistics with no item, traits, roll
+options, or special roller data. All richer checks remain visible but disabled with a tooltip directing the user to
+the original chat link, where PF2e Core retains its complete inline-check behavior.
+
+- **M16.3-01 – Fixed Reflex DC:** Post `@Check[reflex|dc:28]`, open Actor A's sheet, click the feed link, and verify A rolls Reflex against DC 28 through its PF2e statistic.
+- **M16.3-02 – Fixed Skill DC:** Post `@Check[athletics|dc:25]`, click it in Actor A's feed, and verify A rolls Athletics against DC 25.
+- **M16.3-03 – Basic Save:** Post `@Check[reflex|dc:28|basic]`; verify the feed link is visibly disabled with the advanced-check tooltip, creates no roll, and the original chat link retains PF2e's basic-save semantics.
+- **M16.3-04 – Self Level:** Post `@Check[reflex|dc:@self.level]`; verify the feed link is disabled, creates no `NaN` or incorrect-DC roll, and the original chat link resolves PF2e's level-based DC.
+- **M16.3-05 – Against:** Post `@Check[perception|against:deception]`; verify the feed link is disabled without rolling and the original chat link retains native defense resolution.
+- **M16.3-06 – Target Roller Role:** Post `@Check[perception|against:deception|rollerRole:target]`; verify the feed link is disabled and only the original chat link applies PF2e's roller-role behavior.
+- **M16.3-07 – Special Roller:** Post a current PF2e fixture using `roller:self` or `roller:party`; verify the feed link is disabled and the original chat link retains native roller selection.
+- **M16.3-08 – Controlled Token Mismatch:** Open Sheet A, control Token B, click a supported fixed-DC link in A, and verify A rolls while B remains controlled.
+- **M16.3-09 – Assigned Character Mismatch:** Assign B as `game.user.character`, click a supported fixed-DC link in Sheet A, and verify A rolls while the assignment remains unchanged.
+- **M16.3-10 – Two Sheets:** Open Sheets A and B for the same multi-target request; verify clicking the supported link in A rolls A and clicking it in B rolls B.
+- **M16.3-11 – No Double Roll:** Click one supported feed link once and verify exactly one PF2e roll ChatMessage is created.
+- **M16.3-12 – Normal Chat Regression:** Click the original inline check in Foundry Chat and verify completely normal PF2e behavior, including advanced checks.
+- **M16.3-13 – Result Feed Regression:** Complete a supported roll and verify its result, total, visibility, and degree of success still appear in the feed.
+- **M16.3-14 – Pop-out:** In a detached V2 sheet, click a supported fixed-DC link and verify the sheet actor rolls without a DOM-realm error.
+- **M16.3-15 – Partial Render:** Trigger repeated Roll Feed part renders, click once, and verify exactly one handler and one roll with no listener stack.

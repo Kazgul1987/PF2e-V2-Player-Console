@@ -253,6 +253,7 @@
       "GMRequest": "GM Request",
       "Result": "Result",
       "YouRolled": "You rolled",
+      "UnsupportedCheck": "Advanced PF2e check — use the original chat link.",
       "Degree": {
         "0": "Critical Failure",
         "1": "Failure",

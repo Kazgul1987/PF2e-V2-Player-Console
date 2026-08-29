@@ -253,6 +253,7 @@
       "GMRequest": "SL-Anfrage",
       "Result": "Ergebnis",
       "YouRolled": "Du hast gewürfelt",
+      "UnsupportedCheck": "Erweiterter PF2e-Check — verwende den ursprünglichen Chat-Link.",
       "Degree": {
         "0": "Kritischer Fehlschlag",
         "1": "Fehlschlag",
