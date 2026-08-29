@@ -70,8 +70,11 @@ export class TargetedRollFeed {
     }
 
     static #supportedCheck(link) {
-        const { pf2Check, pf2Dc } = link.dataset;
+        const { pf2Check, pf2Dc, rollerRole } = link.dataset;
         if (!pf2Check || pf2Check === "flat" || !/^\d+$/.test(pf2Dc ?? "")) return false;
+
+        const expectedRollerRole = pf2Check in (CONFIG.PF2E.saves ?? {}) ? "target" : "origin";
+        if (rollerRole && rollerRole !== expectedRollerRole) return false;
 
         // PF2e's private click handler owns all of these semantics. The feed must not partially reproduce them.
         return ![

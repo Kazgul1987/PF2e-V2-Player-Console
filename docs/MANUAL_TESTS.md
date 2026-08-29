@@ -1394,3 +1394,18 @@ the original chat link, where PF2e Core retains its complete inline-check behavi
 - **M16.3-13 – Result Feed Regression:** Complete a supported roll and verify its result, total, visibility, and degree of success still appear in the feed.
 - **M16.3-14 – Pop-out:** In a detached V2 sheet, click a supported fixed-DC link and verify the sheet actor rolls without a DOM-realm error.
 - **M16.3-15 – Partial Render:** Trigger repeated Roll Feed part renders, click once, and verify exactly one handler and one roll with no listener stack.
+
+## M16.3.1 – Roll Feed unsupported styling and roller-role guard
+
+- **M16.3.1-01 – Unsupported Styling:** Post `@Check[reflex|dc:@self.level]`; verify it remains visible in the Roll Feed but is clearly faded, uses a not-allowed cursor, has `aria-disabled="true"`, and retains the unsupported-check tooltip.
+- **M16.3.1-02 – Basic Save Styling:** Post `@Check[reflex|dc:28|basic]`; verify it is unsupported and visibly disabled in the Roll Feed while the original chat link remains fully clickable.
+- **M16.3.1-03 – Default Save Roller Role:** Post `@Check[reflex|dc:28]`; verify it is supported and the sheet actor rolls.
+- **M16.3.1-04 – Matching Save Roller Role:** If supported by the current PF2e syntax, post `@Check[reflex|dc:28|rollerRole:target]`; verify it is supported because `target` matches PF2e's save default.
+- **M16.3.1-05 – Wrong Save Roller Role:** Post `@Check[reflex|dc:28|rollerRole:origin]`; verify it is unsupported and does not execute an incorrect roll.
+- **M16.3.1-06 – Default Skill Roller Role:** Post `@Check[athletics|dc:25]`; verify it is supported and the sheet actor rolls.
+- **M16.3.1-07 – Matching Skill Roller Role:** If supported by the current PF2e syntax, post `@Check[athletics|dc:25|rollerRole:origin]`; verify it is supported.
+- **M16.3.1-08 – Wrong Skill Roller Role:** Post `@Check[athletics|dc:25|rollerRole:target]`; verify it is unsupported.
+- **M16.3.1-09 – Controlled Token Regression:** Open Sheet A, control Token B, click a supported fixed-DC check in A, and verify A rolls.
+- **M16.3.1-10 – Result Feed Regression:** Complete a supported roll and verify the Result Feed continues to work.
+- **M16.3.1-11 – Chat Regression:** Click an unsupported Roll Feed check's original link in Foundry Chat and verify complete PF2e standard behavior.
+- **M16.3.1-12 – GM Screen Regression:** Open the GM Character Console and verify it is completely unchanged.

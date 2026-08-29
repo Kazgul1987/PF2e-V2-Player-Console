@@ -81,7 +81,7 @@
 .pf2e-v2-character-sheet .roll-feed-entry { align-items: center; background: var(--pf2e-v2-bg-panel-alt); border-left: 3px solid var(--pf2e-v2-accent); display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-sm); padding: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); }
 .pf2e-v2-character-sheet .roll-feed-result { border-left-color: var(--pf2e-v2-success); }
 .pf2e-v2-character-sheet .roll-feed-checks { display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-xs); }
-.pf2e-v2-character-sheet .roll-feed-checks [data-roll-feed-unsupported] { cursor: not-allowed; opacity: 0.6; }
+.pf2e-v2-character-sheet .roll-feed-request-content [data-roll-feed-unsupported] { cursor: not-allowed; opacity: 0.6; }
 .pf2e-v2-character-sheet .roll-feed-empty { color: var(--pf2e-v2-text-muted); margin: 0; }
 .pf2e-v2-character-sheet[data-sidebar="false"] .window-content { grid-template-columns: minmax(0, 1fr); }
 .pf2e-v2-character-sheet[data-sidebar="false"] :is(.sheet-tabs, .tab-panel) { grid-column: 1; }
