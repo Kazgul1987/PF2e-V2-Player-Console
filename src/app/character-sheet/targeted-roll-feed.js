@@ -10,9 +10,33 @@ export class TargetedRollFeed {
     static registerHooks() {
         Hooks.on("preCreateChatMessage", (message, data, options, userId) => {
             if (!game.user?.isGM || userId !== game.user.id || !this.#containsInlineCheck(data.content ?? message.content)) return;
-            const targets = [...new Set([...game.user.targets].map((token) => token.actor?.uuid).filter(Boolean))];
-            if (targets.length) message.updateSource({ [FLAG_PATH]: { targets, version: 1 } });
+            const targets = [...game.user.targets].map((token) => token.actor?.uuid).filter(Boolean);
+            if (this.#isBroadcastModifierPressed()) targets.push(...this.#playerCharacterTargets());
+            const uniqueTargets = [...new Set(targets)];
+            if (uniqueTargets.length) message.updateSource({ [FLAG_PATH]: { targets: uniqueTargets, version: 1 } });
         });
+    }
+
+    static #isBroadcastModifierPressed() {
+        const keys = game.keyboard?.downKeys;
+        return !!keys && ["ControlLeft", "ControlRight", "MetaLeft", "MetaRight"].some((key) => keys.has(key));
+    }
+
+    static #playerCharacterTargets() {
+        const targets = [];
+        for (const user of game.users ?? []) {
+            if (user.isGM) continue;
+
+            let actor = user.character?.type === "character" ? user.character : null;
+            if (!actor && user.active) {
+                actor = (game.actors ?? []).find((candidate) => candidate.type === "character"
+                    && candidate.testUserPermission?.(user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER));
+            }
+            if (actor?.uuid) targets.push(actor.uuid);
+        }
+
+        // Requests are stored by Actor UUID, so assigned characters remain relevant even while their user is offline.
+        return [...new Set(targets)];
     }
 
     static async prepare(actor, collapsed = false) {

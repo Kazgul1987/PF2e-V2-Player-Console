@@ -1335,6 +1335,11 @@ Resize the manager narrowly and test both density settings. Verify the two panes
 - **M16-18 – Multiple Player Tabs:** Switch through all tabs and verify the feed remains at the bottom.
 - **M16-19 – Detached/Pop-out:** Verify feed collapse and native inline checks in a detached sheet.
 - **M16-20 – GM Console Final Regression:** Reopen the GM console and verify it remains completely unchanged.
+- **M16-21 – Broadcast Modifier:** Assign different character Actors to two non-GM users. As GM, post `@Check[reflex|dc:20]` while holding Ctrl (Cmd on macOS); verify both Actors receive one request, including when one is already targeted.
+- **M16-22 – Broadcast Without Token Targets:** Clear all token targets and repeat M16-21; verify both assigned player characters receive the request.
+- **M16-23 – Broadcast Permission:** As a non-GM user, hold Ctrl/Cmd while posting the check; verify no other player character receives a request.
+- **M16-24 – Broadcast Edge Cases:** Include an inactive user with an assigned character, two users assigned to the same character, and an active user without an assignment; verify assigned characters are included once and the unassigned user contributes only an owned `character` Actor (never an NPC).
+- **M16-25 – Broadcast Regression:** Hold Ctrl/Cmd while posting an ordinary message without `@Check`; verify no roll-feed flags or requests are created. Post the check without Ctrl/Cmd and verify only the normal token targets receive it.
 
 ## M16.1 – Targeted Roll Feed enrichment and actor-context hotfix
 
