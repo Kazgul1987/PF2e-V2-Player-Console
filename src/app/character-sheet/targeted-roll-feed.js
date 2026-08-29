@@ -129,7 +129,8 @@ export class TargetedRollFeed {
                     ? savesFlags.label.value
                     : game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.RollFeed.SavesHelper"),
                 saveLabel: saveType ? game.i18n.localize(CONFIG.PF2E.saves?.[saveType] ?? saveType) : "",
-                dc: savesFlags.saveInfo?.dc, basic: savesFlags.saveInfo?.basic === true,
+                dc: savesFlags.saveInfo?.dc, showDc: SavesHelperCompat.canSeeDc(message),
+                basic: savesFlags.saveInfo?.basic === true,
                 rolled: !!result, total: result?.rollValue ?? null,
                 rollable: !!savesFlags.origin?.uuid && !!token.isOwner && !!token.actor?.getStatistic(saveType),
             };

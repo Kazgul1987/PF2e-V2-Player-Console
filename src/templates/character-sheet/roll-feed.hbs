@@ -16,7 +16,7 @@
                     {{else if (eq type "saves-helper-request")}}
                         <div class="roll-feed-saves-helper-content">
                             <strong>{{label}}</strong>
-                            <span>{{#if basic}}{{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.Basic"}} {{/if}}{{saveLabel}} · DC {{dc}}{{#if rolled}} · {{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.AlreadyRolled"}} {{total}}{{/if}}</span>
+                            <span>{{#if basic}}{{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.Basic"}} {{/if}}{{saveLabel}}{{#if showDc}} · DC {{dc}}{{/if}}{{#if rolled}} · {{localize "PF2E_V2_PLAYER_CONSOLE.RollFeed.AlreadyRolled"}} {{total}}{{/if}}</span>
                         </div>
                         <button type="button" data-action="rollSavesHelper" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.RollFeed.RollSave'}}" {{#unless rollable}}disabled{{/unless}}{{#if rolled}} disabled{{/if}}><i class="fa-solid fa-dice-d20" aria-hidden="true"></i></button>
                     {{else}}
