@@ -63,7 +63,9 @@ async function applyCondition(input) {
     const normalized = match[1].toLowerCase().replace(/[^a-z0-9]/g, "");
     const matches = Object.keys(CONFIG.PF2E.conditionTypes ?? {}).filter((slug) => slug.replace(/[^a-z0-9]/g, "") === normalized || (normalized.length >= 3 && slug.replace(/[^a-z0-9]/g, "").startsWith(normalized)));
     if (matches.length !== 1) return false;
-    const options = match[2] ? { value: Number(match[2]) } : undefined;
+    const value = match[2] ? Number(match[2]) : undefined;
+    if (value !== undefined && (!Number.isSafeInteger(value) || value <= 0)) return false;
+    const options = value === undefined ? undefined : { value };
     if (actor.increaseCondition) await actor.increaseCondition(matches[0], options);
     else if (actor.toggleCondition) await actor.toggleCondition(matches[0], { active: true, ...options });
     else if (actor.addCondition) await actor.addCondition(matches[0], options);

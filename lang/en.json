@@ -262,7 +262,13 @@
         "Input": "Enter a quick roll command",
         "Placeholder": "Damage / Level / DC 23",
         "Roll": "Roll",
-        "Invalid": "Quick roll input is invalid or unavailable."
+        "Invalid": "Quick roll input is invalid or unavailable.",
+        "Groups": {
+          "Physical": "Physical",
+          "Energy": "Energy",
+          "Other": "Other",
+          "Additional": "Additional"
+        }
       }
     },
     "RollFeed": {
