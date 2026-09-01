@@ -87,7 +87,7 @@
 
 .pf2e-v2-gm-console .gm-quick-rolls { flex: 1; overflow: auto; padding: .25rem; }
 .pf2e-v2-gm-console .gm-quick-rolls__form { display: flex; min-height: 100%; flex-direction: column; gap: .55rem; }
-.pf2e-v2-gm-console .gm-quick-rolls__content { display: grid; grid-template-columns: minmax(230px, 1.2fr) minmax(140px, .7fr) minmax(170px, .85fr); gap: .75rem; min-height: 0; }
+.pf2e-v2-gm-console .gm-quick-rolls__content { display: grid; grid-template-columns: minmax(180px, .8fr) minmax(230px, 1.2fr) minmax(140px, .7fr) minmax(170px, .85fr); gap: .75rem; min-height: 0; }
 .pf2e-v2-gm-console .gm-quick-rolls__column { min-width: 0; }
 .pf2e-v2-gm-console .gm-quick-rolls__column h3 { margin: 0 0 .4rem; border-bottom: 1px solid var(--gm-border); font-size: 1rem; }
 .pf2e-v2-gm-console .gm-quick-rolls__group { margin: 0 0 .5rem; padding: 0; border: 0; }
@@ -98,11 +98,18 @@
 .pf2e-v2-gm-console .gm-quick-rolls__checks { display: grid; gap: .3rem; }
 .pf2e-v2-gm-console .gm-quick-rolls__checks button { margin: 0; padding: .25rem .5rem; text-align: left; }
 .pf2e-v2-gm-console .gm-quick-rolls__skills .gm-quick-rolls__checks { max-height: 27rem; overflow-y: auto; padding-right: .2rem; }
+.pf2e-v2-gm-console .gm-quick-rolls__targets { min-width: 0; }
+.pf2e-v2-gm-console .gm-quick-rolls__target { display: flex; align-items: center; gap: .35rem; min-width: 0; }
+.pf2e-v2-gm-console .gm-quick-rolls__target input { flex: 0 0 auto; }
+.pf2e-v2-gm-console .gm-quick-rolls__target span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf2e-v2-gm-console .gm-quick-rolls__target--all { padding-bottom: .35rem; border-bottom: 1px solid color-mix(in srgb, var(--gm-border) 55%, transparent); font-weight: 600; }
+.pf2e-v2-gm-console .gm-quick-rolls__target-list { display: grid; max-height: 12rem; gap: .25rem; overflow-y: auto; padding-top: .35rem; }
+.pf2e-v2-gm-console .gm-quick-rolls__target-empty { margin: .25rem 0; color: var(--color-text-subtle, #aaa); font-style: italic; }
 .pf2e-v2-gm-console .gm-quick-rolls__input-row { display: flex; gap: .4rem; }
 .pf2e-v2-gm-console .gm-quick-rolls__input-row input { flex: 1; min-width: 0; padding: .5rem; font-size: 1rem; }
 .pf2e-v2-gm-console .gm-quick-rolls__input-row button { flex: 0 0 auto; }
 @media (max-width: 760px) {
     .pf2e-v2-gm-console { min-width: 420px; }
     .pf2e-v2-gm-console .gm-quick-rolls__content { grid-template-columns: 1fr 1fr; }
-    .pf2e-v2-gm-console .gm-quick-rolls__column:first-child { grid-column: 1 / -1; }
+    .pf2e-v2-gm-console .gm-quick-rolls__column:nth-child(2) { grid-column: 1 / -1; }
 }

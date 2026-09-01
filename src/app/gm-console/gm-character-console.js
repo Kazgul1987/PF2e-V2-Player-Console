@@ -35,6 +35,8 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             selectDamageType: GMCharacterConsole.#selectDamageType,
             quickCheck: GMCharacterConsole.#quickCheck,
             submitQuickRoll: GMCharacterConsole.#submitQuickRoll,
+            targetPlayerToken: GMCharacterConsole.#targetPlayerToken,
+            targetAllPlayerTokens: GMCharacterConsole.#targetAllPlayerTokens,
         },
         form: { closeOnSubmit: false },
     };
@@ -144,6 +146,22 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         await super._onFirstRender(context, options);
         this.#hookIds = [
             ["updateActor", Hooks.on("updateActor", (actor) => void this.#refreshActor(actor))],
+            ["targetToken", Hooks.on("targetToken", (user) => {
+                if (user.id === game.user.id) this.#syncPlayerTargetInputs();
+            })],
+            ["canvasReady", Hooks.on("canvasReady", () => void this.#refreshPlayerTargets())],
+            ...["createToken", "deleteToken"].map((hook) => [
+                hook,
+                Hooks.on(hook, (token) => {
+                    if (token.parent === canvas?.scene) void this.#refreshPlayerTargets();
+                }),
+            ]),
+            ["updateToken", Hooks.on("updateToken", (token, changes) => {
+                if (token.parent === canvas?.scene && Object.hasOwn(changes, "actorId")) void this.#refreshPlayerTargets();
+            })],
+            ["updateUser", Hooks.on("updateUser", (_user, changes) => {
+                if (Object.hasOwn(changes, "character")) void this.#refreshPlayerTargets();
+            })],
             ...["createItem", "updateItem", "deleteItem"].map((hook) => [
                 hook,
                 Hooks.on(hook, (item) => {
@@ -174,6 +192,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             event.preventDefault();
             void this.#runQuickInput(event, event.currentTarget);
         }, { signal: this.#listeners.signal });
+        this.#syncPlayerTargetInputs();
     }
 
     _tearDown(options) {
@@ -185,6 +204,26 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
 
     #listeners = new AbortController();
     #hookIds = [];
+
+    async #refreshPlayerTargets() {
+        if (this.rendered) await this.render({ parts: ["quickRolls"] });
+    }
+
+    #syncPlayerTargetInputs() {
+        const root = this.element?.querySelector(".gm-quick-rolls__targets");
+        if (!root) return;
+        const targets = game.user?.targets ?? new Set();
+        const inputs = [...root.querySelectorAll('[data-action="targetPlayerToken"]')];
+        for (const input of inputs) {
+            const token = canvas?.ready ? canvas.scene?.tokens.get(input.dataset.tokenId)?.object : null;
+            input.checked = !!token && targets.has(token);
+        }
+        const all = root.querySelector('[data-action="targetAllPlayerTokens"]');
+        if (!all) return;
+        const selected = inputs.filter((input) => input.checked).length;
+        all.checked = inputs.length > 0 && selected === inputs.length;
+        all.indeterminate = selected > 0 && selected < inputs.length;
+    }
 
     #actorFor(target) {
         const id = target.closest("[data-actor-id]")?.dataset.actorId;
@@ -389,6 +428,18 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     static async #submitQuickRoll(event) {
         const input = this.element.querySelector('[name="quick-roll-input"]');
         if (input) await this.#runQuickInput(event, input);
+    }
+
+    static #targetPlayerToken(_event, target) {
+        this.quickRolls.setPlayerTarget(target.dataset.tokenId, target.checked);
+        this.#syncPlayerTargetInputs();
+    }
+
+    static #targetAllPlayerTokens(_event, target) {
+        const tokenIds = [...this.element.querySelectorAll('[data-action="targetPlayerToken"]')]
+            .map((input) => input.dataset.tokenId);
+        this.quickRolls.setAllPlayerTargets(tokenIds, target.checked);
+        this.#syncPlayerTargetInputs();
     }
 
     async #runQuickInput(event, input) {
