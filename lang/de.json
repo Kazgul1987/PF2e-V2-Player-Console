@@ -249,7 +249,21 @@
       "NoSpellcasting": "Keine Zauberwirken-Einträge.",
       "NoSpells": "Keine sichtbaren Zauber.",
       "Slots": "Plätze",
-      "Expended": "Verbraucht"
+      "Expended": "Verbraucht",
+      "Tabs": {
+        "Label": "Bereiche der SL-Konsole",
+        "characters": "Charaktere",
+        "quick-rolls": "Schnellwürfe"
+      },
+      "QuickRolls": {
+        "Damage": "Schaden",
+        "Saves": "Rettungswürfe / Wahrnehmung",
+        "Skills": "Fertigkeiten",
+        "Input": "Schnellwurf-Befehl eingeben",
+        "Placeholder": "Schaden / Stufe / SG 23",
+        "Roll": "Würfeln",
+        "Invalid": "Die Schnellwurf-Eingabe ist ungültig oder nicht verfügbar."
+      }
     },
     "RollFeed": {
       "Title": "Würfelanfragen",

@@ -28,14 +28,14 @@ for (const language of manifest.languages) {
 for (const template of ["header", "navigation", "character", "actions", "inventory", "spellcasting", "crafting", "proficiencies", "feats", "effects", "biography", "pfs", "roll-feed", "inventory-item"]) {
     await access(new URL(`../src/templates/character-sheet/${template}.hbs`, import.meta.url));
 }
-for (const template of ["console", "selector", "character-pane", "inventory", "inventory-row", "spellcasting", "spellcasting-entry"]) {
+for (const template of ["console", "navigation", "characters", "quick-rolls", "selector", "character-pane", "inventory", "inventory-row", "spellcasting", "spellcasting-entry"]) {
     await access(new URL(`../src/templates/gm-console/${template}.hbs`, import.meta.url));
 }
 console.log("Manifest and module paths are valid.");
 
 const sourceRoot = fileURLToPath(new URL("../src", import.meta.url));
 const sourceFiles = [
-    "module.js", "constants.js", "settings.js", "app/character-sheet/character-sheet-v2.js", "app/character-sheet/targeted-roll-feed.js", "app/character-sheet/pf2e-saves-helper-compat.js", "app/gm-console/gm-character-console.js", "app/gm-console/gm-spellcasting-view.js",
+    "module.js", "constants.js", "settings.js", "app/character-sheet/character-sheet-v2.js", "app/character-sheet/targeted-roll-feed.js", "app/character-sheet/pf2e-saves-helper-compat.js", "app/gm-console/gm-character-console.js", "app/gm-console/gm-spellcasting-view.js", "app/gm-console/quick-rolls/quick-roll-controller.js", "app/gm-console/quick-rolls/check-dc.js", "app/gm-console/quick-rolls/checks.js", "app/gm-console/quick-rolls/damage.js", "app/gm-console/quick-rolls/parser.js",
     "controllers/roll-controller.js", "controllers/inventory-controller.js", "controllers/action-controller.js", "controllers/feat-controller.js", "controllers/spellcasting-controller.js", "controllers/crafting-controller.js", "controllers/proficiencies-controller.js", "controllers/effects-controller.js", "controllers/biography-controller.js", "controllers/pfs-controller.js",
     "pf2e/character-adapter.js", "pf2e/inventory-adapter.js", "pf2e/actions-adapter.js", "pf2e/feats-adapter.js", "pf2e/spellcasting-adapter.js", "pf2e/crafting-adapter.js", "pf2e/proficiencies-adapter.js", "pf2e/effects-adapter.js", "pf2e/biography-adapter.js", "pf2e/pfs-adapter.js", "pf2e/item-summary.js",
 ];

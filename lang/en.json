@@ -249,7 +249,21 @@
       "NoSpellcasting": "No spellcasting entries.",
       "NoSpells": "No visible spells.",
       "Slots": "Slots",
-      "Expended": "Expended"
+      "Expended": "Expended",
+      "Tabs": {
+        "Label": "GM console sections",
+        "characters": "Characters",
+        "quick-rolls": "Quick Rolls"
+      },
+      "QuickRolls": {
+        "Damage": "Damage",
+        "Saves": "Saves / Perception",
+        "Skills": "Skills",
+        "Input": "Enter a quick roll command",
+        "Placeholder": "Damage / Level / DC 23",
+        "Roll": "Roll",
+        "Invalid": "Quick roll input is invalid or unavailable."
+      }
     },
     "RollFeed": {
       "Title": "Roll Requests",
