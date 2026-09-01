@@ -26,6 +26,9 @@ export class HealingRequestFeed {
                 },
             });
         });
+        Hooks.on("createChatMessage", (message) => {
+            if (this.#authority()?.id === game.user?.id) void this.#claimExternalHealing(message);
+        });
         Hooks.on("updateActor", (actor, changed, _options, userId) => {
             const request = changed?.flags?.[MODULE_ID]?.[APPLY_REQUEST_FLAG];
             if (request && this.#authority()?.id === game.user?.id) {
@@ -74,23 +77,67 @@ export class HealingRequestFeed {
 
     static prepare(actor) {
         if (actor?.type !== "character") return { entries: [], empty: true };
+        const entries = this.#openRequests(actor).map(({ requestId, message, record }) => ({
+            id: requestId,
+            messageId: message.id,
+            rollIndex: record.rollIndex,
+            amount: record.amount,
+            label: message.item?.name ?? game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.GenericSource"),
+        }));
+        return { entries, empty: entries.length === 0 };
+    }
+
+    static #openRequests(actor) {
         const claims = actor.getFlag?.(MODULE_ID, CLAIMS_FLAG) ?? {};
-        const entries = [...(game.messages?.contents ?? game.messages ?? [])].flatMap((message) =>
+        return [...(game.messages?.contents ?? game.messages ?? [])].flatMap((message) =>
             this.#records(message).flatMap((record) => {
                 const target = record.targets.find((candidate) => candidate.actorUuid === actor.uuid);
                 if (!target) return [];
                 const requestId = this.#requestId(message, record.rollIndex, actor.uuid);
                 if (claims[requestId]) return [];
-                return [{
-                    id: requestId,
-                    messageId: message.id,
-                    rollIndex: record.rollIndex,
-                    amount: record.amount,
-                    label: message.item?.name ?? game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.GenericSource"),
-                }];
+                return [{ requestId, message, record }];
             }),
         );
-        return { entries, empty: entries.length === 0 };
+    }
+
+    /** Claim a request after PF2e, rather than this feed, has already applied its healing. */
+    static async #claimExternalHealing(applicationMessage) {
+        const applied = applicationMessage?.flags?.pf2e?.appliedDamage;
+        if (!applied?.isHealing || typeof applied.uuid !== "string" || !Array.isArray(applied.updates)) return;
+        const hpUpdate = applied.updates.find((update) => update?.path === "system.attributes.hp.value");
+        const damageTaken = Number(hpUpdate?.value);
+        if (!(damageTaken < 0)) return;
+
+        const actor = await fromUuid(applied.uuid);
+        const updatedHP = Number(actor?.system?.attributes?.hp?.value);
+        if (actor?.type !== "character" || !Number.isFinite(updatedHP)) return;
+
+        const open = this.#openRequests(actor);
+        if (!open.length || open.some(({ requestId }) => inFlight.has(requestId))) return;
+
+        // PF2e v14's update operation exposes only the effective (clamped) health delta and carries no originating
+        // ChatMessage or roll index. Its structured damage-taken result message confirms that applyDamage (rather
+        // than a manual HP edit) produced that update, but an amount match is still safe only below maximum HP.
+        const maximumHP = Number(actor.system?.attributes?.hp?.max);
+        if (!Number.isFinite(maximumHP) || updatedHP >= maximumHP) return;
+        const matches = open.filter(({ record }) => record.amount === Math.abs(damageTaken));
+        if (matches.length !== 1) return;
+
+        const [{ requestId }] = matches;
+        if (inFlight.has(requestId)) return;
+        inFlight.add(requestId);
+        try {
+            const claims = actor.getFlag?.(MODULE_ID, CLAIMS_FLAG) ?? {};
+            if (claims[requestId]) return;
+            await actor.setFlag(MODULE_ID, CLAIMS_FLAG, {
+                ...claims,
+                [requestId]: { state: "applied", userId: game.user.id, timestamp: Date.now() },
+            });
+        } catch (error) {
+            console.warn(`${LOG_PREFIX} Failed to claim externally applied healing`, { actorUuid: actor.uuid, error });
+        } finally {
+            inFlight.delete(requestId);
+        }
     }
 
     static async apply(messageId, rollIndex, actor) {
