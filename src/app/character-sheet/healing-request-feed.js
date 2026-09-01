@@ -3,8 +3,10 @@ import { LOG_PREFIX, MODULE_ID } from "../../constants.js";
 const FLAG_PATH = `flags.${MODULE_ID}.healingFeed`;
 const FLAG_NAME = "healingFeed";
 const CLAIMS_FLAG = "healingClaims";
+const APPLY_REQUEST_FLAG = "healingApplyRequest";
 const SOCKET_NAME = `module.${MODULE_ID}`;
 const inFlight = new Set();
+const pendingResults = new Map();
 
 /** Chat-backed healing requests for the V2 character sheet. */
 export class HealingRequestFeed {
@@ -24,7 +26,13 @@ export class HealingRequestFeed {
                 },
             });
         });
-        Hooks.once("ready", () => game.socket.on(SOCKET_NAME, (data) => void this.#onSocket(data)));
+        Hooks.on("updateActor", (actor, changed, _options, userId) => {
+            const request = changed?.flags?.[MODULE_ID]?.[APPLY_REQUEST_FLAG];
+            if (request && this.#authority()?.id === game.user?.id) {
+                void this.#applyAsAuthority(actor, request, userId);
+            }
+        });
+        Hooks.once("ready", () => game.socket.on(SOCKET_NAME, (data) => this.#onSocket(data)));
     }
 
     static #healingRolls(rolls) {
@@ -71,7 +79,7 @@ export class HealingRequestFeed {
             this.#records(message).flatMap((record) => {
                 const target = record.targets.find((candidate) => candidate.actorUuid === actor.uuid);
                 if (!target) return [];
-                const requestId = this.#requestId(message, record.rollIndex);
+                const requestId = this.#requestId(message, record.rollIndex, actor.uuid);
                 if (claims[requestId]) return [];
                 return [{
                     id: requestId,
@@ -95,7 +103,7 @@ export class HealingRequestFeed {
         const target = record?.targets.find((candidate) => candidate.actorUuid === actor.uuid);
         if (!message || !record || !target) return;
 
-        const requestId = this.#requestId(message, rollIndex);
+        const requestId = this.#requestId(message, rollIndex, actor.uuid);
         if (actor.getFlag?.(MODULE_ID, CLAIMS_FLAG)?.[requestId]) {
             ui.notifications.info(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.AlreadyApplied"));
             return false;
@@ -107,17 +115,26 @@ export class HealingRequestFeed {
             return false;
         }
 
+        const correlationId = foundry.utils.randomID();
         const request = {
-            type: "healing-apply",
             messageUuid: message.uuid,
             actorUuid: actor.uuid,
             requestId,
             rollIndex,
-            requesterId: game.user.id,
+            correlationId,
         };
-        if (authority.id === game.user.id) return this.#applyAsAuthority(request, true);
-        game.socket.emit(SOCKET_NAME, request);
-        return true;
+        const result = new Promise((resolve) => pendingResults.set(correlationId, resolve));
+        try {
+            // Foundry authorizes this Actor update on the server. The authority receives its authenticated userId
+            // from updateActor rather than trusting an identity asserted by a socket payload.
+            await actor.setFlag(MODULE_ID, APPLY_REQUEST_FLAG, request);
+        } catch (error) {
+            pendingResults.delete(correlationId);
+            console.warn(`${LOG_PREFIX} Failed to submit healing request`, { actorUuid: actor.uuid, error });
+            ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.ApplyFailed"));
+            return false;
+        }
+        return result;
     }
 
     static #authority() {
@@ -127,18 +144,40 @@ export class HealingRequestFeed {
             .at(0) ?? null;
     }
 
-    static async #onSocket(data) {
-        if (data?.type === "healing-apply") {
-            if (this.#authority()?.id === game.user?.id) await this.#applyAsAuthority(data, false);
-        } else if (data?.type === "healing-apply-result" && data.requesterId === game.user?.id && !data.success) {
-            ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.ApplyFailed"));
-        }
+    static #onSocket(data) {
+        if (data?.type !== "healing-apply-result" || data.recipientId !== game.user?.id) return;
+        const resolve = pendingResults.get(data.correlationId);
+        if (!resolve) return;
+        pendingResults.delete(data.correlationId);
+        resolve(data.success === true);
+        if (!data.success) ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.ApplyFailed"));
     }
 
-    static async #applyAsAuthority(request, notifyLocally) {
-        const { messageUuid, actorUuid, requestId, rollIndex, requesterId } = request ?? {};
-        if (![messageUuid, actorUuid, requestId, requesterId].every((value) => typeof value === "string") ||
-            !Number.isInteger(rollIndex) || this.#authority()?.id !== game.user?.id || inFlight.has(requestId)) return false;
+    static async #applyAsAuthority(requestActor, request, authenticatedUserId) {
+        const { messageUuid, actorUuid, requestId, rollIndex, correlationId } = request ?? {};
+        const recipientId = authenticatedUserId;
+        const respond = (success, reason) => {
+            const result = {
+                type: "healing-apply-result", recipientId, requestId, correlationId, success, ...(reason ? { reason } : {}),
+            };
+            if (recipientId === game.user?.id) this.#onSocket(result);
+            else game.socket.emit(SOCKET_NAME, result);
+        };
+        let reason = "invalid-request";
+        let success = false;
+
+        if (this.#authority()?.id !== game.user?.id) return;
+        if (![messageUuid, actorUuid, requestId, correlationId, recipientId].every((value) => typeof value === "string") ||
+            !Number.isInteger(rollIndex)) {
+            await this.#clearApplyRequest(requestActor, correlationId);
+            respond(false, reason);
+            return;
+        }
+        if (inFlight.has(requestId)) {
+            await this.#clearApplyRequest(requestActor, correlationId);
+            respond(false, "already-processing");
+            return;
+        }
         inFlight.add(requestId);
 
         try {
@@ -148,11 +187,14 @@ export class HealingRequestFeed {
             const actor = await fromUuid(actorUuid);
             const record = this.#records(message).find((candidate) => candidate.rollIndex === rollIndex);
             const target = record?.targets.find((candidate) => candidate.actorUuid === actor?.uuid);
-            const requester = game.users.get(requesterId);
-            if (message?.documentName !== "ChatMessage" || actor?.type !== "character" || !record || !target ||
-                requestId !== this.#requestId(message, rollIndex) ||
-                (!requester?.isGM && !actor.canUserModify?.(requester, "update"))) return false;
-            if (actor.getFlag?.(MODULE_ID, CLAIMS_FLAG)?.[requestId]) return false;
+            const authenticatedUser = game.users.get(authenticatedUserId);
+            if (message?.documentName !== "ChatMessage" || actor?.type !== "character" || actor.uuid !== requestActor?.uuid ||
+                !record || !target || requestId !== this.#requestId(message, rollIndex, actorUuid) ||
+                !authenticatedUser || !actor.canUserModify?.(authenticatedUser, "update")) throw new Error(reason);
+            if (actor.getFlag?.(MODULE_ID, CLAIMS_FLAG)?.[requestId]) {
+                reason = "already-applied";
+                throw new Error(reason);
+            }
 
             let token = null;
             if (target.tokenUuid) {
@@ -179,14 +221,23 @@ export class HealingRequestFeed {
                 ...claims,
                 [requestId]: { state: "applied", userId: game.user.id, timestamp: Date.now() },
             });
-            return true;
+            success = true;
+            reason = null;
         } catch (error) {
             console.warn(`${LOG_PREFIX} Failed to apply healing request`, { actorUuid, messageUuid, rollIndex, error });
-            if (notifyLocally) ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.ApplyFailed"));
-            else game.socket.emit(SOCKET_NAME, { type: "healing-apply-result", requesterId, requestId, success: false });
-            return false;
         } finally {
             inFlight.delete(requestId);
+            await this.#clearApplyRequest(requestActor, correlationId);
+            respond(success, reason);
+        }
+    }
+
+    static async #clearApplyRequest(actor, correlationId) {
+        if (actor?.getFlag?.(MODULE_ID, APPLY_REQUEST_FLAG)?.correlationId !== correlationId) return;
+        try {
+            await actor.unsetFlag(MODULE_ID, APPLY_REQUEST_FLAG);
+        } catch (error) {
+            console.warn(`${LOG_PREFIX} Failed to clean up healing request`, { actorUuid: actor.uuid, correlationId, error });
         }
     }
 
@@ -199,7 +250,7 @@ export class HealingRequestFeed {
         );
     }
 
-    static #requestId(message, rollIndex) {
-        return `${message.id}-${rollIndex}`;
+    static #requestId(message, rollIndex, actorUuid) {
+        return `${message.id}-${rollIndex}-${actorUuid}`;
     }
 }
