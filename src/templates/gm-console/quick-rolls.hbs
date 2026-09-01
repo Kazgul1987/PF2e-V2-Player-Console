@@ -1,6 +1,17 @@
 <section class="tab gm-primary-panel gm-quick-rolls {{tab.cssClass}}" data-group="gm-console-primary" data-tab="quick-rolls">
     <form class="gm-quick-rolls__form" autocomplete="off">
         <div class="gm-quick-rolls__content">
+            <section class="gm-quick-rolls__column gm-quick-rolls__targets">
+                <h3>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Targets.Title"}}</h3>
+                {{#if playerTargets.length}}
+                    <label class="gm-quick-rolls__target gm-quick-rolls__target--all"><input type="checkbox" data-action="targetAllPlayerTokens"> {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Targets.AllPlayers"}}</label>
+                    <div class="gm-quick-rolls__target-list">
+                        {{#each playerTargets}}<label class="gm-quick-rolls__target"><input type="checkbox" data-action="targetPlayerToken" data-token-id="{{id}}" {{checked targeted}}> <span>{{label}}</span></label>{{/each}}
+                    </div>
+                {{else}}
+                    <p class="gm-quick-rolls__target-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Targets.NoPlayerTokens"}}</p>
+                {{/if}}
+            </section>
             <section class="gm-quick-rolls__column">
                 <h3>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Damage"}}</h3>
                 {{#each groups}}<fieldset class="gm-quick-rolls__group"><legend>{{label}}</legend><div class="gm-quick-rolls__buttons">

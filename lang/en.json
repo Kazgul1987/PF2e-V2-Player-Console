@@ -262,7 +262,12 @@
         "Input": "Enter a quick roll command",
         "Placeholder": "Damage / Level / DC 23",
         "Roll": "Roll",
-        "Invalid": "Quick roll input is invalid or unavailable.",
+      "Invalid": "Quick roll input is invalid or unavailable.",
+      "Targets": {
+        "Title": "Player Targets",
+        "AllPlayers": "Target all Player Tokens",
+        "NoPlayerTokens": "No player tokens on this scene"
+      },
         "Groups": {
           "Physical": "Physical",
           "Energy": "Energy",
