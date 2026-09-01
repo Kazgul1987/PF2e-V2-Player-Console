@@ -257,8 +257,8 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         const entry = target.closest("[data-message-id][data-roll-index]");
         if (!entry) return;
         target.disabled = true;
-        await HealingRequestFeed.apply(entry.dataset.messageId, Number(entry.dataset.rollIndex), this.actor);
-        await this.render({ parts: ["healingFeed"] });
+        const pending = await HealingRequestFeed.apply(entry.dataset.messageId, Number(entry.dataset.rollIndex), this.actor);
+        if (!pending) target.disabled = false;
     }
 
     static #openCoreCharacterSheet() {

@@ -283,6 +283,7 @@
       "GenericSource": "Heilung",
       "AlreadyApplied": "Diese Heilung wurde bereits angewendet.",
       "NotPermitted": "Du hast keine Berechtigung, diesen Charakter zu heilen.",
+      "NoActiveGM": "Es ist kein aktiver GM verfügbar, um diese Heilung anzuwenden.",
       "ApplyFailed": "Die Heilung konnte nicht angewendet werden. Möglicherweise ist ein aktiver Token erforderlich."
     },
     "RollFeed": {

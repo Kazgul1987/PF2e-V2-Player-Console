@@ -283,6 +283,7 @@
       "GenericSource": "Healing",
       "AlreadyApplied": "This healing has already been applied.",
       "NotPermitted": "You do not have permission to heal this character.",
+      "NoActiveGM": "No active GM is available to apply this healing.",
       "ApplyFailed": "The healing could not be applied. An active token may be required."
     },
     "RollFeed": {
