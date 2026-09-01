@@ -37,7 +37,9 @@ export function openCharacterSheet(actor) {
     applications.set(actor.uuid, application);
     void preloadHandlebarsPartials()
         .then(() => application.render(true))
-        .catch(() => undefined);
+        .catch((error) => {
+            console.error(`${LOG_PREFIX} Failed to open V2 character sheet`, { actor: actor.uuid, error });
+        });
     return application;
 }
 
