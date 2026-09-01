@@ -3,6 +3,8 @@ import { LOG_PREFIX, MODULE_ID } from "../../constants.js";
 const FLAG_PATH = `flags.${MODULE_ID}.healingFeed`;
 const FLAG_NAME = "healingFeed";
 const CLAIMS_FLAG = "healingClaims";
+const SOCKET_NAME = `module.${MODULE_ID}`;
+const inFlight = new Set();
 
 /** Chat-backed healing requests for the V2 character sheet. */
 export class HealingRequestFeed {
@@ -22,6 +24,7 @@ export class HealingRequestFeed {
                 },
             });
         });
+        Hooks.once("ready", () => game.socket.on(SOCKET_NAME, (data) => void this.#onSocket(data)));
     }
 
     static #healingRolls(rolls) {
@@ -93,24 +96,72 @@ export class HealingRequestFeed {
         if (!message || !record || !target) return;
 
         const requestId = this.#requestId(message, rollIndex);
-        const currentClaims = actor.getFlag?.(MODULE_ID, CLAIMS_FLAG) ?? {};
-        if (currentClaims[requestId]) {
+        if (actor.getFlag?.(MODULE_ID, CLAIMS_FLAG)?.[requestId]) {
             ui.notifications.info(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.AlreadyApplied"));
-            return;
+            return false;
         }
 
-        // Foundry has no compare-and-swap document update. A nonce-bearing document claim, followed by an immediate
-        // reread, narrows the cross-client race substantially and is also authoritative across sheets and reloads.
-        const nonce = foundry.utils.randomID();
-        const claim = { state: "applying", nonce, userId: game.user.id, timestamp: Date.now() };
-        await actor.setFlag(MODULE_ID, CLAIMS_FLAG, { ...currentClaims, [requestId]: claim });
-        const claimed = actor.getFlag(MODULE_ID, CLAIMS_FLAG)?.[requestId];
-        if (claimed?.nonce !== nonce) return;
+        const authority = this.#authority();
+        if (!authority) {
+            ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.NoActiveGM"));
+            return false;
+        }
+
+        const request = {
+            type: "healing-apply",
+            messageUuid: message.uuid,
+            actorUuid: actor.uuid,
+            requestId,
+            rollIndex,
+            requesterId: game.user.id,
+        };
+        if (authority.id === game.user.id) return this.#applyAsAuthority(request, true);
+        game.socket.emit(SOCKET_NAME, request);
+        return true;
+    }
+
+    static #authority() {
+        return [...(game.users ?? [])]
+            .filter((user) => user.active && user.isGM)
+            .sort((a, b) => a.id.localeCompare(b.id))
+            .at(0) ?? null;
+    }
+
+    static async #onSocket(data) {
+        if (data?.type === "healing-apply") {
+            if (this.#authority()?.id === game.user?.id) await this.#applyAsAuthority(data, false);
+        } else if (data?.type === "healing-apply-result" && data.requesterId === game.user?.id && !data.success) {
+            ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.ApplyFailed"));
+        }
+    }
+
+    static async #applyAsAuthority(request, notifyLocally) {
+        const { messageUuid, actorUuid, requestId, rollIndex, requesterId } = request ?? {};
+        if (![messageUuid, actorUuid, requestId, requesterId].every((value) => typeof value === "string") ||
+            !Number.isInteger(rollIndex) || this.#authority()?.id !== game.user?.id || inFlight.has(requestId)) return false;
+        inFlight.add(requestId);
 
         try {
-            const tokenDocument = target.tokenUuid ? await fromUuid(target.tokenUuid) : null;
-            const token = tokenDocument?.object ?? actor.getActiveTokens?.(true, true)?.at(0) ?? null;
-            if (!token || token.actor?.uuid !== actor.uuid || typeof actor.applyDamage !== "function") {
+            // Treat socket fields only as lookup keys. Reconstruct the amount, target, item, and outcome from the
+            // current ChatMessage documents, and recheck that the requesting user may update the target actor.
+            const message = await fromUuid(messageUuid);
+            const actor = await fromUuid(actorUuid);
+            const record = this.#records(message).find((candidate) => candidate.rollIndex === rollIndex);
+            const target = record?.targets.find((candidate) => candidate.actorUuid === actor?.uuid);
+            const requester = game.users.get(requesterId);
+            if (message?.documentName !== "ChatMessage" || actor?.type !== "character" || !record || !target ||
+                requestId !== this.#requestId(message, rollIndex) ||
+                (!requester?.isGM && !actor.canUserModify?.(requester, "update"))) return false;
+            if (actor.getFlag?.(MODULE_ID, CLAIMS_FLAG)?.[requestId]) return false;
+
+            let token = null;
+            if (target.tokenUuid) {
+                const document = await fromUuid(target.tokenUuid);
+                if (document?.documentName === "Token" && document.actor?.uuid === actor.uuid) token = document;
+            }
+            const activeToken = token ? null : actor.getActiveTokens?.(true, true)?.at(0);
+            token ??= activeToken?.document ?? null;
+            if (token?.documentName !== "Token" || token.actor?.uuid !== actor.uuid || typeof actor.applyDamage !== "function") {
                 throw new Error("PF2e applyDamage requires an active token for the targeted actor");
             }
 
@@ -128,14 +179,14 @@ export class HealingRequestFeed {
                 ...claims,
                 [requestId]: { state: "applied", userId: game.user.id, timestamp: Date.now() },
             });
+            return true;
         } catch (error) {
-            const claims = { ...(actor.getFlag(MODULE_ID, CLAIMS_FLAG) ?? {}) };
-            if (claims[requestId]?.nonce === nonce) {
-                delete claims[requestId];
-                await actor.setFlag(MODULE_ID, CLAIMS_FLAG, claims);
-            }
-            console.warn(`${LOG_PREFIX} Failed to apply healing request`, { actor: actor.uuid, messageId, rollIndex, error });
-            ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.ApplyFailed"));
+            console.warn(`${LOG_PREFIX} Failed to apply healing request`, { actorUuid, messageUuid, rollIndex, error });
+            if (notifyLocally) ui.notifications.error(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.ApplyFailed"));
+            else game.socket.emit(SOCKET_NAME, { type: "healing-apply-result", requesterId, requestId, success: false });
+            return false;
+        } finally {
+            inFlight.delete(requestId);
         }
     }
 
