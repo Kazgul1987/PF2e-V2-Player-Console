@@ -1452,6 +1452,11 @@ the original chat link, where PF2e Core retains its complete inline-check behavi
 - **M17-06 – Multiple requests and targets:** Create two healing messages and a healing message with two selected character targets. Verify each request is independent and applying one actor's request does not remove another actor's request.
 - **M17-07 – Target safeguards:** Verify an explicit PF2e self-target produces self-healing, an author with no target produces no request, and targeted NPCs never receive V2 healing requests.
 - **M17-08 – Message lifecycle:** With the sheet already open, create, update, and delete a flagged healing message. Verify relevant sheets refresh without reopening and deletion removes the request.
+- **M17-09 – Native Chat apply:** Apply a pending heal with PF2e's native Chat button. Verify its request disappears, the section hides when it was the last request, and a later healing roll shows the section again.
+- **M17-10 – Conservative external matching:** With pending amounts 18 and 27, apply 18 from Chat and verify only 18 disappears. Repeat with two pending amounts of 18 and verify neither is claimed; PF2e v14 does not pass the originating message or roll index to `updateActor`.
+- **M17-11 – External overheal:** At 48/50 HP with a pending heal of 18, apply it from Chat. Verify PF2e heals to 50 and the request remains pending: `damageTaken` is the effective clamped delta, so the module deliberately declines an unsafe amount match.
+- **M17-12 – External update safeguards:** Verify Chat damage, temp-HP changes, condition updates, and manual HP edits do not claim healing requests. Apply one multi-target healing request to one target and verify only that actor can be matched.
+- **M17-13 – Sheet/Chat race:** Race the V2 Apply action with native Chat Apply. Verify the shared claim is not written twice and the module never invokes an additional heal while processing the external update.
 - **M16.4.1-10 – GM Screen regression:** Open the GM Character Console and verify it is completely unchanged.
 - **M16.4-13 – Compare Chat vs V2:** Compare options, DC, token, origin, identifier, callback, result flag, and prompt UI between equivalent Chat and V2 rolls.
 - **M16.4-14 – Already Rolled:** Verify an existing token result is shown and its prompt roll button is unavailable, matching Saves Helper.

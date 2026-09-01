@@ -4,6 +4,12 @@
 
 The read-only PF2e reference is commit `73c870286aeba87c25ccc0258028afedfc888d05` (8.4.0 / Foundry V14). No `@actor`, `@system`, `@module`, or `@util` source alias is imported. Runtime Documents and Statistics are the integration boundary.
 
+## Native healing application synchronization
+
+PF2e's `applyDamageFromMessage` delegates Chat healing to `ActorPF2e#applyDamage`. That method updates hit points with the Foundry Actor update operation field `damageTaken`; healing is a negative value. In the current V14 source this value is `damageResult.totalApplied`, the effective delta after maximum-HP clamping. The operation does not retain the originating ChatMessage, roll index, or the pre-clamp healing amount. After the update, `applyDamage` creates a structured damage-taken ChatMessage whose `flags.pf2e.appliedDamage` contains the target Actor UUID, `isHealing`, and numeric update differences. This result flag, unlike a bare HP update, proves that the PF2e damage/healing application workflow ran.
+
+The healing feed retains its `updateActor` hook for the existing authority request transport and sheet refresh, while external synchronization consumes the structured PF2e application result on `createChatMessage`, only on that same authority GM. It accepts only `isHealing` with a negative HP update and only claims the single open, target-specific request whose rolled amount equals the absolute delta. Amount matching is declined when multiple requests match or when the resulting HP is maximum (where overhealing may have clamped the delta). Manual HP changes are excluded because they do not create PF2e's structured application-result message. The V2 Apply path's existing `inFlight` request suppresses this observer and continues to write the same Actor `healingClaims` flag itself.
+
 ## Generic Statistic roll
 
 - **Core UI/action:** `reference/pf2e/static/templates/actors/character/` statistic elements use `data-action="roll-check"` and `data-statistic`.
