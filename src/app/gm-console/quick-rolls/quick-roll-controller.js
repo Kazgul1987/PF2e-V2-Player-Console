@@ -54,7 +54,7 @@ export class QuickRollController {
 
     setPlayerTarget(tokenId, targeted) {
         const token = canvas?.ready ? canvas.scene?.tokens.get(tokenId)?.object : null;
-        token?.setTarget(targeted, { user: game.user, releaseOthers: false });
+        token?.setTarget(targeted, { releaseOthers: false });
     }
 
     setAllPlayerTargets(tokenIds, targeted) {
