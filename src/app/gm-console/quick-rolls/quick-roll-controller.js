@@ -17,10 +17,10 @@ export class QuickRollController {
         const available = getAvailableDamageTypes();
         const labels = CONFIG.PF2E.damageTypes ?? {};
         const typeData = (type) => ({ type, label: ["bludgeoning", "piercing", "slashing"].includes(type) ? type[0].toUpperCase() : localize(labels[type] ?? type), title: localize(labels[type] ?? type), icon: DAMAGE_TYPE_ICONS[type], selected: type === this.selectedDamageType });
-        const groups = Object.entries(GROUPS).map(([label, types]) => ({ label, types: types.filter((type) => available.has(type)).map(typeData) }));
+        const groups = Object.entries(GROUPS).map(([label, types]) => ({ label: localize(`PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Groups.${label}`), types: types.filter((type) => available.has(type)).map(typeData) }));
         const standard = new Set(STANDARD_DAMAGE_TYPES);
         const additional = [...available].filter((type) => !standard.has(type));
-        if (additional.length) groups.push({ label: "Additional", types: additional.map(typeData) });
+        if (additional.length) groups.push({ label: localize("PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Groups.Additional"), types: additional.map(typeData) });
         return { groups, ...prepareCheckButtons(localize) };
     }
 

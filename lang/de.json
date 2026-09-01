@@ -262,7 +262,13 @@
         "Input": "Schnellwurf-Befehl eingeben",
         "Placeholder": "Schaden / Stufe / SG 23",
         "Roll": "Würfeln",
-        "Invalid": "Die Schnellwurf-Eingabe ist ungültig oder nicht verfügbar."
+        "Invalid": "Die Schnellwurf-Eingabe ist ungültig oder nicht verfügbar.",
+        "Groups": {
+          "Physical": "Physisch",
+          "Energy": "Energie",
+          "Other": "Sonstige",
+          "Additional": "Weitere"
+        }
       }
     },
     "RollFeed": {
