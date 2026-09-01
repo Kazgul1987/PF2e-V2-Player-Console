@@ -4,6 +4,7 @@ import { CharacterAdapter } from "./pf2e/character-adapter.js";
 import { registerSettings } from "./settings.js";
 import { GMCharacterConsole } from "./app/gm-console/gm-character-console.js";
 import { TargetedRollFeed } from "./app/character-sheet/targeted-roll-feed.js";
+import { HealingRequestFeed } from "./app/character-sheet/healing-request-feed.js";
 
 const applications = new Map();
 let partialsPromise;
@@ -70,6 +71,7 @@ export async function toggleGMConsole() {
 
 Hooks.once("init", () => {
     TargetedRollFeed.registerHooks();
+    HealingRequestFeed.registerHooks();
     const renderedApplications = () => [...applications.values()].filter((application) => application.rendered);
     registerSettings(() => {
         for (const application of renderedApplications()) application.applyPresentationSettings();

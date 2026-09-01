@@ -276,6 +276,15 @@
         }
       }
     },
+    "Healing": {
+      "Title": "Healing",
+      "Apply": "Apply",
+      "HP": "HP",
+      "GenericSource": "Healing",
+      "AlreadyApplied": "This healing has already been applied.",
+      "NotPermitted": "You do not have permission to heal this character.",
+      "ApplyFailed": "The healing could not be applied. An active token may be required."
+    },
     "RollFeed": {
       "Title": "Roll Requests",
       "Empty": "No recent roll requests.",

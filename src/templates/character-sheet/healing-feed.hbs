@@ -1,0 +1,13 @@
+{{#unless healingFeed.empty}}
+<section class="healing-feed" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Healing.Title'}}">
+    <header>{{localize "PF2E_V2_PLAYER_CONSOLE.Healing.Title"}}</header>
+    <div class="healing-feed-entries">
+        {{#each healingFeed.entries}}
+            <article class="healing-feed-entry" data-message-id="{{messageId}}" data-roll-index="{{rollIndex}}">
+                <div><strong>{{label}}</strong><span>+{{amount}} {{localize "PF2E_V2_PLAYER_CONSOLE.Healing.HP"}}</span></div>
+                <button type="button" data-action="applyHealing"><i class="fa-solid fa-heart" aria-hidden="true"></i> {{localize "PF2E_V2_PLAYER_CONSOLE.Healing.Apply"}}</button>
+            </article>
+        {{/each}}
+    </div>
+</section>
+{{/unless}}

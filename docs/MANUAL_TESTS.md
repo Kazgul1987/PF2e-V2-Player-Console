@@ -1441,6 +1441,17 @@ the original chat link, where PF2e Core retains its complete inline-check behavi
 - **M16.4.1-07 – Result callback regression:** Roll a V2 save and verify `flags["pf2e-saves-helper"].results` is still updated correctly.
 - **M16.4.1-08 – Clear regression:** Click Clear and verify the feed clears as before while chat history remains intact.
 - **M16.4.1-09 – Normal RollFeed regression:** Run `@Check[reflex|dc:28]` and verify the normal targeted check works unchanged.
+
+## Milestone 17: V2 Sheet Healing Requests
+
+- **M17-01 – Structured recognition:** Post a PF2e `DamageRoll` whose `kinds` contains only `healing`; verify the targeted character receives a request. Post a CheckRoll, a damage-only DamageRoll, and a mixed damage/healing DamageRoll; verify none creates a request.
+- **M17-02 – Single target:** As a cleric player, target one character and roll Heal healing. Verify only that character's open V2 sheet shows the amount already rolled and an Apply button.
+- **M17-03 – Healing actions:** Verify the Medicine check for Treat Wounds and Battle Medicine creates no request, while each subsequent structured healing roll does. Repeat with a healing potion.
+- **M17-04 – Apply and overheal:** Apply healing to an injured character and verify PF2e updates HP once. Repeat near maximum HP and verify PF2e caps the result normally; in both cases the request disappears.
+- **M17-05 – Duplicate protection:** Double-click Apply and then race Apply from an owner and GM client. Verify the actor's `healingClaims` flag records one application and HP changes only once.
+- **M17-06 – Multiple requests and targets:** Create two healing messages and a healing message with two selected character targets. Verify each request is independent and applying one actor's request does not remove another actor's request.
+- **M17-07 – Target safeguards:** Verify an explicit PF2e self-target produces self-healing, an author with no target produces no request, and targeted NPCs never receive V2 healing requests.
+- **M17-08 – Message lifecycle:** With the sheet already open, create, update, and delete a flagged healing message. Verify relevant sheets refresh without reopening and deletion removes the request.
 - **M16.4.1-10 – GM Screen regression:** Open the GM Character Console and verify it is completely unchanged.
 - **M16.4-13 – Compare Chat vs V2:** Compare options, DC, token, origin, identifier, callback, result flag, and prompt UI between equivalent Chat and V2 rolls.
 - **M16.4-14 – Already Rolled:** Verify an existing token result is shown and its prompt roll button is unavailable, matching Saves Helper.

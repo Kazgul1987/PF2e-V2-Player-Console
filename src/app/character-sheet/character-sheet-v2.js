@@ -22,6 +22,7 @@ import { PFSController } from "../../controllers/pfs-controller.js";
 import { getPresentationSettings, ROLL_FEED_FILTER_CHANGED_HOOK } from "../../settings.js";
 import { SidebarController } from "../../controllers/sidebar-controller.js";
 import { TargetedRollFeed } from "./targeted-roll-feed.js";
+import { HealingRequestFeed } from "./healing-request-feed.js";
 
 const { DocumentSheetV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -113,6 +114,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             toggleRollFeed: PF2eCharacterSheetV2.#toggleRollFeed,
             clearRollFeed: PF2eCharacterSheetV2.#clearRollFeed,
             rollSavesHelper: PF2eCharacterSheetV2.#rollSavesHelper,
+            applyHealing: PF2eCharacterSheetV2.#applyHealing,
         },
     };
 
@@ -139,6 +141,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         biography: { template: `modules/${MODULE_ID}/src/templates/character-sheet/biography.hbs`, scrollable: [""] },
         pfs: { template: `modules/${MODULE_ID}/src/templates/character-sheet/pfs.hbs`, scrollable: [""] },
         rollFeed: { template: `modules/${MODULE_ID}/src/templates/character-sheet/roll-feed.hbs` },
+        healingFeed: { template: `modules/${MODULE_ID}/src/templates/character-sheet/healing-feed.hbs` },
     };
 
     tabGroups = { primary: "character" };
@@ -198,6 +201,7 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
         if (partId === "biography") partContext.biography = await BiographyAdapter.prepare(this.actor, this.isEditable);
         if (partId === "pfs") partContext.pfs = PFSAdapter.prepare(this.actor);
         if (partId === "rollFeed") partContext.rollFeed = await TargetedRollFeed.prepare(this.actor, this.#rollFeedCollapsed);
+        if (partId === "healingFeed") partContext.healingFeed = HealingRequestFeed.prepare(this.actor);
         return partContext;
     }
 
@@ -247,6 +251,14 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
     static async #rollSavesHelper(event, target) {
         const messageId = target.closest("[data-message-id]")?.dataset.messageId;
         if (messageId) await TargetedRollFeed.rollSavesHelper(event, messageId, this.actor);
+    }
+
+    static async #applyHealing(_event, target) {
+        const entry = target.closest("[data-message-id][data-roll-index]");
+        if (!entry) return;
+        target.disabled = true;
+        await HealingRequestFeed.apply(entry.dataset.messageId, Number(entry.dataset.rollIndex), this.actor);
+        await this.render({ parts: ["healingFeed"] });
     }
 
     static #openCoreCharacterSheet() {
@@ -714,6 +726,9 @@ export class PF2eCharacterSheetV2 extends HandlebarsApplicationMixin(DocumentShe
             ["createChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
             ["updateChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
             ["deleteChatMessage", (message) => { if (TargetedRollFeed.affectsActor(message, this.actor)) void this.render({ parts: ["rollFeed"] }); }],
+            ["createChatMessage", (message) => { if (HealingRequestFeed.affectsActor(message, this.actor)) void this.render({ parts: ["healingFeed"] }); }],
+            ["updateChatMessage", (message) => { if (HealingRequestFeed.affectsActor(message, this.actor)) void this.render({ parts: ["healingFeed"] }); }],
+            ["deleteChatMessage", (message) => { if (HealingRequestFeed.affectsActor(message, this.actor)) void this.render({ parts: ["healingFeed"] }); }],
             [`${MODULE_ID}.rollFeedCleared`, (actorUuid) => { if (actorUuid === this.actor.uuid) void this.render({ parts: ["rollFeed"] }); }],
             [ROLL_FEED_FILTER_CHANGED_HOOK, () => { void this.render({ parts: ["rollFeed"] }); }],
         ]) this.#hooks.push([hook, Hooks.on(hook, callback)]);

@@ -91,6 +91,13 @@
 .pf2e-v2-character-sheet .roll-feed-checks { display: flex; flex-wrap: wrap; gap: var(--pf2e-v2-gap-xs); }
 .pf2e-v2-character-sheet .roll-feed-request-content [data-roll-feed-unsupported] { cursor: not-allowed; opacity: 0.6; }
 .pf2e-v2-character-sheet .roll-feed-empty { color: var(--pf2e-v2-text-muted); margin: 0; }
+.pf2e-v2-character-sheet .healing-feed { background: var(--pf2e-v2-bg-panel); border: 1px solid var(--pf2e-v2-border); border-radius: var(--pf2e-v2-radius-sm); grid-column: 1 / -1; min-width: 0; padding: var(--pf2e-v2-gap-sm); }
+.pf2e-v2-character-sheet .healing-feed > header { color: var(--pf2e-v2-heading); font-weight: 700; margin-bottom: var(--pf2e-v2-gap-xs); text-transform: uppercase; }
+.pf2e-v2-character-sheet .healing-feed-entries { display: grid; gap: var(--pf2e-v2-gap-xs); grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+.pf2e-v2-character-sheet .healing-feed-entry { align-items: center; background: var(--pf2e-v2-bg-panel-alt); border-left: 3px solid var(--pf2e-v2-success); display: flex; gap: var(--pf2e-v2-gap-sm); justify-content: space-between; padding: var(--pf2e-v2-gap-xs) var(--pf2e-v2-gap-sm); }
+.pf2e-v2-character-sheet .healing-feed-entry > div { display: flex; flex-direction: column; min-width: 0; }
+.pf2e-v2-character-sheet .healing-feed-entry span { color: var(--pf2e-v2-success); font-weight: 700; }
+.pf2e-v2-character-sheet .healing-feed-entry button { white-space: nowrap; }
 .pf2e-v2-character-sheet[data-sidebar="false"] .window-content { grid-template-columns: minmax(0, 1fr); }
 .pf2e-v2-character-sheet[data-sidebar="false"] :is(.sheet-tabs, .tab-panel) { grid-column: 1; }
 .pc-header { align-items: center; display: grid; gap: 1rem; grid-template-columns: 5rem 1fr auto; }
