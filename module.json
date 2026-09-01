@@ -23,6 +23,7 @@
     "src/styles/character-sheet.css",
     "src/styles/gm-console.css"
   ],
+  "socket": true,
   "languages": [
     {
       "lang": "en",
