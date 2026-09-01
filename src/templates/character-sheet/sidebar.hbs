@@ -1,5 +1,5 @@
-{{#if showSidebar}}
-<aside class="character-sidebar" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.Label'}}">
+<aside class="character-sidebar" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.Sidebar.Label'}}" {{#unless showSidebar}}hidden{{/unless}}>
+    {{#if showSidebar}}
     <section class="sidebar-section sidebar-vitals">
         <h2>{{localize "PF2E_V2_PLAYER_CONSOLE.Sidebar.Vitals"}}</h2>
         <div class="sidebar-resource hp-resource">
@@ -61,5 +61,5 @@
     {{#if actor.defenses.immunities.length}}<section class="sidebar-section sidebar-iwr"><h2>{{localize "PF2E.ImmunitiesLabel"}}</h2><ul>{{#each actor.defenses.immunities}}<li data-iwr-type="{{type}}">{{label}}</li>{{/each}}</ul></section>{{/if}}
     {{#if actor.defenses.weaknesses.length}}<section class="sidebar-section sidebar-iwr"><h2>{{localize "PF2E.WeaknessesLabel"}}</h2><ul>{{#each actor.defenses.weaknesses}}<li data-iwr-type="{{type}}">{{label}}</li>{{/each}}</ul></section>{{/if}}
     {{#if actor.defenses.resistances.length}}<section class="sidebar-section sidebar-iwr"><h2>{{localize "PF2E.ResistancesLabel"}}</h2><ul>{{#each actor.defenses.resistances}}<li data-iwr-type="{{type}}">{{label}}</li>{{/each}}</ul></section>{{/if}}
+    {{/if}}
 </aside>
-{{/if}}
