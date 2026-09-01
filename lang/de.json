@@ -276,6 +276,15 @@
         }
       }
     },
+    "Healing": {
+      "Title": "Heilung",
+      "Apply": "Anwenden",
+      "HP": "TP",
+      "GenericSource": "Heilung",
+      "AlreadyApplied": "Diese Heilung wurde bereits angewendet.",
+      "NotPermitted": "Du hast keine Berechtigung, diesen Charakter zu heilen.",
+      "ApplyFailed": "Die Heilung konnte nicht angewendet werden. Möglicherweise ist ein aktiver Token erforderlich."
+    },
     "RollFeed": {
       "Title": "Würfelanfragen",
       "Empty": "Keine aktuellen Würfelanfragen.",
