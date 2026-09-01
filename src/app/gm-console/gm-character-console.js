@@ -5,6 +5,7 @@ import {
 } from "../../settings.js";
 import { prepareGMInventory } from "./gm-inventory-view.js";
 import { prepareGMSpellcasting } from "./gm-spellcasting-view.js";
+import { QuickRollController } from "./quick-rolls/quick-roll-controller.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const TEMPLATE_ROOT = `modules/${MODULE_ID}/src/templates/gm-console`;
@@ -31,20 +32,35 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             toggleSpellSummary: GMCharacterConsole.#toggleSpellSummary,
             openSpell: GMCharacterConsole.#openSpell,
             castSpell: GMCharacterConsole.#castSpell,
+            selectDamageType: GMCharacterConsole.#selectDamageType,
+            quickCheck: GMCharacterConsole.#quickCheck,
+            submitQuickRoll: GMCharacterConsole.#submitQuickRoll,
         },
         form: { closeOnSubmit: false },
     };
 
+    static TABS = {
+        "gm-console-primary": {
+            initial: "characters",
+            tabs: ["characters", "quick-rolls"].map((id) => ({ id })),
+            labelPrefix: "PF2E_V2_PLAYER_CONSOLE.GMConsole.Tabs",
+        },
+    };
+
     static PARTS = {
         console: { template: `${TEMPLATE_ROOT}/console.hbs` },
-        selector: { template: `${TEMPLATE_ROOT}/selector.hbs` },
-        panes: { template: `${TEMPLATE_ROOT}/character-pane.hbs`, scrollable: [".gm-panes"] },
+        navigation: { template: `${TEMPLATE_ROOT}/navigation.hbs` },
+        characters: { template: `${TEMPLATE_ROOT}/characters.hbs`, scrollable: [".gm-panes"] },
+        quickRolls: { template: `${TEMPLATE_ROOT}/quick-rolls.hbs`, scrollable: [""] },
     };
+
+    tabGroups = { "gm-console-primary": "characters" };
 
     constructor({ openCharacterSheet, ...options } = {}) {
         super(options);
         this.openCharacterSheet = openCharacterSheet;
         this.paneViews = new Map();
+        this.quickRolls = new QuickRollController();
     }
 
     get title() { return game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.GMConsole.Title"); }
@@ -75,7 +91,19 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             actors: await Promise.all(actors.map((actor) => this.#prepareActor(actor, collapsed.has(actor.id)))),
             candidates: candidates.map((actor) => ({ id: actor.id, name: actor.name, selected: selected.has(actor.id) })),
             layout: game.settings.get(MODULE_ID, GM_CONSOLE_LAYOUT_SETTING),
+            tabs: this._prepareTabs("gm-console-primary"),
+            quickRolls: this.quickRolls.prepareContext(),
         };
+    }
+
+    async _preparePartContext(partId, context, options) {
+        const partContext = await super._preparePartContext(partId, context, options);
+        if (partId === "characters") partContext.tab = context.tabs.characters;
+        if (partId === "quickRolls") {
+            partContext.tab = context.tabs["quick-rolls"];
+            Object.assign(partContext, context.quickRolls);
+        }
+        return partContext;
     }
 
     async #prepareActor(actor, collapsed = false) {
@@ -140,6 +168,11 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             if (!control) return;
             event.preventDefault();
             void this.#changeFocus(control, -1);
+        }, { signal: this.#listeners.signal });
+        this.element.querySelector('[name="quick-roll-input"]')?.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter") return;
+            event.preventDefault();
+            void this.#runQuickInput(event, event.currentTarget);
         }, { signal: this.#listeners.signal });
     }
 
@@ -338,5 +371,38 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     static async #rollInitiative(_event, target) {
         const actor = this.#actorFor(target);
         await actor?.initiative?.roll();
+    }
+
+    static #selectDamageType(_event, target) {
+        this.quickRolls.selectDamageType(target.dataset.damageType, this.element);
+        this.#focusQuickInput();
+    }
+
+    static async #quickCheck(event, target) {
+        const input = this.element.querySelector('[name="quick-roll-input"]');
+        const posted = await this.quickRolls.postCheck(target.dataset.check ?? "", input?.value ?? "");
+        if (posted && input) input.value = "";
+        else if (!posted) this.#warnQuickRoll();
+        this.#focusQuickInput();
+    }
+
+    static async #submitQuickRoll(event) {
+        const input = this.element.querySelector('[name="quick-roll-input"]');
+        if (input) await this.#runQuickInput(event, input);
+    }
+
+    async #runQuickInput(event, input) {
+        const processed = await this.quickRolls.processInput(input.value, event);
+        if (processed) input.value = "";
+        else this.#warnQuickRoll();
+        this.#focusQuickInput();
+    }
+
+    #focusQuickInput() {
+        this.element.querySelector('[name="quick-roll-input"]')?.focus();
+    }
+
+    #warnQuickRoll() {
+        ui.notifications.warn(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Invalid"));
     }
 }

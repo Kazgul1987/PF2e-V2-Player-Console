@@ -1,0 +1,20 @@
+<section class="tab gm-primary-panel gm-quick-rolls {{tab.cssClass}}" data-group="gm-console-primary" data-tab="quick-rolls">
+    <form class="gm-quick-rolls__form" autocomplete="off">
+        <div class="gm-quick-rolls__content">
+            <section class="gm-quick-rolls__column">
+                <h3>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Damage"}}</h3>
+                {{#each groups}}<fieldset class="gm-quick-rolls__group"><legend>{{label}}</legend><div class="gm-quick-rolls__buttons">
+                    {{#each types}}<button type="button" data-action="selectDamageType" data-damage-type="{{type}}" class="{{#if selected}}is-selected{{/if}}" title="{{title}}" aria-pressed="{{selected}}">{{#if icon}}<i class="fa-solid fa-{{icon}}" inert></i>{{/if}}<span>{{label}}</span></button>{{/each}}
+                </div></fieldset>{{/each}}
+            </section>
+            <section class="gm-quick-rolls__column"><h3>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Saves"}}</h3><div class="gm-quick-rolls__checks">
+                {{#each checks}}<button type="button" data-action="quickCheck" data-check="{{slug}}">{{label}}</button>{{/each}}
+            </div></section>
+            <section class="gm-quick-rolls__column gm-quick-rolls__skills"><h3>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Skills"}}</h3><div class="gm-quick-rolls__checks">
+                {{#each skills}}<button type="button" data-action="quickCheck" data-check="{{slug}}">{{label}}</button>{{/each}}
+            </div></section>
+        </div>
+        <label for="gm-quick-roll-input">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Input"}}</label>
+        <div class="gm-quick-rolls__input-row"><input id="gm-quick-roll-input" name="quick-roll-input" type="text" placeholder="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Placeholder'}}"><button type="button" data-action="submitQuickRoll"><i class="fa-solid fa-dice" inert></i> {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.QuickRolls.Roll"}}</button></div>
+    </form>
+</section>
