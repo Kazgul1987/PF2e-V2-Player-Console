@@ -94,7 +94,7 @@ export class HealingRequestFeed {
                 const target = record.targets.find((candidate) => candidate.actorUuid === actor.uuid);
                 if (!target) return [];
                 const requestId = this.#requestId(message, record.rollIndex, actor.uuid);
-                if (claims[requestId]) return [];
+                if (this.#hasClaim(claims, requestId, this.#legacyRequestId(message, record.rollIndex, actor.uuid))) return [];
                 return [{ requestId, message, record }];
             }),
         );
@@ -109,26 +109,25 @@ export class HealingRequestFeed {
         if (!(damageTaken < 0)) return;
 
         const actor = await fromUuid(applied.uuid);
-        const updatedHP = Number(actor?.system?.attributes?.hp?.value);
-        if (actor?.type !== "character" || !Number.isFinite(updatedHP)) return;
+        if (actor?.type !== "character") return;
 
         const open = this.#openRequests(actor);
         if (!open.length || open.some(({ requestId }) => inFlight.has(requestId))) return;
 
-        // PF2e v14's update operation exposes only the effective (clamped) health delta and carries no originating
-        // ChatMessage or roll index. Its structured damage-taken result message confirms that applyDamage (rather
-        // than a manual HP edit) produced that update, but an amount match is still safe only below maximum HP.
-        const maximumHP = Number(actor.system?.attributes?.hp?.max);
-        if (!Number.isFinite(maximumHP) || updatedHP >= maximumHP) return;
-        const matches = open.filter(({ record }) => record.amount === Math.abs(damageTaken));
+        // PF2e v14 does not retain the originating message or roll index in this result. A lone open request is
+        // nevertheless unambiguous even when maximum-HP clamping makes the effective delta smaller than its roll.
+        // With several requests, retain the conservative unique-amount fallback and never guess between duplicates.
+        const matches = open.length === 1
+            ? open
+            : open.filter(({ record }) => record.amount === Math.abs(damageTaken));
         if (matches.length !== 1) return;
 
-        const [{ requestId }] = matches;
+        const [{ requestId, message, record }] = matches;
         if (inFlight.has(requestId)) return;
         inFlight.add(requestId);
         try {
             const claims = actor.getFlag?.(MODULE_ID, CLAIMS_FLAG) ?? {};
-            if (claims[requestId]) return;
+            if (this.#hasClaim(claims, requestId, this.#legacyRequestId(message, record.rollIndex, actor.uuid))) return;
             await actor.setFlag(MODULE_ID, CLAIMS_FLAG, {
                 ...claims,
                 [requestId]: { state: "applied", userId: game.user.id, timestamp: Date.now() },
@@ -151,7 +150,8 @@ export class HealingRequestFeed {
         if (!message || !record || !target) return;
 
         const requestId = this.#requestId(message, rollIndex, actor.uuid);
-        if (actor.getFlag?.(MODULE_ID, CLAIMS_FLAG)?.[requestId]) {
+        const claims = actor.getFlag?.(MODULE_ID, CLAIMS_FLAG) ?? {};
+        if (this.#hasClaim(claims, requestId, this.#legacyRequestId(message, rollIndex, actor.uuid))) {
             ui.notifications.info(game.i18n.localize("PF2E_V2_PLAYER_CONSOLE.Healing.AlreadyApplied"));
             return false;
         }
@@ -238,7 +238,8 @@ export class HealingRequestFeed {
             if (message?.documentName !== "ChatMessage" || actor?.type !== "character" || actor.uuid !== requestActor?.uuid ||
                 !record || !target || requestId !== this.#requestId(message, rollIndex, actorUuid) ||
                 !authenticatedUser || !actor.canUserModify?.(authenticatedUser, "update")) throw new Error(reason);
-            if (actor.getFlag?.(MODULE_ID, CLAIMS_FLAG)?.[requestId]) {
+            const existingClaims = actor.getFlag?.(MODULE_ID, CLAIMS_FLAG) ?? {};
+            if (this.#hasClaim(existingClaims, requestId, this.#legacyRequestId(message, rollIndex, actorUuid))) {
                 reason = "already-applied";
                 throw new Error(reason);
             }
@@ -298,6 +299,14 @@ export class HealingRequestFeed {
     }
 
     static #requestId(message, rollIndex, actorUuid) {
+        return this.#legacyRequestId(message, rollIndex, actorUuid).replaceAll(".", "_");
+    }
+
+    static #legacyRequestId(message, rollIndex, actorUuid) {
         return `${message.id}-${rollIndex}-${actorUuid}`;
+    }
+
+    static #hasClaim(claims, requestId, legacyRequestId) {
+        return Boolean(claims?.[requestId] ?? claims?.[legacyRequestId] ?? foundry.utils.getProperty(claims, legacyRequestId));
     }
 }
