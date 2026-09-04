@@ -1,10 +1,12 @@
 import { LOG_PREFIX, MODULE_ID } from "../../constants.js";
+import { ActionController } from "../../controllers/action-controller.js";
 import {
     GM_CONSOLE_ACTORS_SETTING, GM_CONSOLE_COLLAPSED_ACTORS_SETTING, GM_CONSOLE_INITIALIZED_SETTING,
     GM_CONSOLE_LAYOUT_SETTING,
 } from "../../settings.js";
 import { prepareGMInventory } from "./gm-inventory-view.js";
 import { prepareGMSpellcasting } from "./gm-spellcasting-view.js";
+import { prepareGMCombat } from "./gm-combat-view.js";
 import { QuickRollController } from "./quick-rolls/quick-roll-controller.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -37,6 +39,11 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             submitQuickRoll: GMCharacterConsole.#submitQuickRoll,
             targetPlayerToken: GMCharacterConsole.#targetPlayerToken,
             targetAllPlayerTokens: GMCharacterConsole.#targetAllPlayerTokens,
+            switchCombatView: GMCharacterConsole.#switchCombatView,
+            openCombatantSheet: GMCharacterConsole.#openCombatantSheet,
+            rollCombatStatistic: GMCharacterConsole.#rollCombatStatistic,
+            rollCombatStrike: GMCharacterConsole.#rollCombatStrike,
+            useCombatAction: GMCharacterConsole.#useCombatAction,
         },
         form: { closeOnSubmit: false },
     };
@@ -44,7 +51,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     static TABS = {
         "gm-console-primary": {
             initial: "characters",
-            tabs: ["characters", "quick-rolls"].map((id) => ({ id })),
+            tabs: ["characters", "quick-rolls", "combat"].map((id) => ({ id })),
             labelPrefix: "PF2E_V2_PLAYER_CONSOLE.GMConsole.Tabs",
         },
     };
@@ -54,6 +61,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         navigation: { template: `${TEMPLATE_ROOT}/navigation.hbs` },
         characters: { template: `${TEMPLATE_ROOT}/characters.hbs`, scrollable: [".gm-panes"] },
         quickRolls: { template: `${TEMPLATE_ROOT}/quick-rolls.hbs`, scrollable: [""] },
+        combat: { template: `${TEMPLATE_ROOT}/combat.hbs`, scrollable: [".gm-combat-panes"] },
     };
 
     tabGroups = { "gm-console-primary": "characters" };
@@ -62,6 +70,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         super(options);
         this.openCharacterSheet = openCharacterSheet;
         this.paneViews = new Map();
+        this.combatPaneViews = new Map();
         this.quickRolls = new QuickRollController();
     }
 
@@ -89,12 +98,18 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         }
         const candidates = GMCharacterConsole.discoverPlayerCharacters();
         const actors = [...selected].map((id) => game.actors.get(id)).filter((actor) => actor?.type === "character");
+        if (!game.combat && this.tabGroups["gm-console-primary"] === "combat") {
+            this.tabGroups["gm-console-primary"] = "characters";
+        }
+        const tabs = this._prepareTabs("gm-console-primary");
+        if (!game.combat) delete tabs.combat;
         return {
             actors: await Promise.all(actors.map((actor) => this.#prepareActor(actor, collapsed.has(actor.id)))),
             candidates: candidates.map((actor) => ({ id: actor.id, name: actor.name, selected: selected.has(actor.id) })),
             layout: game.settings.get(MODULE_ID, GM_CONSOLE_LAYOUT_SETTING),
-            tabs: this._prepareTabs("gm-console-primary"),
+            tabs,
             quickRolls: this.quickRolls.prepareContext(),
+            combat: await prepareGMCombat(game.combat, this.combatPaneViews),
         };
     }
 
@@ -104,6 +119,10 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         if (partId === "quickRolls") {
             partContext.tab = context.tabs["quick-rolls"];
             Object.assign(partContext, context.quickRolls);
+        }
+        if (partId === "combat") {
+            partContext.tab = context.tabs.combat;
+            Object.assign(partContext, context.combat);
         }
         return partContext;
     }
@@ -146,6 +165,14 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         await super._onFirstRender(context, options);
         this.#hookIds = [
             ["updateActor", Hooks.on("updateActor", (actor) => void this.#refreshActor(actor))],
+            ...["createCombat", "updateCombat", "deleteCombat"].map((hook) => [
+                hook, Hooks.on(hook, () => void this.#refreshCombat()),
+            ]),
+            ...["createCombatant", "updateCombatant", "deleteCombatant"].map((hook) => [
+                hook, Hooks.on(hook, (combatant) => {
+                    if (combatant.parent === game.combat) void this.#refreshCombat();
+                }),
+            ]),
             ["targetToken", Hooks.on("targetToken", (user) => {
                 if (user.id === game.user.id) this.#syncPlayerTargetInputs();
             })],
@@ -166,6 +193,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
                 hook,
                 Hooks.on(hook, (item) => {
                     if (item.parent?.type === "character") void this.#refreshActor(item.parent);
+                    else if (item.parent?.type === "npc") void this.#refreshCombatActor(item.parent);
                 }),
             ]),
         ];
@@ -209,6 +237,21 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         if (this.rendered) await this.render({ parts: ["quickRolls"] });
     }
 
+    async #refreshCombat() {
+        if (!this.rendered) return;
+        if (!game.combat && this.tabGroups["gm-console-primary"] === "combat") {
+            this.changeTab("characters", "gm-console-primary");
+        }
+        const activeIds = new Set((game.combat?.turns ?? []).map((combatant) => combatant.id));
+        for (const id of this.combatPaneViews.keys()) if (!activeIds.has(id)) this.combatPaneViews.delete(id);
+        await this.render({ parts: ["navigation", "combat"] });
+    }
+
+    async #refreshCombatActor(actor) {
+        if (!this.rendered || !(game.combat?.turns ?? []).some((combatant) => combatant.actor === actor)) return;
+        await this.render({ parts: ["combat"] });
+    }
+
     #syncPlayerTargetInputs() {
         const root = this.element?.querySelector(".gm-quick-rolls__targets");
         if (!root) return;
@@ -226,6 +269,9 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     }
 
     #actorFor(target) {
+        const combatantId = target.closest("[data-combatant-id]")?.dataset.combatantId;
+        const combatActor = game.combat?.combatants?.get(combatantId ?? "")?.actor;
+        if (combatActor?.type === "npc") return combatActor;
         const id = target.closest("[data-actor-id]")?.dataset.actorId;
         const actor = game.actors.get(id ?? "");
         return actor?.type === "character" ? actor : null;
@@ -260,6 +306,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     }
 
     async #refreshActor(actor) {
+        if (actor.type === "npc") return this.#refreshCombatActor(actor);
         if (!this.rendered) return;
         const current = this.element.querySelector(`.gm-character-pane[data-actor-id="${CSS.escape(actor.id)}"]`);
         if (!current) return;
@@ -269,6 +316,41 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         wrapper.innerHTML = html.trim();
         const replacement = wrapper.querySelector(".gm-character-pane");
         if (replacement) current.replaceWith(replacement);
+    }
+
+    #combatantFor(target) {
+        const id = target.closest("[data-combatant-id]")?.dataset.combatantId;
+        const combatant = game.combat?.combatants?.get(id ?? "");
+        return combatant?.actor?.type === "npc" ? combatant : null;
+    }
+
+    static async #switchCombatView(_event, target) {
+        const combatant = this.#combatantFor(target);
+        const view = target.dataset.view;
+        if (!combatant || !["overview", "actions", "inventory", "spellcasting"].includes(view)) return;
+        this.combatPaneViews.set(combatant.id, view);
+        await this.render({ parts: ["combat"] });
+    }
+
+    static #openCombatantSheet(_event, target) { this.#combatantFor(target)?.actor?.sheet.render(true); }
+
+    static async #rollCombatStatistic(_event, target) {
+        await this.#combatantFor(target)?.actor?.getStatistic?.(target.dataset.statistic)?.roll();
+    }
+
+    static async #rollCombatStrike(event, target) {
+        const actor = this.#combatantFor(target)?.actor;
+        if (!actor) return;
+        await ActionController.attack(actor, {
+            strikeIndex: target.closest("[data-strike-index]")?.dataset.strikeIndex,
+            variantIndex: target.dataset.variantIndex,
+        }, event);
+    }
+
+    static async #useCombatAction(event, target) {
+        const actor = this.#combatantFor(target)?.actor;
+        const itemId = target.closest("[data-item-id]")?.dataset.itemId;
+        if (actor?.items.get(itemId ?? "")?.type === "action") await ActionController.use(actor, itemId, event);
     }
 
     async #updateInventoryField(input) {

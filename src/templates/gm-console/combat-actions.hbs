@@ -1,0 +1,8 @@
+<div class="gm-combat-actions">
+    <section><h4>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Strikes"}}</h4>
+    {{#each actions.strikes}}<div class="gm-combat-action-row" data-strike-index="{{actionIndex}}"><span class="gm-combat-action-name"><img src="{{img}}" alt="">{{name}}</span><span class="gm-strike-variants">{{#each variants}}<button type="button" data-action="rollCombatStrike" data-variant-index="{{variantIndex}}">{{label}}</button>{{/each}}</span></div>{{else}}<p class="gm-empty-inline">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.NoStrikes"}}</p>{{/each}}</section>
+    {{#each actions.groups}}
+        {{#if items.length}}<section><h4>{{label}}</h4>
+        {{#each items}}<div class="gm-combat-action-row" data-item-id="{{id}}"><button type="button" class="gm-combat-action-name" data-action="useCombatAction"><img src="{{img}}" alt="">{{name}}{{#if actionCost}} <span class="gm-action-cost">{{actionCost}}</span>{{/if}}</button>{{#if traits}}<small>{{traits}}</small>{{/if}}</div>{{/each}}</section>{{/if}}
+    {{/each}}
+</div>

@@ -253,7 +253,8 @@
       "Tabs": {
         "Label": "Bereiche der SL-Konsole",
         "characters": "Charaktere",
-        "quick-rolls": "Schnellwürfe"
+        "quick-rolls": "Schnellwürfe",
+        "combat": "Kampf"
       },
       "QuickRolls": {
         "Damage": "Schaden",
@@ -262,17 +263,35 @@
         "Input": "Schnellwurf-Befehl eingeben",
         "Placeholder": "Schaden / Stufe / SG 23",
         "Roll": "Würfeln",
-      "Invalid": "Die Schnellwurf-Eingabe ist ungültig oder nicht verfügbar.",
-      "Targets": {
-        "Title": "Spielerziele",
-        "AllPlayers": "Alle Spielertokens als Ziel wählen",
-        "NoPlayerTokens": "Keine Spielertokens auf dieser Szene"
-      },
+        "Invalid": "Die Schnellwurf-Eingabe ist ungültig oder nicht verfügbar.",
+        "Targets": {
+          "Title": "Spielerziele",
+          "AllPlayers": "Alle Spielertokens als Ziel wählen",
+          "NoPlayerTokens": "Keine Spielertokens auf dieser Szene"
+        },
         "Groups": {
           "Physical": "Physisch",
           "Energy": "Energie",
           "Other": "Sonstige",
           "Additional": "Weitere"
+        }
+      },
+      "Combat": {
+        "Overview": "Übersicht",
+        "Actions": "Aktionen",
+        "Inventory": "Inventar",
+        "Spellcasting": "Zauber",
+        "CurrentTurn": "Aktueller Zug",
+        "NoNPCs": "Keine NSC-Kampfteilnehmer",
+        "Initiative": "Initiative",
+        "Speed": "Bewegungsrate",
+        "Views": "Ansichten des NSC-Kampfteilnehmers",
+        "Strikes": "Angriffe",
+        "NoStrikes": "Keine vorbereiteten Angriffe",
+        "Groups": {
+          "action": "Aktionen",
+          "reaction": "Reaktionen",
+          "free": "Freie Aktionen"
         }
       }
     },
