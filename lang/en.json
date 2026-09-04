@@ -253,7 +253,8 @@
       "Tabs": {
         "Label": "GM console sections",
         "characters": "Characters",
-        "quick-rolls": "Quick Rolls"
+        "quick-rolls": "Quick Rolls",
+        "combat": "Combat"
       },
       "QuickRolls": {
         "Damage": "Damage",
@@ -262,17 +263,35 @@
         "Input": "Enter a quick roll command",
         "Placeholder": "Damage / Level / DC 23",
         "Roll": "Roll",
-      "Invalid": "Quick roll input is invalid or unavailable.",
-      "Targets": {
-        "Title": "Player Targets",
-        "AllPlayers": "Target all Player Tokens",
-        "NoPlayerTokens": "No player tokens on this scene"
-      },
+        "Invalid": "Quick roll input is invalid or unavailable.",
+        "Targets": {
+          "Title": "Player Targets",
+          "AllPlayers": "Target all Player Tokens",
+          "NoPlayerTokens": "No player tokens on this scene"
+        },
         "Groups": {
           "Physical": "Physical",
           "Energy": "Energy",
           "Other": "Other",
           "Additional": "Additional"
+        }
+      },
+      "Combat": {
+        "Overview": "Overview",
+        "Actions": "Actions",
+        "Inventory": "Inventory",
+        "Spellcasting": "Spellcasting",
+        "CurrentTurn": "Current Turn",
+        "NoNPCs": "No NPC combatants",
+        "Initiative": "Initiative",
+        "Speed": "Speed",
+        "Views": "NPC combatant views",
+        "Strikes": "Strikes",
+        "NoStrikes": "No prepared strikes",
+        "Groups": {
+          "action": "Actions",
+          "reaction": "Reactions",
+          "free": "Free Actions"
         }
       }
     },
