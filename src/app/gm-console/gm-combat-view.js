@@ -42,44 +42,73 @@ async function prepareNPC(combatant, actor, currentId, paneViews) {
         fortitude: statistic("fortitude"),
         reflex: statistic("reflex"),
         will: statistic("will"),
+        skills: prepareSkills(actor),
         speed: speed?.total ?? speed?.value ?? 0,
         conditions: (actor.conditions?.active ?? []).map((condition) => ({ id: condition.id, name: condition.name })),
-        actions: activeView === "actions" ? prepareActions(actor) : null,
+        actions: activeView === "actions" ? await prepareActions(actor) : null,
         inventory: activeView === "inventory" ? prepareGMInventory(actor) : null,
         spellcasting: activeView === "spellcasting" ? await prepareGMSpellcasting(actor) : null,
     };
 }
 
-function prepareActions(actor) {
+function prepareSkills(actor) {
+    return Object.values(actor.skills ?? {})
+        .filter((skill) => skill?.proficient === true && Number.isFinite(skill.mod))
+        .map((skill) => ({ slug: skill.slug, label: skill.label, modifier: skill.mod }))
+        .sort((a, b) => a.label.localeCompare(b.label, game.i18n.lang));
+}
+
+function localizeTrait(trait) {
+    const value = typeof trait === "string" ? trait : trait?.value;
+    const configured = value ? CONFIG.PF2E.actionTraits?.[value] : null;
+    const label = (typeof trait === "object" ? trait?.label : null) ?? configured ?? value ?? "";
+    return label.startsWith("PF2E.") || game.i18n.has(label) ? game.i18n.localize(label) : label;
+}
+
+function prepareTraits(item, chatTraits) {
+    const traits = Array.isArray(chatTraits)
+        ? chatTraits
+        : item.traitChatData?.() ?? item.system.traits?.value ?? [];
+    return traits.map(localizeTrait).filter(Boolean).join(", ");
+}
+
+async function prepareActions(actor) {
     const strikes = (actor.system.actions ?? []).map((strike, actionIndex) => ({
         actionIndex,
         itemId: strike.item?.id ?? null,
         name: strike.label ?? strike.item?.name ?? "",
         img: strike.imageUrl ?? strike.item?.img ?? actor.img,
+        traits: strike.item ? prepareTraits(strike.item) : "",
         variants: (strike.variants ?? []).map((variant, variantIndex) => ({
             variantIndex,
             label: variant.label,
         })),
     }));
-    const grouped = { action: [], reaction: [], free: [] };
-    for (const item of actor.itemTypes?.action ?? actor.items.filter((item) => item.type === "action")) {
+    const grouped = { action: [], reaction: [], free: [], passive: [] };
+    const items = actor.itemTypes?.action ?? actor.items.filter((item) => item.type === "action");
+    for (const item of items) {
         const actionCost = item.actionCost ?? {
             type: item.system.actionType?.value,
             value: item.system.actions?.value,
         };
-        const actionType = actionCost.type;
+        const actionType = item.actionCost?.type ?? item.system.actionType?.value ?? "passive";
         if (!Object.hasOwn(grouped, actionType)) continue;
+        const chatData = await item.getChatData();
         grouped[actionType].push({
             id: item.id,
             name: item.name,
             img: item.img,
             actionCost: actionType === "reaction" ? "R" : actionType === "free" ? "F" : actionCost.value,
-            traits: [...(item.system.traits?.value ?? [])].map((trait) => CONFIG.PF2E.actionTraits?.[trait] ?? trait).join(", "),
+            traits: prepareTraits(item, chatData.traits),
+            description: actionType === "passive" ? chatData.description?.value ?? "" : "",
+            passive: actionType === "passive",
         });
     }
     const groups = Object.entries(grouped).map(([type, items]) => ({
         type,
-        label: game.i18n.localize(`PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Groups.${type}`),
+        label: game.i18n.localize(type === "passive"
+            ? "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Passive"
+            : `PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Groups.${type}`),
         items,
     }));
     return { strikes, groups };

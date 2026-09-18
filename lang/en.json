@@ -288,6 +288,8 @@
         "Views": "NPC combatant views",
         "Strikes": "Strikes",
         "NoStrikes": "No prepared strikes",
+        "Skills": "Skills",
+        "Passive": "Passive",
         "Groups": {
           "action": "Actions",
           "reaction": "Reactions",

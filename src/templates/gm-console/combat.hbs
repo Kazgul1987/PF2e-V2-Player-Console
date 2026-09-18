@@ -27,6 +27,7 @@
                     <button type="button" data-action="rollCombatStatistic" data-statistic="reflex">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Reflex"}} <strong>{{numberFormat reflex sign=true}}</strong></button>
                     <button type="button" data-action="rollCombatStatistic" data-statistic="will">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Will"}} <strong>{{numberFormat will sign=true}}</strong></button>
                 </div>
+                {{#if skills.length}}<section class="gm-combat-skills"><h4>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Skills"}}</h4><div class="gm-statistics">{{#each skills}}<button type="button" data-action="rollCombatStatistic" data-statistic="{{slug}}">{{label}} <strong>{{numberFormat modifier sign=true}}</strong></button>{{/each}}</div></section>{{/if}}
             {{else if isActions}}
                 {{> "modules/pf2e-v2-player-console/src/templates/gm-console/combat-actions.hbs"}}
             {{else if isInventory}}
