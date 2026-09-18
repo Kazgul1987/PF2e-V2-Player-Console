@@ -6,7 +6,7 @@ import {
 } from "../../settings.js";
 import { prepareGMInventory } from "./gm-inventory-view.js";
 import { prepareGMSpellcasting } from "./gm-spellcasting-view.js";
-import { prepareGMCombat } from "./gm-combat-view.js";
+import { prepareGMCombat, prepareTraits } from "./gm-combat-view.js";
 import { QuickRollController } from "./quick-rolls/quick-roll-controller.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -210,6 +210,13 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             if (inventoryInput) void this.#updateInventoryField(inventoryInput);
         }, { signal: this.#listeners.signal });
         this.element.addEventListener("contextmenu", (event) => {
+            const actionName = event.target.closest?.(".gm-combat-actions .gm-combat-action-name");
+            const actionRow = actionName?.closest("[data-item-id]");
+            if (actionRow) {
+                event.preventDefault();
+                void this.#showCombatActionDescription(actionRow);
+                return;
+            }
             const control = event.target.closest?.('[data-action="adjustFocus"]');
             if (!control) return;
             event.preventDefault();
@@ -322,6 +329,50 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         const id = target.closest("[data-combatant-id]")?.dataset.combatantId;
         const combatant = game.combat?.combatants?.get(id ?? "");
         return combatant?.actor?.type === "npc" ? combatant : null;
+    }
+
+    async #showCombatActionDescription(target) {
+        const combatant = this.#combatantFor(target);
+        const item = combatant?.actor?.items.get(target.dataset.itemId ?? "");
+        if (!item) return;
+
+        const source = typeof item.description === "string"
+            ? item.description
+            : item.system.description?.value ?? "";
+        const description = await TextEditor.enrichHTML(source, {
+            async: true,
+            relativeTo: item,
+            rollData: item.getRollData?.() ?? {},
+        });
+        const document = this.element.ownerDocument;
+        const content = document.createElement("div");
+        content.className = "pf2e-v2-player-console-action-description";
+        const heading = document.createElement("h2");
+        heading.textContent = item.name;
+        content.append(heading);
+        const traits = prepareTraits(item);
+        if (traits) {
+            const traitLine = document.createElement("div");
+            traitLine.className = "action-description-traits";
+            for (const label of traits.split(", ")) {
+                const trait = document.createElement("span");
+                trait.textContent = label;
+                traitLine.append(trait);
+            }
+            content.append(traitLine);
+        }
+        const prose = document.createElement("div");
+        prose.className = "action-description-content";
+        prose.innerHTML = description;
+        content.append(prose);
+
+        const dialog = new foundry.applications.api.DialogV2({
+            classes: ["pf2e-v2-player-console-action-dialog"],
+            window: { title: item.name },
+            content: content.outerHTML,
+            buttons: [{ action: "close", label: game.i18n.localize("Close"), default: true }],
+        });
+        await dialog.render(true);
     }
 
     static async #switchCombatView(_event, target) {
