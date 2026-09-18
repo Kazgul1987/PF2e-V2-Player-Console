@@ -288,6 +288,8 @@
         "Views": "Ansichten des NSC-Kampfteilnehmers",
         "Strikes": "Angriffe",
         "NoStrikes": "Keine vorbereiteten Angriffe",
+        "Skills": "Fertigkeiten",
+        "Passive": "Passiv",
         "Groups": {
           "action": "Aktionen",
           "reaction": "Reaktionen",

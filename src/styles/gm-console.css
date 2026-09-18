@@ -23,6 +23,12 @@
 .pf2e-v2-gm-console .gm-combat-action-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .35rem; align-items: center; padding: .25rem .35rem; border-bottom: 1px solid color-mix(in srgb, var(--gm-border) 45%, transparent); }
 .pf2e-v2-gm-console .gm-combat-action-name { display: flex; min-width: 0; align-items: center; gap: .35rem; border: 0; background: transparent; color: inherit; text-align: left; }
 .pf2e-v2-gm-console .gm-combat-action-name img { width: 28px; height: 28px; flex: 0 0 28px; border: 0; object-fit: cover; }
+.pf2e-v2-gm-console .gm-combat-action-traits,
+.pf2e-v2-gm-console .gm-combat-action-description { grid-column: 1 / -1; }
+.pf2e-v2-gm-console .gm-combat-action-traits { color: var(--color-text-subtle, #aaa); }
+.pf2e-v2-gm-console .gm-combat-action-description { padding-left: 2.2rem; font-size: .75rem; }
+.pf2e-v2-gm-console .gm-combat-action-description > :first-child { margin-top: 0; }
+.pf2e-v2-gm-console .gm-combat-action-description > :last-child { margin-bottom: 0; }
 .pf2e-v2-gm-console .gm-strike-variants { display: flex; gap: .2rem; }
 .pf2e-v2-gm-console .gm-strike-variants button { width: auto; min-width: 2.4rem; padding: .2rem .35rem; }
 .pf2e-v2-gm-console .gm-action-cost { display: inline-grid; min-width: 1.25rem; place-items: center; border: 1px solid var(--gm-border); border-radius: 50%; }
@@ -58,6 +64,9 @@
 .pf2e-v2-gm-console .gm-hp-bar span { display: block; height: 100%; background: #3f9b58; }
 .pf2e-v2-gm-console .gm-statistics { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; margin-top: .7rem; }
 .pf2e-v2-gm-console .gm-statistics button { display: flex; justify-content: space-between; }
+.pf2e-v2-gm-console .gm-combat-skills { margin-top: .7rem; }
+.pf2e-v2-gm-console .gm-combat-skills h4 { margin: 0; padding: .25rem .35rem; border-bottom: 1px solid var(--gm-border); font-size: .78rem; text-transform: uppercase; }
+.pf2e-v2-gm-console .gm-combat-skills .gm-statistics { margin-top: .35rem; }
 .pf2e-v2-gm-console .gm-focus { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: .45rem; padding: .35rem .5rem; }
 .pf2e-v2-gm-console .gm-focus-pips { display: flex; gap: .25rem; color: var(--gm-accent); font-size: .75rem; }
 .pf2e-v2-gm-console .gm-conditions { margin-top: .65rem; }
