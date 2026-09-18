@@ -62,10 +62,12 @@ function localizeTrait(trait) {
     const value = typeof trait === "string" ? trait : trait?.value;
     const configured = value ? CONFIG.PF2E.actionTraits?.[value] : null;
     const label = (typeof trait === "object" ? trait?.label : null) ?? configured ?? value ?? "";
-    return label.startsWith("PF2E.") || game.i18n.has(label) ? game.i18n.localize(label) : label;
+    if (!label.startsWith("PF2E.") && !game.i18n.has(label)) return label;
+    const localized = game.i18n.localize(label);
+    return localized === label && label.startsWith("PF2E.") ? "" : localized;
 }
 
-function prepareTraits(item, chatTraits) {
+export function prepareTraits(item, chatTraits) {
     const traits = Array.isArray(chatTraits)
         ? chatTraits
         : item.traitChatData?.() ?? item.system.traits?.value ?? [];

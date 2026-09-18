@@ -1,4 +1,19 @@
 /** Build the isolated GM spellcasting view from PF2e's prepared sheet data. */
+function localizePF2eLabel(value) {
+    if (typeof value !== "string" || !value) return "";
+    if (!value.startsWith("PF2E.")) return value;
+    const localized = game.i18n.localize(value);
+    return localized === value ? "" : localized;
+}
+
+function pf2eLabel(value, configured, fallback = "") {
+    const nativeLabel = typeof value === "object" ? value?.label ?? value?.name : null;
+    return localizePF2eLabel(nativeLabel)
+        || localizePF2eLabel(configured)
+        || localizePF2eLabel(typeof value === "string" ? value : null)
+        || fallback;
+}
+
 export async function prepareGMSpellcasting(actor) {
     const spellcasting = actor.spellcasting;
     if (!spellcasting) return { entries: [], editable: false };
@@ -40,12 +55,17 @@ export async function prepareGMSpellcasting(actor) {
             };
         }).filter((group) => group.spells.length > 0 || (group.uses?.max ?? 0) > 0);
 
+        const traditionValue = data.tradition ?? entry.tradition;
+        const traditionSlug = typeof traditionValue === "string" ? traditionValue : traditionValue?.value;
+        const categoryValue = data.categoryLabel ?? data.preparationType ?? category;
         return {
             id: data.id ?? entry.id,
             name: data.name ?? entry.name,
-            tradition: data.tradition ? (CONFIG.PF2E.magicTraditions[data.tradition] ?? data.tradition) : null,
+            tradition: traditionValue
+                ? pf2eLabel(traditionValue, CONFIG.PF2E.magicTraditions?.[traditionSlug])
+                : null,
             category,
-            categoryLabel: CONFIG.PF2E.preparationType?.[category] ?? category,
+            categoryLabel: pf2eLabel(categoryValue, CONFIG.PF2E.preparationType?.[category], entry.name),
             hasStatistic: Number.isFinite(data.statistic?.check?.mod) && Number.isFinite(data.statistic?.dc?.value),
             attack: data.statistic?.check?.mod,
             dc: data.statistic?.dc?.value,
