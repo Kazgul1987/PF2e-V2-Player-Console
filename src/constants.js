@@ -10,6 +10,7 @@ export const HANDLEBARS_PARTIALS = Object.freeze([
     `modules/${MODULE_ID}/src/templates/gm-console/spellcasting-entry.hbs`,
     `modules/${MODULE_ID}/src/templates/gm-console/selector.hbs`,
     `modules/${MODULE_ID}/src/templates/gm-console/character-pane.hbs`,
+    `modules/${MODULE_ID}/src/templates/gm-console/combat-actions.hbs`,
 ]);
 
 /**
