@@ -294,7 +294,31 @@
           "action": "Aktionen",
           "reaction": "Reaktionen",
           "free": "Freie Aktionen"
-        }
+        },
+        "NoCombatants": "Keine Kampfteilnehmer",
+        "Round": "Runde",
+        "Turn": "Zug",
+        "PreviousTurn": "Vorheriger Zug",
+        "EndTurn": "Zug beenden / Nächster Zug",
+        "PreviousRound": "Vorherige Runde",
+        "NextRound": "Nächste Runde",
+        "BeginCombat": "Kampf beginnen",
+        "EndCombat": "Kampf beenden",
+        "RollInitiative": "Initiative würfeln",
+        "RerollInitiative": "Initiative neu würfeln",
+        "RollAll": "Alle Initiativen würfeln",
+        "RollNPCs": "NSC-Initiativen würfeln",
+        "ResetInitiative": "Initiative zurücksetzen",
+        "ClearInitiative": "Initiative löschen",
+        "Hidden": "Versteckt",
+        "ToggleHidden": "Versteckt umschalten",
+        "ToggleDefeated": "Besiegt umschalten",
+        "Remove": "Aus Kampf entfernen",
+        "MoreActions": "Kampfteilnehmer-Aktionen",
+        "Conditions": "Zustände",
+        "AddCondition": "Zustand hinzufügen",
+        "Apply": "Anwenden",
+        "Value": "Wert"
       }
     },
     "Healing": {

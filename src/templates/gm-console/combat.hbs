@@ -1,41 +1,63 @@
 <section class="tab gm-primary-panel gm-combat {{tab.cssClass}}" data-group="gm-console-primary" data-tab="combat">
+    <header class="gm-combat-tracker-header">
+        <strong>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Round"}} {{round}} · {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Turn"}} {{turn}} / {{turnCount}}</strong>
+        <div class="gm-combat-controls">
+            {{#if started}}
+                <button type="button" data-action="previousTurn"><i class="fa-solid fa-chevron-left" inert></i> {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.PreviousTurn"}}</button>
+                <button type="button" class="primary" data-action="nextTurn">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.EndTurn"}} <i class="fa-solid fa-chevron-right" inert></i></button>
+                <button type="button" data-action="previousRound"><i class="fa-solid fa-backward-step" inert></i> {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.PreviousRound"}}</button>
+                <button type="button" data-action="nextRound">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.NextRound"}} <i class="fa-solid fa-forward-step" inert></i></button>
+            {{else}}<button type="button" class="primary" data-action="beginCombat">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.BeginCombat"}}</button>{{/if}}
+            <button type="button" data-action="rollAllInitiative">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.RollAll"}}</button>
+            <button type="button" data-action="rollNPCInitiative">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.RollNPCs"}}</button>
+            <button type="button" data-action="resetInitiative">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.ResetInitiative"}}</button>
+            <button type="button" class="danger" data-action="endCombat">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.EndCombat"}}</button>
+        </div>
+    </header>
     <div class="gm-combat-panes">
     {{#each combatants}}
-        <article class="gm-combat-npc{{#if isCurrentTurn}} is-current-turn{{/if}}{{#if defeated}} is-defeated{{/if}}" data-combatant-id="{{id}}" data-actor-id="{{actorId}}">
+        <div class="gm-combat-entry" data-combatant-id="{{id}}">
+        <article class="gm-combat-npc{{#unless isNPC}} is-pc{{/unless}}{{#if isCurrentTurn}} is-current-turn{{/if}}{{#if defeated}} is-defeated{{/if}}{{#if hidden}} is-hidden{{/if}}" data-combatant-id="{{id}}" data-actor-id="{{actorId}}">
             <header class="gm-pane-header">
                 <img src="{{img}}" alt="{{name}}" width="48" height="48">
                 <div class="gm-pane-identity">
                     <h3>{{#if isCurrentTurn}}<i class="fa-solid fa-play gm-current-turn-icon" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.CurrentTurn'}}" inert></i> {{/if}}{{name}}</h3>
-                    <small>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Initiative"}} {{#if hasInitiative}}{{initiative}}{{else}}—{{/if}}</small>
+                    <small>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Initiative"}} {{#if hasInitiative}}{{initiative}}{{else}}—{{/if}}{{#if hidden}} · <i class="fa-solid fa-eye-slash" inert></i> {{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Hidden"}}{{/if}}</small>
                     <span class="gm-header-status"><span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.HPShort"}} {{hp.value}}/{{hp.max}}</span><span>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.ACShort"}} {{ac}}</span></span>
                 </div>
-                <button type="button" class="gm-open-npc" data-action="openCombatantSheet" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenSheet'}}"><i class="fa-solid fa-window-restore" inert></i></button>
+                <div class="gm-combatant-menu">
+                    <button type="button" class="gm-open-npc" data-action="openCombatantSheet" title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.OpenSheet'}}"><i class="fa-solid fa-window-restore" inert></i></button>
+                    <details><summary title="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.MoreActions'}}"><i class="fa-solid fa-ellipsis-vertical" inert></i></summary><div class="gm-combatant-menu-items">
+                        <button type="button" data-action="rollCombatantInitiative">{{#if hasInitiative}}{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.RerollInitiative"}}{{else}}{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.RollInitiative"}}{{/if}}</button>
+                        {{#if hasInitiative}}<button type="button" data-action="clearCombatantInitiative">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.ClearInitiative"}}</button>{{/if}}
+                        <button type="button" data-action="toggleCombatantHidden">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.ToggleHidden"}}</button>
+                        <button type="button" data-action="toggleCombatantDefeated">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.ToggleDefeated"}}</button>
+                        <button type="button" class="danger" data-action="removeCombatant">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Remove"}}</button>
+                    </div></details>
+                </div>
             </header>
             <nav class="gm-pane-navigation" data-group="{{tabGroup}}" aria-label="{{localize 'PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Views'}}">
                 <button type="button" data-action="switchCombatView" data-view="overview" class="{{#if isOverview}}active{{/if}}" aria-pressed="{{isOverview}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Overview"}}</button>
-                <button type="button" data-action="switchCombatView" data-view="actions" class="{{#if isActions}}active{{/if}}" aria-pressed="{{isActions}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Actions"}}</button>
+                {{#if isNPC}}<button type="button" data-action="switchCombatView" data-view="actions" class="{{#if isActions}}active{{/if}}" aria-pressed="{{isActions}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Actions"}}</button>{{/if}}
                 <button type="button" data-action="switchCombatView" data-view="inventory" class="{{#if isInventory}}active{{/if}}" aria-pressed="{{isInventory}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Inventory"}}</button>
                 {{#if hasSpellcasting}}<button type="button" data-action="switchCombatView" data-view="spellcasting" class="{{#if isSpellcasting}}active{{/if}}" aria-pressed="{{isSpellcasting}}">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Spellcasting"}}</button>{{/if}}
             </nav>
             {{#if isOverview}}
                 <dl class="gm-summary"><div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Level"}}</dt><dd>{{level}}</dd></div><div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.AC"}}</dt><dd>{{ac}}</dd></div><div><dt>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Speed"}}</dt><dd>{{speed}}</dd></div></dl>
                 <section class="gm-resource"><label>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.HP"}} <input type="number" data-field="hp" value="{{hp.value}}" min="0" max="{{hp.max}}"> / {{hp.max}}</label><div class="gm-hp-bar" role="progressbar" aria-valuenow="{{hp.value}}" aria-valuemin="0" aria-valuemax="{{hp.max}}"><span style="width: {{hp.pct}}%"></span></div></section>
-                {{#if conditions.length}}<div class="gm-condition-list">{{#each conditions}}<span class="gm-condition-chip">{{name}}</span>{{/each}}</div>{{/if}}
-                <div class="gm-statistics">
-                    <button type="button" data-action="rollCombatStatistic" data-statistic="perception">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Perception"}} <strong>{{numberFormat perception sign=true}}</strong></button>
-                    <button type="button" data-action="rollCombatStatistic" data-statistic="fortitude">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Fortitude"}} <strong>{{numberFormat fortitude sign=true}}</strong></button>
-                    <button type="button" data-action="rollCombatStatistic" data-statistic="reflex">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Reflex"}} <strong>{{numberFormat reflex sign=true}}</strong></button>
-                    <button type="button" data-action="rollCombatStatistic" data-statistic="will">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Will"}} <strong>{{numberFormat will sign=true}}</strong></button>
-                </div>
+                {{#if conditions.length}}<div class="gm-condition-list">{{#each conditions}}<span class="gm-condition-chip">{{name}}{{#if valued}} {{value}}{{/if}}</span>{{/each}}</div>{{/if}}
+                <div class="gm-statistics"><button type="button" data-action="rollCombatStatistic" data-statistic="perception">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Perception"}} <strong>{{numberFormat perception sign=true}}</strong></button><button type="button" data-action="rollCombatStatistic" data-statistic="fortitude">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Fortitude"}} <strong>{{numberFormat fortitude sign=true}}</strong></button><button type="button" data-action="rollCombatStatistic" data-statistic="reflex">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Reflex"}} <strong>{{numberFormat reflex sign=true}}</strong></button><button type="button" data-action="rollCombatStatistic" data-statistic="will">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Will"}} <strong>{{numberFormat will sign=true}}</strong></button></div>
                 {{#if skills.length}}<section class="gm-combat-skills"><h4>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Skills"}}</h4><div class="gm-statistics">{{#each skills}}<button type="button" data-action="rollCombatStatistic" data-statistic="{{slug}}">{{label}} <strong>{{numberFormat modifier sign=true}}</strong></button>{{/each}}</div></section>{{/if}}
-            {{else if isActions}}
-                {{> "modules/pf2e-v2-player-console/src/templates/gm-console/combat-actions.hbs"}}
-            {{else if isInventory}}
-                {{> "modules/pf2e-v2-player-console/src/templates/gm-console/inventory.hbs"}}
-            {{else if isSpellcasting}}
-                {{> "modules/pf2e-v2-player-console/src/templates/gm-console/spellcasting.hbs"}}
-            {{/if}}
+            {{else if isActions}}{{> "modules/pf2e-v2-player-console/src/templates/gm-console/combat-actions.hbs"}}
+            {{else if isInventory}}{{> "modules/pf2e-v2-player-console/src/templates/gm-console/inventory.hbs"}}
+            {{else if isSpellcasting}}{{> "modules/pf2e-v2-player-console/src/templates/gm-console/spellcasting.hbs"}}{{/if}}
         </article>
-    {{else}}<p class="gm-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.NoNPCs"}}</p>{{/each}}
+        {{#if conditionMenu}}<section class="gm-active-conditions" data-combatant-id="{{id}}">
+            <h4>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Conditions"}}</h4>
+            <div class="gm-condition-add"><label>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.AddCondition"}} <select data-condition-select>{{#each conditionMenu.options}}<option value="{{slug}}" data-valued="{{valued}}"{{#if selected}} selected{{/if}}>{{label}}</option>{{/each}}</select></label><label class="gm-condition-value"{{#unless conditionMenu.selectedValued}} hidden{{/unless}}>{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Value"}} <input type="number" min="1" step="1" value="1" data-condition-value></label><button type="button" data-action="applyCondition">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.Apply"}}</button></div>
+            {{#if conditionMenu.conditions.length}}<div class="gm-current-conditions">{{#each conditionMenu.conditions}}<div data-condition-id="{{id}}"><span>{{name}}{{#if valued}} {{value}}{{/if}}</span><span>{{#if valued}}<button type="button" data-action="decreaseCondition"{{#if locked}} disabled{{/if}}>−</button><button type="button" data-action="increaseCondition"{{#if locked}} disabled{{/if}}>+</button>{{/if}}<button type="button" data-action="removeCondition"{{#if locked}} disabled{{/if}}>×</button></span></div>{{/each}}</div>{{/if}}
+        </section>{{/if}}
+        </div>
+    {{else}}<p class="gm-empty">{{localize "PF2E_V2_PLAYER_CONSOLE.GMConsole.Combat.NoCombatants"}}</p>{{/each}}
     </div>
 </section>
