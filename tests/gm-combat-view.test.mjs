@@ -28,6 +28,14 @@ function actor(id, type) {
     };
 }
 
+function condition(slug, name, value, valued) {
+    return {
+        id: `${slug}-${value ?? "unvalued"}`, slug, name, value,
+        system: { value: { isValued: valued } },
+        isLocked: false,
+    };
+}
+
 function combatant(id, initiative, type) {
     const combatActor = actor(`actor-${id}`, type);
     return { id, initiative, actor: combatActor, name: id, img: combatActor.img, hidden: false, isDefeated: false };
@@ -48,4 +56,22 @@ test("shows dynamic PF2e conditions only for the active combatant", async () => 
     assert.deepEqual(result.combatants[0].conditionMenu.options.map((option) => option.slug), ["frightened", "prone"]);
     assert.equal(result.combatants[1].conditionMenu, null);
     assert.ok(!result.combatants[0].conditionMenu.options.some((option) => option.slug === "persistent-damage"));
+});
+
+test("uses PF2e base labels and keeps valued condition values separate", async () => {
+    const active = combatant("pc", 20, "character");
+    active.actor.conditions.active = [
+        condition("frightened", "Frightened 3", 3, true),
+        condition("prone", "Prone", null, false),
+    ];
+    const result = await prepareGMCombat({ turns: [active], combatant: active, started: true, round: 1, turn: 0 }, new Map());
+
+    assert.deepEqual(result.combatants[0].conditions.map(({ label, value, valued }) => ({ label, value, valued })), [
+        { label: "Frightened", value: 3, valued: true },
+        { label: "Prone", value: null, valued: false },
+    ]);
+    assert.deepEqual(result.combatants[0].conditionMenu.conditions.map(({ label, value }) => ({ label, value })), [
+        { label: "Frightened", value: 3 },
+        { label: "Prone", value: null },
+    ]);
 });
