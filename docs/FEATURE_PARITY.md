@@ -372,3 +372,18 @@ Milestone 8 is complete for the listed scope. Perception and saves are an additi
 | Deity display | implemented | Prepared `actor.deity?.name`, with an em dash when no deity is present |
 | XP display | implemented | Read-only prepared `actor.system.details.xp` current and maximum values |
 | Segmented XP progress | implemented | Exactly ten presentation-only segments, including partial fill from prepared percentage |
+
+## GM Combat Tracker extension
+
+| Feature | Foundry V14 / PF2e owner | GM Console |
+|---|---|---|
+| Sorted mixed turns/current turn | `Combat.turns` / `Combat.combatant` | implemented; keyed by Combatant ID |
+| Begin/end combat | `startCombat` / confirming `endCombat` | implemented |
+| Previous/next turn and round | public Combat navigation methods | implemented |
+| Initiative / reroll | PF2e `EncounterPF2e.rollInitiative` | implemented |
+| Roll all / NPCs / reset | `rollAll` / `rollNPC` / `resetAll` | implemented |
+| Clear initiative | Combatant Document update | implemented |
+| Hidden / defeated / remove | Combatant update / PF2e `toggleDefeated` / delete | implemented |
+| Active actor conditions | PF2e ConditionManager and Actor condition methods | implemented; persistent-damage creation excluded |
+| Delay | no PF2e V14 tracker control or public atomic workflow | intentionally omitted; no initiative emulation |
+| Tracker metrics, target indicators, drag reorder | PF2e tracker presentation/internal reorder | intentionally retained in the standard tracker only |

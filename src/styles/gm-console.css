@@ -10,14 +10,41 @@
 .pf2e-v2-gm-console .gm-primary-tabs button.active { background: color-mix(in srgb, var(--gm-accent) 25%, transparent); box-shadow: inset 0 -2px var(--gm-accent); }
 .pf2e-v2-gm-console .gm-primary-panel { min-height: 0; }
 .pf2e-v2-gm-console .gm-characters-tab.active { display: flex; flex: 1; flex-direction: column; gap: .65rem; }
-.pf2e-v2-gm-console .gm-combat.active { display: flex; flex: 1; min-height: 0; }
+.pf2e-v2-gm-console .gm-combat.active { display: flex; flex: 1; min-height: 0; flex-direction: column; gap: .45rem; }
+.pf2e-v2-gm-console .gm-combat-tracker-header { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: .5rem; padding: .35rem .5rem; border: 1px solid var(--gm-border); border-radius: 5px; background: color-mix(in srgb, var(--gm-accent) 12%, var(--gm-panel)); }
+.pf2e-v2-gm-console .gm-combat-tracker-header > strong { white-space: nowrap; }
+.pf2e-v2-gm-console .gm-combat-controls { display: flex; flex-wrap: wrap; justify-content: end; gap: .2rem; }
+.pf2e-v2-gm-console .gm-combat-controls button { width: auto; min-height: 1.8rem; padding: .2rem .45rem; font-size: .72rem; }
+.pf2e-v2-gm-console .gm-combat-controls button.primary { font-weight: 700; }
+.pf2e-v2-gm-console .gm-combat-controls button.danger,
+.pf2e-v2-gm-console .gm-combatant-menu-items button.danger { color: var(--color-level-error, #d44); }
 .pf2e-v2-gm-console .gm-combat-panes { display: flex; flex: 1; align-items: start; gap: .75rem; overflow: auto; padding: .25rem; }
+.pf2e-v2-gm-console .gm-combat-entry { flex: 0 0 390px; min-width: 340px; }
 .pf2e-v2-gm-console .gm-combat-npc { flex: 0 0 390px; min-width: 340px; padding: .65rem; border: 1px solid var(--gm-border); border-radius: 6px; background: var(--gm-panel); }
 .pf2e-v2-gm-console .gm-combat-npc.is-current-turn { outline: 2px solid var(--color-border-highlight, var(--gm-accent)); outline-offset: -2px; background: color-mix(in srgb, var(--gm-accent) 10%, var(--gm-panel)); }
 .pf2e-v2-gm-console .gm-combat-npc.is-defeated { opacity: .72; }
 .pf2e-v2-gm-console .gm-combat-npc.is-current-turn.is-defeated { opacity: .88; }
+.pf2e-v2-gm-console .gm-combat-npc.is-hidden { border-style: dashed; }
 .pf2e-v2-gm-console .gm-current-turn-icon { color: var(--color-warm-1, var(--gm-accent)); font-size: .7em; }
 .pf2e-v2-gm-console .gm-open-npc { width: 1.75rem; min-width: 1.75rem; height: 1.75rem; padding: 0; }
+.pf2e-v2-gm-console .gm-combatant-menu { display: flex; align-items: start; gap: .2rem; }
+.pf2e-v2-gm-console .gm-combatant-menu details { position: relative; }
+.pf2e-v2-gm-console .gm-combatant-menu summary { display: grid; width: 1.75rem; height: 1.75rem; place-items: center; border: 1px solid var(--button-border-color, var(--gm-border)); border-radius: 4px; cursor: pointer; list-style: none; }
+.pf2e-v2-gm-console .gm-combatant-menu summary::-webkit-details-marker { display: none; }
+.pf2e-v2-gm-console .gm-combatant-menu-items { position: absolute; z-index: 5; top: 2rem; right: 0; display: grid; width: max-content; min-width: 11rem; padding: .25rem; border: 1px solid var(--gm-border); border-radius: 4px; background: var(--gm-panel); box-shadow: 0 3px 8px #0008; }
+.pf2e-v2-gm-console .gm-combatant-menu-items button { width: 100%; padding: .3rem .5rem; border: 0; background: transparent; text-align: left; }
+.pf2e-v2-gm-console .gm-combatant-menu-items button:hover { background: color-mix(in srgb, var(--gm-accent) 25%, transparent); }
+.pf2e-v2-gm-console .gm-active-conditions { margin: .35rem .35rem 0; padding: .45rem; border: 1px solid var(--gm-accent); border-radius: 0 0 5px 5px; background: color-mix(in srgb, var(--gm-accent) 10%, var(--gm-panel)); }
+.pf2e-v2-gm-console .gm-active-conditions h4 { margin: 0 0 .35rem; font-size: .78rem; text-transform: uppercase; }
+.pf2e-v2-gm-console .gm-condition-add { display: flex; align-items: end; gap: .3rem; }
+.pf2e-v2-gm-console .gm-condition-add label { display: grid; flex: 1; gap: .1rem; font-size: .68rem; }
+.pf2e-v2-gm-console .gm-condition-add select { min-width: 0; height: 1.7rem; }
+.pf2e-v2-gm-console .gm-condition-add .gm-condition-value { flex: 0 0 4rem; }
+.pf2e-v2-gm-console .gm-condition-add input { width: 100%; height: 1.7rem; }
+.pf2e-v2-gm-console .gm-condition-add button { width: auto; height: 1.7rem; padding: 0 .45rem; }
+.pf2e-v2-gm-console .gm-current-conditions { display: grid; gap: .2rem; margin-top: .4rem; }
+.pf2e-v2-gm-console .gm-current-conditions > div { display: flex; align-items: center; justify-content: space-between; gap: .4rem; padding-top: .2rem; border-top: 1px solid color-mix(in srgb, var(--gm-border) 50%, transparent); }
+.pf2e-v2-gm-console .gm-current-conditions button { width: 1.45rem; min-width: 1.45rem; height: 1.35rem; padding: 0; }
 .pf2e-v2-gm-console .gm-combat-actions { display: grid; gap: .6rem; }
 .pf2e-v2-gm-console .gm-combat-actions h4 { margin: 0; padding: .25rem .35rem; border-bottom: 1px solid var(--gm-border); font-size: .78rem; text-transform: uppercase; }
 .pf2e-v2-gm-console .gm-combat-action-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .35rem; align-items: center; padding: .25rem .35rem; border-bottom: 1px solid color-mix(in srgb, var(--gm-border) 45%, transparent); }

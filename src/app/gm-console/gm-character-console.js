@@ -44,6 +44,24 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             rollCombatStatistic: GMCharacterConsole.#rollCombatStatistic,
             rollCombatStrike: GMCharacterConsole.#rollCombatStrike,
             useCombatAction: GMCharacterConsole.#useCombatAction,
+            beginCombat: GMCharacterConsole.#beginCombat,
+            endCombat: GMCharacterConsole.#endCombat,
+            nextTurn: GMCharacterConsole.#nextTurn,
+            previousTurn: GMCharacterConsole.#previousTurn,
+            nextRound: GMCharacterConsole.#nextRound,
+            previousRound: GMCharacterConsole.#previousRound,
+            rollAllInitiative: GMCharacterConsole.#rollAllInitiative,
+            rollNPCInitiative: GMCharacterConsole.#rollNPCInitiative,
+            resetInitiative: GMCharacterConsole.#resetInitiative,
+            rollCombatantInitiative: GMCharacterConsole.#rollCombatantInitiative,
+            clearCombatantInitiative: GMCharacterConsole.#clearCombatantInitiative,
+            toggleCombatantHidden: GMCharacterConsole.#toggleCombatantHidden,
+            toggleCombatantDefeated: GMCharacterConsole.#toggleCombatantDefeated,
+            removeCombatant: GMCharacterConsole.#removeCombatant,
+            applyCondition: GMCharacterConsole.#applyCondition,
+            increaseCondition: GMCharacterConsole.#increaseCondition,
+            decreaseCondition: GMCharacterConsole.#decreaseCondition,
+            removeCondition: GMCharacterConsole.#removeCondition,
         },
         form: { closeOnSubmit: false },
     };
@@ -192,8 +210,8 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
             ...["createItem", "updateItem", "deleteItem"].map((hook) => [
                 hook,
                 Hooks.on(hook, (item) => {
+                    if ((game.combat?.turns ?? []).some((combatant) => combatant.actor === item.parent)) void this.#refreshCombatActor(item.parent);
                     if (item.parent?.type === "character") void this.#refreshActor(item.parent);
-                    else if (item.parent?.type === "npc") void this.#refreshCombatActor(item.parent);
                 }),
             ]),
         ];
@@ -204,6 +222,11 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         this.#listeners.abort();
         this.#listeners = new AbortController();
         this.element.addEventListener("change", (event) => {
+            const conditionSelect = event.target.closest?.("[data-condition-select]");
+            if (conditionSelect) {
+                const valueLabel = conditionSelect.closest(".gm-condition-add")?.querySelector(".gm-condition-value");
+                if (valueLabel) valueLabel.hidden = conditionSelect.selectedOptions[0]?.dataset.valued !== "true";
+            }
             const input = event.target.closest?.("[data-field]");
             if (input) void this.#updateField(input);
             const inventoryInput = event.target.closest?.("[data-inventory-field]");
@@ -278,7 +301,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     #actorFor(target) {
         const combatantId = target.closest("[data-combatant-id]")?.dataset.combatantId;
         const combatActor = game.combat?.combatants?.get(combatantId ?? "")?.actor;
-        if (combatActor?.type === "npc") return combatActor;
+        if (combatActor) return combatActor;
         const id = target.closest("[data-actor-id]")?.dataset.actorId;
         const actor = game.actors.get(id ?? "");
         return actor?.type === "character" ? actor : null;
@@ -313,7 +336,8 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     }
 
     async #refreshActor(actor) {
-        if (actor.type === "npc") return this.#refreshCombatActor(actor);
+        if ((game.combat?.turns ?? []).some((combatant) => combatant.actor === actor)) await this.#refreshCombatActor(actor);
+        if (actor.type === "npc") return;
         if (!this.rendered) return;
         const current = this.element.querySelector(`.gm-character-pane[data-actor-id="${CSS.escape(actor.id)}"]`);
         if (!current) return;
@@ -328,7 +352,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
     #combatantFor(target) {
         const id = target.closest("[data-combatant-id]")?.dataset.combatantId;
         const combatant = game.combat?.combatants?.get(id ?? "");
-        return combatant?.actor?.type === "npc" ? combatant : null;
+        return combatant?.actor ? combatant : null;
     }
 
     async #showCombatActionDescription(target) {
@@ -379,6 +403,7 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         const combatant = this.#combatantFor(target);
         const view = target.dataset.view;
         if (!combatant || !["overview", "actions", "inventory", "spellcasting"].includes(view)) return;
+        if (view === "actions" && combatant.actor.type !== "npc") return;
         this.combatPaneViews.set(combatant.id, view);
         await this.render({ parts: ["combat"] });
     }
@@ -402,6 +427,89 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         const actor = this.#combatantFor(target)?.actor;
         const itemId = target.closest("[data-item-id]")?.dataset.itemId;
         if (actor?.items.get(itemId ?? "")?.type === "action") await ActionController.use(actor, itemId, event);
+    }
+
+    static #combatForUpdate() {
+        const combat = game.combat;
+        return combat?.canUserModify?.(game.user, "update") ? combat : null;
+    }
+
+    static #rollOptions(event) {
+        const messageMode = event.ctrlKey || event.metaKey ? "blind" : undefined;
+        return messageMode ? { messageMode, messageOptions: { messageMode } } : {};
+    }
+
+    static async #beginCombat() { await this.#combatForUpdate()?.startCombat(); }
+    static async #endCombat() { await this.#combatForUpdate()?.endCombat(); }
+    static async #nextTurn() { await this.#combatForUpdate()?.nextTurn(); }
+    static async #previousTurn() { await this.#combatForUpdate()?.previousTurn(); }
+    static async #nextRound() { await this.#combatForUpdate()?.nextRound(); }
+    static async #previousRound() { await this.#combatForUpdate()?.previousRound(); }
+    static async #rollAllInitiative(event) { await this.#combatForUpdate()?.rollAll(this.#rollOptions(event)); }
+    static async #rollNPCInitiative(event) { await this.#combatForUpdate()?.rollNPC(this.#rollOptions(event)); }
+    static async #resetInitiative() { await this.#combatForUpdate()?.resetAll(); }
+
+    static async #rollCombatantInitiative(event, target) {
+        const combat = this.#combatForUpdate();
+        const combatant = this.#combatantFor(target);
+        if (combat && combatant) await combat.rollInitiative([combatant.id], this.#rollOptions(event));
+    }
+
+    static async #clearCombatantInitiative(_event, target) {
+        const combatant = this.#combatantFor(target);
+        if (this.#combatForUpdate() && combatant) await combatant.update({ initiative: null });
+    }
+
+    static async #toggleCombatantHidden(_event, target) {
+        const combatant = this.#combatantFor(target);
+        if (this.#combatForUpdate() && combatant) await combatant.update({ hidden: !combatant.hidden });
+    }
+
+    static async #toggleCombatantDefeated(_event, target) {
+        const combatant = this.#combatantFor(target);
+        if (this.#combatForUpdate() && combatant?.toggleDefeated) await combatant.toggleDefeated();
+    }
+
+    static async #removeCombatant(_event, target) {
+        const combatant = this.#combatantFor(target);
+        if (this.#combatForUpdate() && combatant) await combatant.delete();
+    }
+
+    #conditionContext(target) {
+        const combatant = this.#combatantFor(target);
+        const actor = combatant?.actor;
+        if (!combatant || game.combat?.combatant?.id !== combatant.id || !actor?.canUserModify?.(game.user, "update")) return null;
+        const conditionId = target.closest("[data-condition-id]")?.dataset.conditionId;
+        return { actor, condition: conditionId ? actor.items.get(conditionId) : null };
+    }
+
+    static async #applyCondition(_event, target) {
+        const context = this.#conditionContext(target);
+        const root = target.closest(".gm-active-conditions");
+        const select = root?.querySelector("[data-condition-select]");
+        const slug = select?.value;
+        if (!context || !slug || slug === "persistent-damage") return;
+        const valued = select.selectedOptions[0]?.dataset.valued === "true";
+        const rawValue = Number(root.querySelector("[data-condition-value]")?.value ?? 1);
+        const value = valued && Number.isInteger(rawValue) && rawValue > 0 ? rawValue : undefined;
+        await context.actor.increaseCondition(slug, { value });
+    }
+
+    static async #increaseCondition(_event, target) {
+        const context = this.#conditionContext(target);
+        if (context?.condition?.isOfType?.("condition") && !context.condition.isLocked) await context.actor.increaseCondition(context.condition);
+    }
+
+    static async #decreaseCondition(_event, target) {
+        const context = this.#conditionContext(target);
+        if (context?.condition?.isOfType?.("condition") && !context.condition.isLocked) await context.actor.decreaseCondition(context.condition);
+    }
+
+    static async #removeCondition(_event, target) {
+        const context = this.#conditionContext(target);
+        if (context?.condition?.isOfType?.("condition") && !context.condition.isLocked) {
+            await context.actor.decreaseCondition(context.condition, { forceRemove: true });
+        }
     }
 
     async #updateInventoryField(input) {

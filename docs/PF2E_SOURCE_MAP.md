@@ -475,3 +475,13 @@ The pinned PF2e V14 source includes `SpellPreparationApp`, but it is a system-in
 | Unprepare | `src/module/actor/creature/apps/spell-preparation/app.ts:162-168`; `src/module/actor/creature/sheet.ts:199-208` | Calls `collection.prepareSpell(null, groupId, slotIndex)`; never deletes the Spell Item. |
 | Swap | `src/module/actor/creature/sheet.ts:340-360`; `src/module/item/spellcasting-entry/collection.ts:101-117` | Same-entry/same-group D&D calls `collection.swapSlotPositions(groupId, sourceIndex, targetIndex)`; no direct slot-array write. |
 | Expended separation | `src/module/actor/creature/sheet.ts:211-222`; `src/module/item/spellcasting-entry/collection.ts:141-151` | Displays `active.expended` separately from occupancy; preparation management does not toggle it. |
+
+## GM Combat Console (Foundry V14 / PF2e 8.4)
+
+The V14 `Combat` declarations in `reference/pf2e/types/foundry/client/documents/combat.d.mts` expose `startCombat`, `endCombat`, `nextTurn`, `previousTurn`, `nextRound`, `previousRound`, `resetAll`, `rollInitiative`, `rollAll`, and `rollNPC`. The console delegates to those methods and reads `combat.turns`, `combat.combatant`, `round`, and `turn`; it never persists a parallel encounter state. `endCombat` is itself documented as the confirmation workflow, so no second confirmation dialog is layered over it.
+
+PF2e's `EncounterPF2e.rollInitiative` (`reference/pf2e/src/module/encounter/document.ts`) resolves each combatant's prepared `actor.initiative.roll`, retains PF2e statistics/options/modifiers, and then updates the encounter. PF2e's encounter tracker only overrides the standard roll controls to add PF2e event parameters and defeated handling; the console likewise invokes the Encounter APIs and `CombatantPF2e.toggleDefeated()` rather than calculating rolls or status effects.
+
+Conditions come from `game.pf2e.ConditionManager.conditionsSlugs` / `getCondition`. `system.value.isValued` controls the value input. Mutations use `ActorPF2e.increaseCondition` and `decreaseCondition`; the active embedded Condition document is resolved on `combatant.actor`, preserving synthetic token actors. Persistent damage is excluded from simple creation because PF2e's public `increaseCondition("persistent-damage")` opens its specialized editor instead of accepting the compact value UI. Existing persistent damage remains visible.
+
+PF2e 8.4 has a generic Delay action (`game.pf2e.actions.delay`) which posts/rolls the rules action, but its V14 `EncounterTracker` has no Delay tracker control or atomic public encounter-delay workflow. Its drag reorder implementation calculates initiative and private override-priority data. The GM console deliberately does not expose Delay rather than recreating that internal initiative mutation.

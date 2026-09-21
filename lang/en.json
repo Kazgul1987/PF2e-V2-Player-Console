@@ -294,7 +294,31 @@
           "action": "Actions",
           "reaction": "Reactions",
           "free": "Free Actions"
-        }
+        },
+        "NoCombatants": "No combatants",
+        "Round": "Round",
+        "Turn": "Turn",
+        "PreviousTurn": "Previous Turn",
+        "EndTurn": "End Turn / Next Turn",
+        "PreviousRound": "Previous Round",
+        "NextRound": "Next Round",
+        "BeginCombat": "Begin Combat",
+        "EndCombat": "End Combat",
+        "RollInitiative": "Roll Initiative",
+        "RerollInitiative": "Re-roll Initiative",
+        "RollAll": "Roll All",
+        "RollNPCs": "Roll NPCs",
+        "ResetInitiative": "Reset Initiative",
+        "ClearInitiative": "Clear Initiative",
+        "Hidden": "Hidden",
+        "ToggleHidden": "Toggle Hidden",
+        "ToggleDefeated": "Toggle Defeated",
+        "Remove": "Remove from Combat",
+        "MoreActions": "Combatant actions",
+        "Conditions": "Conditions",
+        "AddCondition": "Add Condition",
+        "Apply": "Apply",
+        "Value": "Value"
       }
     },
     "Healing": {
