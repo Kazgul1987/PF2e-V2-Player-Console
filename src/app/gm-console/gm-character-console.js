@@ -439,40 +439,40 @@ export class GMCharacterConsole extends HandlebarsApplicationMixin(ApplicationV2
         return messageMode ? { messageMode, messageOptions: { messageMode } } : {};
     }
 
-    static async #beginCombat() { await this.#combatForUpdate()?.startCombat(); }
-    static async #endCombat() { await this.#combatForUpdate()?.endCombat(); }
-    static async #nextTurn() { await this.#combatForUpdate()?.nextTurn(); }
-    static async #previousTurn() { await this.#combatForUpdate()?.previousTurn(); }
-    static async #nextRound() { await this.#combatForUpdate()?.nextRound(); }
-    static async #previousRound() { await this.#combatForUpdate()?.previousRound(); }
-    static async #rollAllInitiative(event) { await this.#combatForUpdate()?.rollAll(this.#rollOptions(event)); }
-    static async #rollNPCInitiative(event) { await this.#combatForUpdate()?.rollNPC(this.#rollOptions(event)); }
-    static async #resetInitiative() { await this.#combatForUpdate()?.resetAll(); }
+    static async #beginCombat() { await GMCharacterConsole.#combatForUpdate()?.startCombat(); }
+    static async #endCombat() { await GMCharacterConsole.#combatForUpdate()?.endCombat(); }
+    static async #nextTurn() { await GMCharacterConsole.#combatForUpdate()?.nextTurn(); }
+    static async #previousTurn() { await GMCharacterConsole.#combatForUpdate()?.previousTurn(); }
+    static async #nextRound() { await GMCharacterConsole.#combatForUpdate()?.nextRound(); }
+    static async #previousRound() { await GMCharacterConsole.#combatForUpdate()?.previousRound(); }
+    static async #rollAllInitiative(event) { await GMCharacterConsole.#combatForUpdate()?.rollAll(GMCharacterConsole.#rollOptions(event)); }
+    static async #rollNPCInitiative(event) { await GMCharacterConsole.#combatForUpdate()?.rollNPC(GMCharacterConsole.#rollOptions(event)); }
+    static async #resetInitiative() { await GMCharacterConsole.#combatForUpdate()?.resetAll(); }
 
     static async #rollCombatantInitiative(event, target) {
-        const combat = this.#combatForUpdate();
+        const combat = GMCharacterConsole.#combatForUpdate();
         const combatant = this.#combatantFor(target);
-        if (combat && combatant) await combat.rollInitiative([combatant.id], this.#rollOptions(event));
+        if (combat && combatant) await combat.rollInitiative([combatant.id], GMCharacterConsole.#rollOptions(event));
     }
 
     static async #clearCombatantInitiative(_event, target) {
         const combatant = this.#combatantFor(target);
-        if (this.#combatForUpdate() && combatant) await combatant.update({ initiative: null });
+        if (GMCharacterConsole.#combatForUpdate() && combatant) await combatant.update({ initiative: null });
     }
 
     static async #toggleCombatantHidden(_event, target) {
         const combatant = this.#combatantFor(target);
-        if (this.#combatForUpdate() && combatant) await combatant.update({ hidden: !combatant.hidden });
+        if (GMCharacterConsole.#combatForUpdate() && combatant) await combatant.update({ hidden: !combatant.hidden });
     }
 
     static async #toggleCombatantDefeated(_event, target) {
         const combatant = this.#combatantFor(target);
-        if (this.#combatForUpdate() && combatant?.toggleDefeated) await combatant.toggleDefeated();
+        if (GMCharacterConsole.#combatForUpdate() && combatant?.toggleDefeated) await combatant.toggleDefeated();
     }
 
     static async #removeCombatant(_event, target) {
         const combatant = this.#combatantFor(target);
-        if (this.#combatForUpdate() && combatant) await combatant.delete();
+        if (GMCharacterConsole.#combatForUpdate() && combatant) await combatant.delete();
     }
 
     #conditionContext(target) {

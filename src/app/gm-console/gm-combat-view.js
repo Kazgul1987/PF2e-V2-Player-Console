@@ -65,9 +65,10 @@ async function prepareCombatant(combatant, actor, currentId, paneViews) {
 }
 
 function prepareCondition(condition) {
+    const baseCondition = game.pf2e?.ConditionManager?.getCondition(condition.slug);
     return {
         id: condition.id,
-        name: condition.name,
+        label: baseCondition?.name ?? condition.name,
         value: condition.value,
         valued: condition.system?.value?.isValued === true,
         locked: condition.isLocked === true || !!condition.grantedBy,
